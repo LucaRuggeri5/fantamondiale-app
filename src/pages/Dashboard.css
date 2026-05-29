@@ -1,0 +1,242 @@
+.dashboard-container {
+  padding: 15px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.dashboard-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  color: #888;
+}
+
+/* Hero Section Card */
+.league-header-card.hero-card {
+  background-color: #1e1e24;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid #00b0ff;
+  margin-bottom: 15px;
+}
+
+.hero-main-info h1 {
+  margin: 0;
+  font-size: 22px;
+  color: #fff;
+}
+
+.hero-team-title {
+  margin: 6px 0 0 0;
+  font-size: 15px;
+  color: #aaa;
+  font-weight: 500;
+}
+
+/* Recap Row Card */
+.dashboard-recap-card {
+  background-color: #1e1e24;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #2e2e38;
+}
+
+.recap-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1; /* Distribuisce le tre colonne equamente */
+}
+
+.recap-label {
+  font-size: 10px;
+  font-weight: bold;
+  color: #888;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.recap-value {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Posizioni speciali in classifica */
+.recap-value.rank-position {
+  color: #00b0ff;
+}
+.recap-value.rank-1 {
+  color: #ffd700; /* Oro */
+}
+.recap-value.rank-2 {
+  color: #c0c0c0; /* Argento */
+}
+.recap-value.rank-3 {
+  color: #cd7f32; /* Bronzo */
+}
+
+.recap-value.total-points {
+  color: #00e676;
+}
+
+.recap-value.penalty-points {
+  color: #ff5252;
+}
+
+.recap-divider {
+  width: 1px;
+  height: 30px;
+  background-color: #2e2e38;
+}
+
+/* Operative Action Cards Grid */
+.operative-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-status-card {
+  background-color: #1e1e24;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.action-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.action-status-card h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.time-countdown {
+  font-size: 12px;
+  font-weight: bold;
+  color: #ffca28;
+}
+
+.date-deadline {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.action-card-description {
+  margin: 0 0 15px 0;
+  color: #aaa;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.btn-action-trigger {
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn-action-trigger.btn-formation {
+  background-color: #00e676;
+  color: #121214;
+}
+
+.btn-action-trigger.btn-votes {
+  background-color: #2a2a35;
+  color: #fff;
+  border: 1px solid #444;
+}
+
+.btn-action-trigger:hover {
+  opacity: 0.9;
+}
+
+/* Form e Creazione Club */
+.create-team-card {
+  background-color: #1e1e24;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.spacing-bottom {
+  margin-bottom: 15px;
+}
+
+.create-team-card h2 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  color: #00e676;
+}
+
+.create-team-card p {
+  color: #aaa;
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+}
+
+.dashboard-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dashboard-input,
+.dashboard-select {
+  background-color: #121214;
+  border: 1px solid #333;
+  padding: 10px;
+  border-radius: 4px;
+  color: white;
+  font-size: 13px;
+  outline: none;
+}
+
+.btn-create {
+  background-color: #00e676;
+  color: #121214;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-join {
+  background-color: #00b0ff;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.dashboard-form button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.error-text {
+  color: #ff5252;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}

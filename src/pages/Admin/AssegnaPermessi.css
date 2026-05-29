@@ -1,0 +1,123 @@
+.permessi-page-container {
+  padding: 15px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.permessi-loading {
+  text-align: center;
+  padding-top: 45vh;
+  color: #888;
+  font-size: 14px;
+}
+
+.permessi-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: #ff9100;
+}
+
+.permessi-subtitle {
+  color: #aaa;
+  font-size: 12px;
+  margin: 0 0 20px 0;
+  line-height: 1.4;
+}
+
+.permessi-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.utente-permessi-card {
+  background-color: #1e1e24;
+  border-radius: 8px;
+  padding: 12px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #2e2e38;
+}
+
+.ut-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ut-avatar {
+  background-color: #121214;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 16px;
+  border: 1px solid #333;
+}
+
+.ut-meta h4 {
+  margin: 0 0 2px 0;
+  font-size: 14px;
+  color: #fff;
+}
+
+.ut-meta p {
+  margin: 0;
+  color: #777;
+  font-size: 11px;
+}
+
+.ut-action {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.badge-status {
+  font-size: 10px;
+  font-weight: bold;
+  padding: 3px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.badge-status.admin {
+  background-color: rgba(255, 202, 40, 0.1);
+  color: #ffca28;
+}
+
+.badge-status.player {
+  background-color: rgba(0, 176, 255, 0.1);
+  color: #00b0ff;
+}
+
+.btn-toggle-role {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-toggle-role:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.btn-toggle-role.promote {
+  background-color: #ff9100;
+  color: #121214;
+}
+
+.btn-toggle-role.demote {
+  background-color: #333;
+  color: #eee;
+}
+
+.btn-toggle-role:not(:disabled):hover {
+  opacity: 0.85;
+}

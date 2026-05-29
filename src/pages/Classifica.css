@@ -1,0 +1,109 @@
+.classifica-page {
+  padding: 15px;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #fff;
+}
+
+.classifica-loading {
+  text-align: center;
+  padding-top: 40vh;
+  color: #888;
+  font-size: 14px;
+}
+
+.classifica-page h2 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+}
+
+.classifica-page .subtitle {
+  color: #aaa;
+  font-size: 12px;
+  margin: 0 0 20px 0;
+}
+
+.classifica-table-container {
+  background-color: #1e1e24;
+  border-radius: 10px;
+  border: 1px solid #2e2e38;
+  overflow: hidden;
+}
+
+.classifica-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.classifica-table th {
+  text-align: left;
+  color: #777;
+  font-size: 11px;
+  padding: 15px 12px;
+  border-bottom: 1px solid #2e2e38;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.classifica-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #25252e;
+  vertical-align: middle;
+}
+
+.classifica-table tr:last-child td {
+  border-bottom: none;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.pos-cell {
+  font-weight: bold;
+  color: #aaa;
+  width: 50px;
+  font-size: 14px;
+}
+
+.team-cell-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mini-logo-table {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #121214;
+  object-fit: cover;
+}
+
+.table-team-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: #fff;
+}
+
+.table-penalty-label {
+  font-size: 10px;
+  color: #ff5252;
+  font-weight: 500;
+}
+
+.points-cell {
+  font-weight: 800;
+  font-size: 16px;
+  color: #00e676;
+}
+
+.no-data {
+  text-align: center;
+  padding: 40px !important;
+  color: #555;
+  font-size: 13px;
+}
+
+/* Evidenzia il podio */
+.row-pos-1 { background-color: rgba(255, 215, 0, 0.03); }
+.row-pos-1 .pos-cell { color: #ffd700; font-size: 18px; }

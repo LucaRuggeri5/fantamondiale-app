@@ -1,0 +1,326 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react';
+import { supabase } from '../supabaseClient';
+import './InserisciVoti.css';
+
+const InserisciVoti = () => {
+  const { giornataId } = useParams();
+  const { user } = useUser();
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [giornataInfo, setGiornataInfo] = useState(null);
+  const [formazioneId, setFormazioneId] = useState(null);
+  const [calciatoriList, setCalciatoriList] = useState([]);
+  
+  const [calcoloRisultato, setCalcoloRisultato] = useState({
+    totaleSquadra: 0,
+    sostituzioniEffettuate: 0,
+    giocatoriConteggiati: []
+  });
+
+  useEffect(() => {
+    const caricaDatiVoti = async () => {
+      try {
+        setLoading(true);
+        if (!user || !giornataId) return;
+
+        const { data: gioData, error: gioErr } = await supabase
+          .from('giornate')
+          .select('*')
+          .eq('id', giornataId)
+          .single();
+
+        if (gioErr) throw gioErr;
+        setGiornataInfo(gioData);
+
+        if (gioData.stato?.toLowerCase() !== 'fase calcolo') {
+          alert("L'inserimento voti non è attivo per questo turno.");
+          navigate('/dashboard');
+          return;
+        }
+
+        const { data: utenteData, error: utenteErr } = await supabase
+          .from('utenti')
+          .select('squadra_id')
+          .eq('id', user.id)
+          .single();
+
+        if (utenteErr) throw utenteErr;
+        if (!utenteData?.squadra_id) {
+          alert("Nessuna squadra associata al tuo account.");
+          navigate('/dashboard');
+          return;
+        }
+
+        const { data: formData, error: formErr } = await supabase
+          .from('formazioni')
+          .select('id')
+          .eq('giornata_id', giornataId)
+          .eq('squadra_id', utenteData.squadra_id)
+          .maybeSingle();
+
+        if (formErr) throw formErr;
+        if (!formData) {
+          alert("Non hai schierato alcuna formazione per questo turno.");
+          navigate('/calendario');
+          return;
+        }
+
+        setFormazioneId(formData.id);
+
+        const { data: fcData, error: fcErr } = await supabase
+          .from('formazioni_calciatori')
+          .select(`
+            id,
+            posizione,
+            ruolo,
+            calciatore_id,
+            voto_base,
+            bonus_malus,
+            voto_fanta,
+            calciatori_reali!calciatore_id (id, nome)
+          `)
+          .eq('formazione_id', formData.id)
+          .order('posizione', { ascending: true });
+
+        if (fcErr) throw fcErr;
+
+        const normalizzati = fcData.map(fc => {
+          const infoC = Array.isArray(fc.calciatori_reali) ? fc.calciatori_reali[0] : fc.calciatori_reali;
+          return {
+            id_relazione: fc.id,
+            calciatore_id: fc.calciatore_id, // Fondamentale per l'upsert
+            posizione: fc.posizione,        // Fondamentale per l'upsert
+            ruolo: fc.ruolo,                // Fondamentale per l'upsert
+            nome: infoC?.nome || 'Calciatore Sconosciuto',
+            voto_base: fc.voto_base !== null && fc.voto_base !== undefined ? fc.voto_base.toString() : '',
+            bonus_malus: fc.bonus_malus !== null && fc.bonus_malus !== undefined ? fc.bonus_malus.toString() : '0',
+            voto_fanta: fc.voto_fanta || 0,
+            senzaVoto: fc.voto_base === null || fc.voto_base === undefined
+          };
+        });
+
+        setCalciatoriList(normalizzati);
+      } catch (err) {
+        console.error("Errore inizializzazione:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    caricaDatiVoti();
+  }, [user, giornataId]);
+
+  useEffect(() => {
+    if (calciatoriList.length === 0) return;
+
+    const titolari = calciatoriList.filter(c => c.posizione <= 11);
+    const panchina = calciatoriList.filter(c => c.posizione > 11);
+
+    let sostituzioniEffettuate = 0;
+    const conteggiati = [];
+    let totaleSquadra = 0;
+
+    const panchinaStato = panchina.map(p => ({ ...p, utilizzato: false }));
+
+    titolari.forEach(t => {
+      const baseNum = parseFloat(t.voto_base);
+      const haVotoValido = !t.senzaVoto && !isNaN(baseNum);
+
+      if (haVotoValido) {
+        const bm = parseFloat(t.bonus_malus) || 0;
+        const fantaVoto = baseNum + bm;
+        conteggiati.push({
+          nome: t.nome, ruolo: t.ruolo, tipo: 'Titolare',
+          voto_fanta: fantaVoto, dettaglio: `${baseNum} (Voto) + ${bm >= 0 ? '+' : ''}${bm} (B/M)`
+        });
+        totaleSquadra += fantaVoto;
+      } else {
+        let subentrato = false;
+        if (sostituzioniEffettuate < 4) {
+          const sostituto = panchinaStato.find(p => 
+            p.ruolo === t.ruolo && !p.utilizzato && !p.senzaVoto && !isNaN(parseFloat(p.voto_base))
+          );
+          if (sostituto) {
+            sostituto.utilizzato = true;
+            sostituzioniEffettuate++;
+            subentrato = true;
+            const sBase = parseFloat(sostituto.voto_base);
+            const sBm = parseFloat(sostituto.bonus_malus) || 0;
+            const sFanta = sBase + sBm;
+            conteggiati.push({
+              nome: sostituto.nome, ruolo: sostituto.ruolo, tipo: `Subentrato (Panchina)`,
+              voto_fanta: sFanta, dettaglio: `${sBase} (Voto) + ${sBm >= 0 ? '+' : ''}${sBm} (B/M)`
+            });
+            totaleSquadra += sFanta;
+          }
+        }
+        if (!subentrato) {
+          conteggiati.push({
+            nome: t.nome, ruolo: t.ruolo, tipo: 'Non Sostituito',
+            voto_fanta: 0, dettaglio: 'Senza Voto / Panchina Esaurita'
+          });
+        }
+      }
+    });
+
+    setCalcoloRisultato({ totaleSquadra, sostituzioniEffettuate, giocatoriConteggiati: conteggiati });
+  }, [calciatoriList]);
+
+  const handleInputChange = (idRelazione, campo, valore) => {
+    setCalciatoriList(prev => prev.map(c => {
+      if (c.id_relazione !== idRelazione) return c;
+      const aggiornato = { ...c, [campo]: valore };
+      if (campo === 'voto_base') aggiornato.senzaVoto = valore.trim() === '';
+      const vBase = parseFloat(aggiornato.voto_base);
+      const vBm = parseFloat(aggiornato.bonus_malus) || 0;
+      aggiornato.voto_fanta = !isNaN(vBase) ? vBase + vBm : 0;
+      return aggiornato;
+    }));
+  };
+
+  const handleToggleSenzaVoto = (idRelazione) => {
+    setCalciatoriList(prev => prev.map(c => {
+      if (c.id_relazione !== idRelazione) return c;
+      const invertito = !c.senzaVoto;
+      return {
+        ...c, senzaVoto: invertito,
+        voto_base: invertito ? '' : '6',
+        voto_fanta: invertito ? 0 : 6 + (parseFloat(c.bonus_malus) || 0)
+      };
+    }));
+  };
+
+  const handleSalvaTuttiVoti = async () => {
+    try {
+      setSaving(true);
+      
+      // COSTRUZIONE PAYLOAD COMPLETO: id, formazione_id, calciatore_id, ruolo, posizione sono obbligatori
+      const updates = calciatoriList.map(c => ({
+        id: c.id_relazione,
+        formazione_id: formazioneId,
+        calciatore_id: c.calciatore_id,
+        ruolo: c.ruolo,
+        posizione: c.posizione,
+        voto_base: c.senzaVoto || c.voto_base === '' ? null : parseFloat(c.voto_base),
+        bonus_malus: parseFloat(c.bonus_malus) || 0,
+        voto_fanta: c.senzaVoto ? 0 : c.voto_fanta
+      }));
+
+      const { error: upsertErr } = await supabase
+        .from('formazioni_calciatori')
+        .upsert(updates);
+
+      if (upsertErr) throw upsertErr;
+
+      const { error: formUpdateErr } = await supabase
+        .from('formazioni')
+        .update({ punteggio_totale: calcoloRisultato.totaleSquadra })
+        .eq('id', formazioneId);
+
+      if (formUpdateErr) throw formUpdateErr;
+
+      alert("Voti salvati con successo!");
+      navigate('/calendario');
+    } catch (err) {
+      console.error("Errore salvataggio:", err);
+      alert("Errore durante il salvataggio: " + (err.message || "riprova più tardi"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) return <div className="voti-loading">Caricamento in corso... ⏳</div>;
+
+  const titolari = calciatoriList.filter(c => c.posizione <= 11);
+  const panchina = calciatoriList.filter(c => c.posizione > 11);
+
+  return (
+    <div className="voti-page-container">
+      <div className="voti-header">
+        <h2>Inserimento Voti Giornata {giornataInfo?.numero_giornata} 📊</h2>
+        <p className="voti-subtitle">Inserisci i voti: il sistema calcolerà subentri e totale automaticamente.</p>
+      </div>
+
+      <div className="voti-main-layout">
+        <div className="voti-inputs-column">
+          <div className="voti-section-card">
+            <h3>Titolari</h3>
+            <div className="voti-table-header">
+              <span className="col-player">Calciatore</span>
+              <span className="col-sv">S.V.</span>
+              <span className="col-voto">Voto</span>
+              <span className="col-bm">B/M</span>
+              <span className="col-tot">Tot</span>
+            </div>
+            {titolari.map(c => (
+              <div key={c.id_relazione} className={`voti-player-row ${c.senzaVoto ? 'player-sv' : ''}`}>
+                <div className="col-player">
+                  <span className={`badge-ruolo ${c.ruolo}`}>{c.ruolo}</span>
+                  <span className="giocatore-nome-txt">{c.nome}</span>
+                </div>
+                <div className="col-sv">
+                  <input type="checkbox" checked={c.senzaVoto} onChange={() => handleToggleSenzaVoto(c.id_relazione)} />
+                </div>
+                <div className="col-voto">
+                  <input type="number" step="0.5" value={c.voto_base} disabled={c.senzaVoto} onChange={(e) => handleInputChange(c.id_relazione, 'voto_base', e.target.value)} />
+                </div>
+                <div className="col-bm">
+                  <input type="number" step="0.5" value={c.bonus_malus} onChange={(e) => handleInputChange(c.id_relazione, 'bonus_malus', e.target.value)} />
+                </div>
+                <div className="col-tot">{c.senzaVoto ? 'S.V.' : c.voto_fanta.toFixed(1)}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="voti-section-card margin-top-card">
+            <h3>Panchina</h3>
+            {panchina.map(c => (
+              <div key={c.id_relazione} className={`voti-player-row riserva ${c.senzaVoto ? 'player-sv' : ''}`}>
+                <div className="col-player">
+                  <span className="order-num">#{c.posizione - 11}</span>
+                  <span className={`badge-ruolo ${c.ruolo}`}>{c.ruolo}</span>
+                  <span className="giocatore-nome-txt">{c.nome}</span>
+                </div>
+                <div className="col-sv">
+                  <input type="checkbox" checked={c.senzaVoto} onChange={() => handleToggleSenzaVoto(c.id_relazione)} />
+                </div>
+                <div className="col-voto">
+                  <input type="number" step="0.5" value={c.voto_base} disabled={c.senzaVoto} onChange={(e) => handleInputChange(c.id_relazione, 'voto_base', e.target.value)} />
+                </div>
+                <div className="col-bm">
+                  <input type="number" step="0.5" value={c.bonus_malus} onChange={(e) => handleInputChange(c.id_relazione, 'bonus_malus', e.target.value)} />
+                </div>
+                <div className="col-tot">{c.senzaVoto ? 'S.V.' : c.voto_fanta.toFixed(1)}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="voti-summary-column">
+          <div className="summary-sticky-card">
+            <h3>Riepilogo Live</h3>
+            <div className="score-main-display">
+              <span className="score-label">TOTALE</span>
+              <span className="score-number-value">{calcoloRisultato.totaleSquadra.toFixed(1)}</span>
+            </div>
+            <div className="substitution-counter-row">
+              <span>Cambi:</span>
+              <span className={`sub-count-badge ${calcoloRisultato.sostituzioniEffettuate > 0 ? 'active' : ''}`}>
+                {calcoloRisultato.sostituzioniEffettuate} / 4
+              </span>
+            </div>
+            <button className="btn-salva-voti-complessivo" onClick={handleSalvaTuttiVoti} disabled={saving}>
+              {saving ? 'Salvataggio...' : '💾 Salva Voti'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default InserisciVoti;

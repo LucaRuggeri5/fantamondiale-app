@@ -1,0 +1,94 @@
+.squadre-page-container {
+  padding: 15px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.squadre-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  color: #888;
+}
+
+.participants-section h3 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: #fff;
+}
+
+.section-subtitle {
+  color: #aaa;
+  font-size: 12px;
+  margin: 0 0 15px 0;
+}
+
+.participants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.participant-card {
+  background-color: #1e1e24;
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-left: 3px solid #00b0ff;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.participant-card.clickable {
+  cursor: pointer;
+}
+
+.participant-card.clickable:hover {
+  background-color: #25252d;
+  transform: translateX(2px);
+}
+
+.participant-card.disabled {
+  border-left-color: #444;
+  opacity: 0.7;
+}
+
+.avatar-placeholder {
+  background-color: #121214;
+  width: 42px;
+  height: 42px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  border: 1px solid #2e2e38;
+}
+
+.participant-details {
+  flex-grow: 1;
+}
+
+.participant-details h4 {
+  margin: 0 0 3px 0;
+  font-size: 15px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.participant-details p {
+  margin: 0;
+  color: #aaa;
+  font-size: 12px;
+}
+
+.trainer-name {
+  color: #ddd;
+}
+
+.arrow-indicator {
+  color: #00b0ff;
+  font-size: 12px;
+  font-weight: bold;
+}

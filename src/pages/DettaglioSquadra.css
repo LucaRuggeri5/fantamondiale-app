@@ -1,0 +1,121 @@
+.dettaglio-page-container {
+  padding: 15px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.dettaglio-loading {
+  text-align: center;
+  padding-top: 45vh;
+  color: #888;
+  font-size: 14px;
+}
+
+.dettaglio-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.btn-back {
+  align-self: flex-start;
+  background-color: #1e1e24;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-back:hover {
+  background-color: #25252d;
+}
+
+.club-title-card {
+  background-color: #1e1e24;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #00b0ff;
+}
+
+.club-title-card h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #fff;
+}
+
+.total-badge {
+  font-size: 11px;
+  background-color: #121214;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #aaa;
+  border: 1px solid #2e2e38;
+}
+
+.empty-rosa-alert {
+  background-color: #1e1e24;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  color: #888;
+  font-size: 13px;
+}
+
+.rose-sections-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.ruolo-block-box {
+  background-color: #1e1e24;
+  padding: 12px 15px;
+  border-radius: 8px;
+}
+
+.title-ruolo {
+  margin: 0 0 10px 0;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #2e2e38;
+}
+
+/* Colori distintivi per i ruoli */
+.title-ruolo.P { color: #ffca28; }
+.title-ruolo.D { color: #00b0ff; }
+.title-ruolo.C { color: #00e676; }
+.title-ruolo.A { color: #ff5252; }
+
+.players-subgrid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.player-detail-card {
+  background-color: #121214;
+  padding: 10px 12px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #222;
+}
+
+.player-detail-card strong {
+  color: #fff;
+  font-size: 13px;
+}
+
+.player-nation {
+  color: #666;
+  font-size: 11px;
+}

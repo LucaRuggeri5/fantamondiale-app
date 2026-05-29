@@ -1,0 +1,20 @@
+/* Reset di base per azzerare i margini nativi dei browser */
+* {
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #121214;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Stile minimale per i link e i bottoni generici */
+button {
+  font-family: inherit;
+}

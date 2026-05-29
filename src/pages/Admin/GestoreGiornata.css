@@ -1,0 +1,181 @@
+.gestore-giornate-page {
+  padding: 20px;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #fff;
+}
+
+.admin-giornate-loading {
+  text-align: center;
+  padding-top: 40vh;
+  color: #aaa;
+}
+
+.admin-giornate-header h2 {
+  margin: 0 0 5px 0;
+  color: #00e676;
+  font-size: 22px;
+}
+
+.admin-giornate-header p {
+  color: #aaa;
+  font-size: 13px;
+  margin: 0 0 20px 0;
+}
+
+.admin-giornate-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 992px) {
+  .admin-giornate-workspace {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+}
+
+/* CARD FORM */
+.giornata-form-card {
+  flex: 1;
+  background-color: #1e1e24;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #2e2e38;
+}
+
+.giornata-form-card h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  color: #ff9100;
+  border-bottom: 1px solid #333;
+  padding-bottom: 8px;
+}
+
+.form-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.form-input-group label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ccc;
+}
+
+.form-input-group input,
+.form-input-group select {
+  background-color: #121214;
+  border: 1px solid #333;
+  color: #fff;
+  padding: 10px;
+  font-size: 13px;
+  border-radius: 5px;
+  outline: none;
+}
+
+.form-input-group input:focus,
+.form-input-group select:focus {
+  border-color: #ff9100;
+}
+
+.form-actions-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.btn-submit-giornata {
+  background-color: #ff9100;
+  color: #121214;
+  border: none;
+  padding: 10px 15px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 2;
+}
+
+.btn-cancel-giornata {
+  background-color: #444;
+  color: #fff;
+  border: none;
+  padding: 10px 15px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  flex: 1;
+}
+
+/* SEZIONE TABELLA LISTA */
+.giornate-list-section {
+  flex: 1.5;
+  background-color: #1e1e24;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #2e2e38;
+}
+
+.giornate-list-section h3 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+}
+
+.giornate-table-responsive {
+  overflow-x: auto;
+}
+
+.giornate-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  text-align: left;
+}
+
+.giornate-admin-table th,
+.giornate-admin-table td {
+  padding: 12px 10px;
+  border-bottom: 1px solid #25252d;
+}
+
+.giornate-admin-table th {
+  background-color: #121214;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.txt-bold {
+  font-weight: bold;
+}
+
+.badge-stato-turno {
+  font-size: 11px;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 20px;
+  text-transform: capitalize;
+  display: inline-block;
+}
+
+.badge-stato-turno.in-programma { background-color: #333; color: #aaa; }
+.badge-stato-turno.in-corso { background-color: #0288d1; color: #fff; }
+.badge-stato-turno.inserimento-voti { background-color: #f57c00; color: #fff; }
+.badge-stato-turno.conclusa { background-color: #388e3c; color: #fff; }
+
+.btn-table-edit {
+  background-color: #121214;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 5px 10px;
+  font-size: 11px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn-table-edit:hover {
+  border-color: #ff9100;
+  color: #ff9100;
+}

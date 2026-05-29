@@ -1,0 +1,151 @@
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  backdrop-filter: blur(2px);
+}
+
+.sidebar-container {
+  position: fixed;
+  top: 0;
+  left: -280px;
+  width: 280px;
+  height: 100vh;
+  background-color: #1e1e24;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.sidebar-container.open {
+  left: 0;
+}
+
+/* Header */
+.sidebar-header {
+  padding: 15px;
+  border-bottom: 1px solid #2e2e38;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #18181d;
+}
+
+.user-welcome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.emoji-user {
+  font-size: 20px;
+}
+
+.user-details h4 {
+  margin: 0 0 2px 0;
+  font-size: 14px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.badge-role {
+  font-size: 10px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.badge-role.admin {
+  color: #ffca28; /* Oro elegante per distinguere l'admin */
+}
+
+.badge-role.player {
+  color: #00b0ff;
+}
+
+.close-sidebar-btn {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 26px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.close-sidebar-btn:hover {
+  color: #fff;
+}
+
+/* Menu Content */
+.sidebar-menu-content {
+  padding: 20px 15px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  overflow-y: auto;
+}
+
+.menu-section .section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #00b0ff;
+  margin: 0 0 8px 0;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+}
+
+.menu-section.admin-section .admin-title {
+  color: #ff9100; /* Accento arancione per la zona di controllo admin */
+}
+
+.menu-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu-section ul li {
+  padding: 11px 8px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: #ccc;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.menu-section ul li:hover {
+  color: #fff;
+  background-color: #26262e;
+}
+
+/* Footer & Clerk Component */
+.sidebar-footer {
+  padding: 15px;
+  border-top: 1px solid #2e2e38;
+  background-color: #15151a;
+}
+
+.clerk-account-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.clerk-label {
+  font-size: 13px;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.clerk-account-wrapper:hover .clerk-label {
+  color: #fff;
+}

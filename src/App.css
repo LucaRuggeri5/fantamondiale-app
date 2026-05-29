@@ -1,0 +1,49 @@
+/* Schermata di caricamento sincro e box di Clerk */
+.app-syncing-container, 
+.app-auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #121214;
+  color: #fff;
+}
+
+/* Contenitore principale dell'applicazione */
+.app-container {
+  position: relative;
+  min-height: 100vh;
+  background-color: #121214;
+}
+
+/* Header dell'applicazione */
+.app-header {
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: #1e1e24;
+  border-bottom: 1px solid #25252d;
+}
+
+/* Bottone Hamburger Menu */
+.btn-hamburger {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0 5px;
+}
+
+/* Titolo dell'applicazione */
+.app-title {
+  color: #00e676;
+  fontWeight: bold;
+  font-size: 18px;
+}
+
+/* Area di contenuto dove cambiano le pagine */
+.main-content {
+  padding-bottom: 80px; /* Spazio in fondo per non sovrapporsi alla BottomNavbar */
+}

@@ -1,0 +1,212 @@
+.admin-rose-container {
+  padding: 15px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.admin-rose-loading {
+  text-align: center;
+  padding-top: 45vh;
+  color: #888;
+  font-size: 15px;
+}
+
+.admin-rose-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  color: #ff9100;
+}
+
+.admin-rose-header p {
+  color: #aaa;
+  font-size: 12px;
+  margin: 0 0 20px 0;
+}
+
+.squadra-select-box {
+  background-color: #1e1e24;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #ff9100;
+}
+
+.squadra-select-box label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #aaa;
+}
+
+.admin-select {
+  background-color: #121214;
+  border: 1px solid #333;
+  padding: 10px;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+  outline: none;
+}
+
+/* Griglia Spazio di Lavoro */
+.workspace-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (min-width: 768px) {
+  .workspace-grid {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  .workspace-column {
+    flex: 1;
+  }
+}
+
+.workspace-column {
+  background-color: #1e1e24;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.workspace-column h3 {
+  margin: 0 0 15px 0;
+  font-size: 15px;
+  color: #fff;
+  border-bottom: 1px solid #2e2e38;
+  padding-bottom: 8px;
+}
+
+.empty-notice {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  padding: 20px 0;
+}
+
+/* Controlli Filtro Listone */
+.filter-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.admin-search-input {
+  background-color: #121214;
+  border: 1px solid #333;
+  padding: 8px 12px;
+  border-radius: 4px;
+  color: white;
+  font-size: 13px;
+  outline: none;
+}
+
+.role-btn-group {
+  display: flex;
+  gap: 5px;
+}
+
+.role-filter-btn {
+  flex: 1;
+  background-color: #121214;
+  border: 1px solid #333;
+  color: #aaa;
+  padding: 6px 0;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.role-filter-btn.active {
+  background-color: #ff9100;
+  color: #121214;
+  border-color: #ff9100;
+}
+
+/* Lista dei giocatori */
+.admin-players-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.admin-players-list.scrollable {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.player-admin-card {
+  background-color: #121214;
+  padding: 10px 12px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  border: 1px solid #2e2e38;
+}
+
+.player-admin-card.disabled-item {
+  opacity: 0.35;
+}
+
+.player-name-txt {
+  color: #fff;
+  margin-right: 6px;
+}
+
+.nation-txt {
+  color: #777;
+  font-size: 11px;
+}
+
+/* Badge di Ruolo per la rosa attuale */
+.role-indicator {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  line-height: 18px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: bold;
+  border-radius: 3px;
+  margin-right: 8px;
+  color: #121214;
+}
+
+.role-indicator.P { background-color: #ffca28; }
+.role-indicator.D { background-color: #00b0ff; }
+.role-indicator.C { background-color: #00e676; }
+.role-indicator.A { background-color: #ff5252; }
+
+/* Pulsanti Azione */
+.btn-admin-action {
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.btn-admin-action.add {
+  background-color: #00e676;
+  color: #121214;
+}
+
+.btn-admin-action.delete {
+  background-color: #ff5252;
+  color: #fff;
+}
+
+.status-occupied {
+  font-size: 11px;
+  color: #ff5252;
+  font-weight: bold;
+}
