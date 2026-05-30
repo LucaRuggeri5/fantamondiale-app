@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useUser } from '@clerk/clerk-react'; // <-- IMPORTANTE: serve per identificare l'admin
-import { supabase } from '../../supabaseClient';
+import { useUser } from '@clerk/clerk-react'; // Importiamo il controllo utente di Clerk
+import { supabase } from '../../supabaseClient'; // Connessione client Supabase
 import './GestoreGiornata.css';
 
 const GestoreGiornata = () => {
-  const { user } = useUser(); // Utente Clerk corrente
-  const [giornate, setGiornate] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [editingId, setEditingId] = useState(null);
-  const [adminLegaId, setAdminLegaId] = useState(null); // <-- Stato per salvare la lega dell'admin
+  const { user } = useUser(); // Otteniamo l'utente Clerk corrente
+  const [giornate, setGiornate] = useState([]); // Elenco di tutte le giornate
+  const [loading, setLoading] = useState(true); // Stato di caricamento iniziale
+  const [editingId, setEditingId] = useState(null); // ID della giornata che stiamo modificando (se applicabile)
+  const [adminLegaId, setAdminLegaId] = useState(null); // ID della lega gestita da questo admin
   
-  // Campi form per inserimento/modifica - Stato iniziale rigorosamente in minuscolo
+  // Campi del form per l'inserimento o la modifica di una giornata
   const [numeroGiornata, setNumeroGiornata] = useState('');
+  const [aperturaFormazioni, setAperturaFormazioni] = useState(''); // <-- NUOVO STATO: per gestire l'inizio inserimento
   const [scadenzaFormazione, setScadenzaFormazione] = useState('');
   const [scadenzaVoti, setScadenzaVoti] = useState('');
-  const [stato, setStato] = useState('in programma');
 
-  // 1. Recupera i dati dell'admin (in particolare la sua lega_id)
+  // Effetto iniziale per recuperare la lega dell'admin corrente
   useEffect(() => {
     const fetchAdminData = async () => {
       if (!user) return;
@@ -30,8 +30,7 @@ const GestoreGiornata = () => {
         if (error) throw error;
         if (data?.lega_id) {
           setAdminLegaId(data.lega_id);
-          // Una volta ottenuta la lega, carichiamo le giornate filtrate per quella lega
-          fetchGiornate(data.lega_id);
+          fetchGiornate(data.lega_id); // Carichiamo le giornate associate a questa lega
         } else {
           alert("Attenzione: non risulti associato a nessuna lega come amministratore.");
           setLoading(false);
@@ -45,7 +44,7 @@ const GestoreGiornata = () => {
     fetchAdminData();
   }, [user]);
 
-  // 2. Legge le giornate filtrate per la lega dell'utente
+  // Funzione per leggere i turni dal database filtrandoli per lega
   const fetchGiornate = async (legaId) => {
     const targetLega = legaId || adminLegaId;
     if (!targetLega) return;
@@ -55,7 +54,7 @@ const GestoreGiornata = () => {
       const { data, error } = await supabase
         .from('giornate')
         .select('*')
-        .eq('lega_id', targetLega) // <-- IMPORTANTE: vedi solo i turni della tua lega
+        .eq('lega_id', targetLega)
         .order('numero_giornata', { ascending: true });
 
       if (error) throw error;
@@ -68,29 +67,46 @@ const GestoreGiornata = () => {
     }
   };
 
+  // Funzione helper per calcolare lo stato temporale in tempo reale (per visualizzazione tabellare)
+  const calcolaStatoInTempoReale = (g) => {
+    const adesso = new Date();
+    const inizioFormazioni = new Date(g.apertura_formazioni);
+    const fineFormazioni = new Date(g.scadenza_formazione);
+    const fineVoti = new Date(g.scadenza_voti);
+
+    if (adesso < inizioFormazioni) return 'in programma';
+    if (adesso >= inizioFormazioni && adesso < fineFormazioni) return 'in corso';
+    if (adesso >= fineFormazioni && adesso < fineVoti) return 'fase calcolo';
+    return 'conclusa';
+  };
+
+  // Funzione per convertire il formato ISO di Supabase nel formato richiesto dagli input datetime-local
   const formatDataPerInput = (isoString) => {
     if (!isoString) return '';
     const d = new Date(isoString);
-    const tzOffset = d.getTimezoneOffset() * 60000;
+    const tzOffset = d.getTimezoneOffset() * 60000; // Calcolo dell'offset del fuso orario locale
     return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
   };
 
+  // Attiva la modalità di modifica caricando i dati esistenti nei rispettivi stati del form
   const handleEditClick = (g) => {
     setEditingId(g.id);
     setNumeroGiornata(g.numero_giornata);
+    setAperturaFormazioni(formatDataPerInput(g.apertura_formazioni)); // <-- Impostiamo la nuova data nel form
     setScadenzaFormazione(formatDataPerInput(g.scadenza_formazione));
     setScadenzaVoti(formatDataPerInput(g.scadenza_voti));
-    setStato(g.stato || 'in programma');
   };
 
+  // Svuota tutti i campi del form ripristinando lo stato di creazione
   const resetForm = () => {
     setEditingId(null);
     setNumeroGiornata('');
+    setAperturaFormazioni(''); // <-- Resettiamo il nuovo campo
     setScadenzaFormazione('');
     setScadenzaVoti('');
-    setStato('in programma');
   };
 
+  // Gestore del salvataggio dei dati (sia per insert che per update)
   const handleSalvaGiornata = async (e) => {
     e.preventDefault();
     
@@ -99,23 +115,23 @@ const GestoreGiornata = () => {
       return;
     }
 
-    if (!numeroGiornata || !scadenzaFormazione || !scadenzaVoti) {
+    if (!numeroGiornata || !aperturaFormazioni || !scadenzaFormazione || !scadenzaVoti) {
       alert("Compila tutti i campi obbligatori.");
       return;
     }
 
-    // Costruiamo il payload includendo dinamicamente la lega_id dell'admin
+    // Costruiamo l'oggetto payload convertendo le date locali in stringhe ISO UTC globali
     const payload = {
       numero_giornata: parseInt(numeroGiornata, 10),
+      apertura_formazioni: new Date(aperturaFormazioni).toISOString(), // <-- Inviamo la nuova colonna
       scadenza_formazione: new Date(scadenzaFormazione).toISOString(),
       scadenza_voti: new Date(scadenzaVoti).toISOString(),
-      stato: stato,
-      lega_id: adminLegaId // <-- RISOLVE L'ERRORE DI COSTRUTTO NOT-NULL
+      lega_id: adminLegaId 
     };
 
     try {
       if (editingId) {
-        // Rimuoviamo lega_id dal payload in fase di update per sicurezza (non cambia)
+        // In fase di update escludiamo la lega_id per sicurezza
         const { lega_id, ...updatePayload } = payload;
 
         const { error } = await supabase
@@ -125,6 +141,7 @@ const GestoreGiornata = () => {
         if (error) throw error;
         alert("Giornata aggiornata con successo.");
       } else {
+        // Creazione di un nuovo record di giornata
         const { error } = await supabase
           .from('giornate')
           .insert([payload]);
@@ -132,7 +149,7 @@ const GestoreGiornata = () => {
         alert("Nuova giornata inserita nel calendario.");
       }
       resetForm();
-      fetchGiornate(adminLegaId);
+      fetchGiornate(adminLegaId); // Aggiorniamo la lista a schermo
     } catch (err) {
       console.error(err);
       alert("Errore durante il salvataggio dei dati.");
@@ -149,6 +166,7 @@ const GestoreGiornata = () => {
       </div>
 
       <div className="admin-giornate-workspace">
+        {/* Form di Inserimento / Modifica */}
         <form className="giornata-form-card" onSubmit={handleSalvaGiornata}>
           <h3>{editingId ? '📝 Modifica Turno' : '➕ Crea Nuova Giornata'}</h3>
           
@@ -162,8 +180,18 @@ const GestoreGiornata = () => {
             />
           </div>
 
+          {/* NUOVO CAMPO DI INPUT NEL FORM INTERFACCIA */}
           <div className="form-input-group">
-            <label>Scadenza Consegna Formazioni:</label>
+            <label>Inizio / Apertura Inserimento Formazioni:</label>
+            <input 
+              type="datetime-local" 
+              value={aperturaFormazioni} 
+              onChange={(e) => setAperturaFormazioni(e.target.value)}
+            />
+          </div>
+
+          <div className="form-input-group">
+            <label>Scadenza / Blocco Consegna Formazioni:</label>
             <input 
               type="datetime-local" 
               value={scadenzaFormazione} 
@@ -180,16 +208,6 @@ const GestoreGiornata = () => {
             />
           </div>
 
-          <div className="form-input-group">
-            <label>Stato del Turno:</label>
-            <select value={stato} onChange={(e) => setStato(e.target.value)}>
-              <option value="in programma">In programma</option>
-              <option value="in corso">In corso</option>
-              <option value="fase calcolo">Fase calcolo</option>
-              <option value="conclusa">Conclusa</option>
-            </select>
-          </div>
-
           <div className="form-actions-row">
             <button type="submit" className="btn-submit-giornata">
               {editingId ? 'Salva Modifiche' : 'Crea Giornata'}
@@ -202,6 +220,7 @@ const GestoreGiornata = () => {
           </div>
         </form>
 
+        {/* Tabella riassuntiva dei turni configurati */}
         <div className="giornate-list-section">
           <h3>Turni Configurati</h3>
           <div className="giornate-table-responsive">
@@ -209,26 +228,31 @@ const GestoreGiornata = () => {
               <thead>
                 <tr>
                   <th>Turno</th>
+                  <th>Apertura Formazioni</th>
                   <th>Scadenza Formazione</th>
-                  <th>Stato</th>
+                  <th>Stato Reale</th>
                   <th>Azioni</th>
                 </tr>
               </thead>
               <tbody>
-                {giornate.map(g => (
-                  <tr key={g.id} className={`row-stato-${g.stato?.replace(/\s+/g, '-').toLowerCase()}`}>
-                    <td className="txt-bold">Giornata {g.numero_giornata}</td>
-                    <td>{new Date(g.scadenza_formazione).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
-                    <td>
-                      <span className={`badge-stato-turno ${g.stato?.toLowerCase().replace(/\s+/g, '-')}`}>
-                        {g.stato === 'fase calcolo' ? 'fase calcolo' : g.stato}
-                      </span>
-                    </td>
-                    <td>
-                      <button className="btn-table-edit" onClick={() => handleEditClick(g)}>✏️ Modifica</button>
-                    </td>
-                  </tr>
-                ))}
+                {giornate.map(g => {
+                  const statoReale = calcolaStatoInTempoReale(g);
+                  return (
+                    <tr key={g.id} className={`row-stato-${statoReale}`}>
+                      <td className="txt-bold">Giornata {g.numero_giornata}</td>
+                      <td>{new Date(g.apertura_formazioni).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                      <td>{new Date(g.scadenza_formazione).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                      <td>
+                        <span className={`badge-stato-turno ${statoReale}`}>
+                          {statoReale}
+                        </span>
+                      </td>
+                      <td>
+                        <button className="btn-table-edit" onClick={() => handleEditClick(g)}>✏️ Modifica</button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

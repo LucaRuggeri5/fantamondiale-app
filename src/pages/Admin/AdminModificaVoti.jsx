@@ -251,7 +251,7 @@ const AdminModificaVoti = () => {
           <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>Seleziona Turno:</label>
           <select value={giornataId} onChange={(e) => setGiornataId(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '5px' }}>
             {giornate.map(g => (
-              <option key={g.id} value={g.id}>Giornata {g.numero_giornata} ({g.stato})</option>
+              <option key={g.id} value={g.id}>Giornata {g.numero_giornata}</option>
             ))}
           </select>
         </div>

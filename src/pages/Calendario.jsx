@@ -12,7 +12,7 @@ const Calendario = () => {
   const [giornate, setGiornate] = useState([]);
   const [currentUserData, setCurrentUserData] = useState(null);
 
-  // Stati per la visualizzazione interattiva formazioni inserite
+  // Stati per gestire l'apertura e la visualizzazione interattiva dei dettagli di un turno
   const [giornataSelezionata, setGiornataSelezionata] = useState(null);
   const [squadreFormazioni, setSquadreFormazioni] = useState([]);
   const [loadingSquadre, setLoadingSquadre] = useState(false);
@@ -21,6 +21,7 @@ const Calendario = () => {
   const [dettaglioFormazione, setDettaglioFormazione] = useState({ titolari: [], panchina: [] });
   const [loadingDettaglio, setLoadingDettaglio] = useState(false);
 
+  // Carica i dati dell'utente loggato e della rispettiva lega
   const fetchCalendarioData = async () => {
     try {
       setLoading(true);
@@ -58,12 +59,22 @@ const Calendario = () => {
     }
   }, [user]);
 
-  // Recupera le squadre che hanno inserito una formazione per la giornata selezionata
-  const handleSelezionaGiornataVisualizza = async (giornata) => {
-    const statoNormalizzato = giornata.stato?.toLowerCase();
-    
-    // Se la giornata è in programma, non mostrare alcun dettaglio formazioni
-    if (statoNormalizzato === 'in programma') {
+  // FUNZIONE CHIAVE: Calcola lo stato temporale esatto ed esplicito di un turno
+  const calcolaStatoInTempoReale = (day) => {
+    const adesso = new Date();
+    const inizioFormazioni = new Date(day.apertura_formazioni);
+    const fineFormazioni = new Date(day.scadenza_formazione);
+    const fineVoti = new Date(day.scadenza_voti);
+
+    if (adesso < inizioFormazioni) return 'in programma';
+    if (adesso >= inizioFormazioni && adesso < fineFormazioni) return 'in corso';
+    if (adesso >= fineFormazioni && adesso < fineVoti) return 'fase calcolo';
+    return 'conclusa';
+  };
+
+  // Carica le formazioni inserite per la giornata selezionata (impedito se in programma)
+  const handleSelezionaGiornataVisualizza = async (giornata, statoReale) => {
+    if (statoReale === 'in programma') {
       alert("Turno in programma: le formazioni non sono ancora accessibili.");
       return;
     }
@@ -100,7 +111,7 @@ const Calendario = () => {
     }
   };
 
-  // Carica i calciatori schierati dalla squadra scelta con i loro voti inseriti
+  // Carica i dettagli dei calciatori della formazione scelta
   const handleVediDettaglioFormazione = async (formazione) => {
     if (squadraSelezionata?.id === formazione.id) {
       setSquadraSelezionata(null);
@@ -148,21 +159,20 @@ const Calendario = () => {
     }
   };
 
-  const handleAzioneGiornata = (giornata) => {
+  // Naviga alla pagina d'azione corretta in base allo stato temporale reale
+  const handleAzioneGiornata = (giornata, statoReale) => {
     if (!currentUserData?.squadra_id) {
       alert("Attenzione: devi prima essere assegnato a una squadra per poter interagire con le giornate.");
       return;
     }
 
-    const statoNormalizzato = giornata.stato?.toLowerCase();
-
-    if (statoNormalizzato === 'in corso') {
+    if (statoReale === 'in corso') {
       navigate(`/formazione/inserisci/${giornata.id}`);
-    } else if (statoNormalizzato === 'fase calcolo') {
-      navigate(`/voti/inserisci/${giornata.id}`); // <-- ALLINEATO CON LA NUOVA ROTTA
-    } else if (statoNormalizzato === 'conclusa') {
+    } else if (statoReale === 'fase calcolo') {
+      navigate(`/voti/inserisci/${giornata.id}`);
+    } else if (statoReale === 'conclusa') {
       navigate(`/calendario/risultati/${giornata.id}`);
-    } else if (statoNormalizzato === 'in programma') {
+    } else {
       alert("Questa giornata non è ancora aperta alle modifiche.");
     }
   };
@@ -194,28 +204,27 @@ const Calendario = () => {
           <p className="no-giornate-msg">Nessuna giornata presente in questa lega. L'amministratore attiverà i turni a breve.</p>
         ) : (
           giornate.map((day) => {
-            const statoNormalizzato = day.stato?.toLowerCase();
+            // Calcoliamo lo stato temporale esatto per ogni singola riga di giornata generata
+            const statoReale = calcolaStatoInTempoReale(day);
+            
             let statoTesto = 'IN PROGRAMMA';
             let bottoneTesto = 'Non Attivo';
             let classeStato = 'creata'; 
             let isBttnDisabled = false;
 
-            if (statoNormalizzato === 'in corso') {
+            if (statoReale === 'in corso') {
               statoTesto = 'IN CORSO';
               bottoneTesto = 'Schiera';
               classeStato = 'in_corso';
-            } else if (statoNormalizzato === 'fase calcolo') {
+            } else if (statoReale === 'fase calcolo') {
               statoTesto = 'INSERIMENTO VOTI';
               bottoneTesto = 'Invia Voti';
               classeStato = 'calcolo';
-            } else if (statoNormalizzato === 'conclusa') {
+            } else if (statoReale === 'conclusa') {
               statoTesto = 'CONCLUSA';
               bottoneTesto = 'Vedi Risultati';
               classeStato = 'conclusa';
             } else {
-              statoTesto = 'IN PROGRAMMA';
-              bottoneTesto = 'Bloccato';
-              classeStato = 'creata';
               isBttnDisabled = true;
             }
 
@@ -224,12 +233,12 @@ const Calendario = () => {
             return (
               <div key={day.id} className="matchday-card-container">
                 <div className={`matchday-row ${classeStato} ${rigaAperta ? 'aperta' : ''}`}>
-                  <div className="matchday-clickable-zone" onClick={() => handleSelezionaGiornataVisualizza(day)}>
+                  <div className="matchday-clickable-zone" onClick={() => handleSelezionaGiornataVisualizza(day, statoReale)}>
                     <div className="matchday-details">
                       <span className="matchday-number">G{day.numero_giornata}</span>
                       <div className="matchday-scadenze-block">
+                        <span className="scadenza-item">🏁 Apertura: <b>{formattaData(day.apertura_formazioni)}</b></span>
                         <span className="scadenza-item">⏳ Consegna: <b>{formattaData(day.scadenza_formazione)}</b></span>
-                        <span className="scadenza-item">📝 Calcolo Voti: <b>{formattaData(day.scadenza_voti)}</b></span>
                       </div>
                     </div>
                   </div>
@@ -241,7 +250,7 @@ const Calendario = () => {
                     
                     <button 
                       className={`btn-action-giornata ${classeStato}`}
-                      onClick={() => handleAzioneGiornata(day)}
+                      onClick={() => handleAzioneGiornata(day, statoReale)}
                       disabled={isBttnDisabled}
                     >
                       {bottoneTesto}
@@ -249,8 +258,8 @@ const Calendario = () => {
                   </div>
                 </div>
 
-                {/* Sezione Espandibile Formazioni Ispezionabili */}
-                {rigaAperta && statoNormalizzato !== 'in programma' && (
+                {/* Blocco Espandibile delle formazioni */}
+                {rigaAperta && statoReale !== 'in programma' && (
                   <div className="matchday-dropdown-formazioni">
                     <h4>Formazioni e Punteggi Inseriti</h4>
                     {loadingSquadre ? (

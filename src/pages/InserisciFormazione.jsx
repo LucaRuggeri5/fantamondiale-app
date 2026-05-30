@@ -46,21 +46,21 @@ const InserisciFormazione = () => {
         if (gErr) throw gErr;
         setGiornata(gData);
 
-        // Controllo robusto delle scadenze temporali e degli stati autorizzati
-        const adesso = new Date().getTime();
-        const scadenza = gData.scadenza_formazione ? new Date(gData.scadenza_formazione).getTime() : 0;
+        // NUOVA LOGICA TEMPORALE ALLINEATA ALLA DASHBOARD
+        const adesso = new Date();
+        const inizioFormazioni = new Date(gData.apertura_formazioni);
+        const scadenzaFormazione = new Date(gData.scadenza_formazione);
 
-        // Se lo stato è esplicitamente concluso o calcolato, blocca subito
-        if (gData.stato === 'conclusa' || gData.stato === 'voti inseriti') {
-          alert("Questa giornata è conclusa. Non è più possibile modificare la formazione.");
-          navigate('/calendario');
-          return;
-        }
+        // Controlla se la finestra temporale per schierare è attiva
+        const isFinestraAperta = adesso >= inizioFormazioni && adesso < scadenzaFormazione;
 
-        // Se lo stato non è "in corso" e il tempo è scaduto, blocca l'accesso
-        if (gData.stato !== 'in corso' && scadenza > 0 && adesso > scadenza) {
-          alert("I termini per inserire la formazione per questo turno sono scaduti.");
-          navigate('/calendario');
+        if (!isFinestraAperta) {
+          if (adesso < inizioFormazioni) {
+            alert(`Le modifiche per questo turno apriranno il ${inizioFormazioni.toLocaleDateString('it-IT')} alle ore ${inizioFormazioni.toLocaleTimeString('it-IT', {hour: '2-digit', minute:'2-digit'})}.`);
+          } else {
+            alert("I termini per inserire la formazione per questo turno sono scaduti.");
+          }
+          navigate('/dashboard');
           return;
         }
 
@@ -217,7 +217,6 @@ const InserisciFormazione = () => {
         .delete()
         .eq('formazione_id', formSalvata.id);
 
-      // CORREZIONE QUI: Rimosso "player?.id" inesistente e usato correttamente "giocatore.id"
       const recordCalciatori = titolari.map((giocatore, index) => ({
         formazione_id: formSalvata.id,
         calciatore_id: giocatore.id, 
@@ -245,7 +244,7 @@ const InserisciFormazione = () => {
       if (bulkErr) throw bulkErr;
 
       alert("Formazione salvata e congelata con successo per la giornata!");
-      navigate('/calendario');
+      navigate('/dashboard');
 
     } catch (err) {
       console.error(err);

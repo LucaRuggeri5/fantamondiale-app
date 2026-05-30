@@ -27,6 +27,7 @@ const InserisciVoti = () => {
         setLoading(true);
         if (!user || !giornataId) return;
 
+        // 1. Legge informazioni sulla giornata corrente
         const { data: gioData, error: gioErr } = await supabase
           .from('giornate')
           .select('*')
@@ -36,11 +37,24 @@ const InserisciVoti = () => {
         if (gioErr) throw gioErr;
         setGiornataInfo(gioData);
 
-        if (gioData.stato?.toLowerCase() !== 'fase calcolo') {
-          alert("L'inserimento voti non è attivo per questo turno.");
+        // --- NUOVA LOGICA TEMPORALE ESPLICITA ---
+        const adesso = new Date();
+        const fineFormazioni = new Date(gioData.scadenza_formazione);
+        const fineVoti = new Date(gioData.scadenza_voti);
+
+        // La "Fase Calcolo" è attiva solo tra la fine delle formazioni e la chiusura del turno
+        const isFaseCalcoloAttiva = adesso >= fineFormazioni && adesso < fineVoti;
+
+        if (!isFaseCalcoloAttiva) {
+          if (adesso < fineFormazioni) {
+            alert("Il turno non è ancora chiuso. Potrai inserire i voti solo dopo la scadenza della consegna formazioni.");
+          } else {
+            alert("I termini per l'inserimento dei voti di questo turno sono scaduti.");
+          }
           navigate('/dashboard');
           return;
         }
+        // ---------------------------------------
 
         const { data: utenteData, error: utenteErr } = await supabase
           .from('utenti')
@@ -64,7 +78,7 @@ const InserisciVoti = () => {
 
         if (formErr) throw formErr;
         if (!formData) {
-          alert("Non hai schierato alcuna formazione per questo turno.");
+          alert("Non hai schierato alcuna formazione per questo turno. Impossibile calcolare i voti.");
           navigate('/calendario');
           return;
         }
@@ -92,9 +106,9 @@ const InserisciVoti = () => {
           const infoC = Array.isArray(fc.calciatori_reali) ? fc.calciatori_reali[0] : fc.calciatori_reali;
           return {
             id_relazione: fc.id,
-            calciatore_id: fc.calciatore_id, // Fondamentale per l'upsert
-            posizione: fc.posizione,        // Fondamentale per l'upsert
-            ruolo: fc.ruolo,                // Fondamentale per l'upsert
+            calciatore_id: fc.calciatore_id,
+            posizione: fc.posizione,
+            ruolo: fc.ruolo,
             nome: infoC?.nome || 'Calciatore Sconosciuto',
             voto_base: fc.voto_base !== null && fc.voto_base !== undefined ? fc.voto_base.toString() : '',
             bonus_malus: fc.bonus_malus !== null && fc.bonus_malus !== undefined ? fc.bonus_malus.toString() : '0',
@@ -112,8 +126,9 @@ const InserisciVoti = () => {
     };
 
     caricaDatiVoti();
-  }, [user, giornataId]);
+  }, [user, giornataId, navigate]);
 
+  // Algoritmo di calcolo automatico dei subentri (Max 4 cambi per ruolo)
   useEffect(() => {
     if (calciatoriList.length === 0) return;
 
@@ -198,7 +213,6 @@ const InserisciVoti = () => {
     try {
       setSaving(true);
       
-      // COSTRUZIONE PAYLOAD COMPLETO: id, formazione_id, calciatore_id, ruolo, posizione sono obbligatori
       const updates = calciatoriList.map(c => ({
         id: c.id_relazione,
         formazione_id: formazioneId,
@@ -223,7 +237,7 @@ const InserisciVoti = () => {
 
       if (formUpdateErr) throw formUpdateErr;
 
-      alert("Voti salvati con successo!");
+      alert("Voti salvati con successo! Il tuo punteggio totale è stato aggiornato.");
       navigate('/calendario');
     } catch (err) {
       console.error("Errore salvataggio:", err);
@@ -233,7 +247,7 @@ const InserisciVoti = () => {
     }
   };
 
-  if (loading) return <div className="voti-loading">Caricamento in corso... ⏳</div>;
+  if (loading) return <div className="voti-loading">Analisi turno e rosa in corso... ⏳</div>;
 
   const titolari = calciatoriList.filter(c => c.posizione <= 11);
   const panchina = calciatoriList.filter(c => c.posizione > 11);
@@ -242,7 +256,7 @@ const InserisciVoti = () => {
     <div className="voti-page-container">
       <div className="voti-header">
         <h2>Inserimento Voti Giornata {giornataInfo?.numero_giornata} 📊</h2>
-        <p className="voti-subtitle">Inserisci i voti: il sistema calcolerà subentri e totale automaticamente.</p>
+        <p className="voti-subtitle">Inserisci i voti base e i bonus/malus. Il sistema gestirà i subentri in tempo reale.</p>
       </div>
 
       <div className="voti-main-layout">
@@ -253,7 +267,7 @@ const InserisciVoti = () => {
               <span className="col-player">Calciatore</span>
               <span className="col-sv">S.V.</span>
               <span className="col-voto">Voto</span>
-              <span className="col-bm">B/M</span>
+              <span className="col-bm">Bonus</span>
               <span className="col-tot">Tot</span>
             </div>
             {titolari.map(c => (
@@ -304,11 +318,11 @@ const InserisciVoti = () => {
           <div className="summary-sticky-card">
             <h3>Riepilogo Live</h3>
             <div className="score-main-display">
-              <span className="score-label">TOTALE</span>
+              <span className="score-label">PUNTEGGIO SQUADRA</span>
               <span className="score-number-value">{calcoloRisultato.totaleSquadra.toFixed(1)}</span>
             </div>
             <div className="substitution-counter-row">
-              <span>Cambi:</span>
+              <span>Sostituzioni effettuate:</span>
               <span className={`sub-count-badge ${calcoloRisultato.sostituzioniEffettuate > 0 ? 'active' : ''}`}>
                 {calcoloRisultato.sostituzioniEffettuate} / 4
               </span>
