@@ -15,8 +15,8 @@ import GestioneRose from './pages/Admin/GestioneRose';
 import AssegnaPermessi from './pages/Admin/AssegnaPermessi'; 
 import SpostaPlayer from './pages/Admin/SpostaPlayer'; 
 import GestoreGiornata from './pages/Admin/GestoreGiornata'; 
-import AdminModificaFormazioni from './pages/Admin/AdminModificaFormazioni'; // <-- AGGIUNTO
-import AdminModificaVoti from './pages/Admin/AdminModificaVoti';             // <-- AGGIUNTO
+import AdminModificaFormazioni from './pages/Admin/AdminModificaFormazioni'; 
+import AdminModificaVoti from './pages/Admin/AdminModificaVoti'; 
 import BottomNavbar from './components/BottomNavbar';
 import Sidebar from './components/Sidebar'; 
 
@@ -46,7 +46,7 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
           } else if (targetPage === 'admin-modifica-voti') {
             navigate('/admin/modifica-voti');
           } else {
-            alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fasi!`);
+            alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fases!`);
           }
         }}
       />

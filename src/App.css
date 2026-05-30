@@ -14,16 +14,26 @@
   position: relative;
   min-height: 100vh;
   background-color: #121214;
+  /* Aggiunto padding top per compensare l'altezza dell'header fisso */
+  padding-top: 55px; 
+  box-sizing: border-box;
 }
 
-/* Header dell'applicazione */
+/* Header dell'applicazione fisso in alto */
 .app-header {
-  padding: 12px 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 55px;
+  padding: 0 20px;
   display: flex;
   align-items: center;
   gap: 15px;
   background-color: #1e1e24;
   border-bottom: 1px solid #25252d;
+  z-index: 999; /* Mantiene l'header sopra al contenuto delle pagine */
+  box-sizing: border-box;
 }
 
 /* Bottone Hamburger Menu */
@@ -36,10 +46,10 @@
   padding: 0 5px;
 }
 
-/* Titolo dell'applicazione */
+/* Titolo dell'applicazione - CORRETTA SINTASSI ALLA RIGA 42 */
 .app-title {
   color: #00e676;
-  fontWeight: bold;
+  font-weight: bold; 
   font-size: 18px;
 }
 
