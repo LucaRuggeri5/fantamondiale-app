@@ -37,6 +37,25 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
         {/* CONTENUTO MENU */}
         <div className="sidebar-menu-content">
           
+          {/* NUOVA SEZIONE PRINCIPALE (Integrazione BottomNavbar) */}
+          <div className="menu-section">
+            <p className="section-title">Navigazione</p>
+            <ul>
+              <li onClick={() => handleNav('dashboard')}>
+                <span>🏠</span> Dashboard
+              </li>
+              <li onClick={() => handleNav('squadre')}>
+              Squadre
+              </li>
+              <li onClick={() => handleNav('calendario')}>
+              Calendario
+              </li>
+              <li onClick={() => handleNav('classifica')}>
+              Classifica
+              </li>
+            </ul>
+          </div>
+
           {/* SEZIONE PLAYER: Info e Funzioni di consultazione */}
           <div className="menu-section">
             <p className="section-title">Info</p>

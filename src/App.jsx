@@ -24,7 +24,7 @@ import './App.css';
 
 const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLeague }) => {
   const navigate = useNavigate();
-  const location = useLocation(); // Sente in quale URL si trova l'utente in tempo reale
+  const location = useLocation(); 
 
   // Nasconde la navbar nelle rotte admin, inserimento formazioni e inserimento voti
   const nascondiNavbar = 
@@ -40,20 +40,43 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
         userRole={currentUser?.ruolo || 'player'}
         nomeUtente={currentUser?.nome_utente || 'Allenatore'}
         onNavigate={(targetPage) => {
-          if (targetPage === 'admin-rose') {
-            navigate('/admin/rose');
-          } else if (targetPage === 'admin-permessi') {
-            navigate('/admin/permessi');
-          } else if (targetPage === 'admin-sposta-player') {
-            navigate('/admin/sposta-player');
-          } else if (targetPage === 'admin-giornate') {
-            navigate('/admin/giornate');
-          } else if (targetPage === 'admin-modifica-formazioni') {
-            navigate('/admin/modifica-formazioni');
-          } else if (targetPage === 'admin-modifica-voti') {
-            navigate('/admin/modifica-voti');
-          } else {
-            alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fasi!`);
+          switch (targetPage) {
+            // Rotte BottomNavbar duplicate
+            case 'dashboard':
+              navigate('/');
+              break;
+            case 'squadre':
+              navigate('/squadre');
+              break;
+            case 'calendario':
+              navigate('/calendario');
+              break;
+            case 'classifica':
+              navigate('/classifica');
+              break;
+            
+            // Rotte Amministrazione
+            case 'admin-rose':
+              navigate('/admin/rose');
+              break;
+            case 'admin-permessi':
+              navigate('/admin/permessi');
+              break;
+            case 'admin-sposta-player':
+              navigate('/admin/sposta-player');
+              break;
+            case 'admin-giornate':
+              navigate('/admin/giornate');
+              break;
+            case 'admin-modifica-formazioni':
+              navigate('/admin/modifica-formazioni');
+              break;
+            case 'admin-modifica-voti':
+              navigate('/admin/modifica-voti');
+              break;
+            
+            default:
+              alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fasi!`);
           }
         }}
       />
