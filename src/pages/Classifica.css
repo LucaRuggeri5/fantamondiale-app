@@ -35,7 +35,6 @@
 }
 
 .classifica-table th {
-  text-align: left;
   color: #777;
   font-size: 11px;
   padding: 15px 12px;
@@ -54,6 +53,10 @@
   border-bottom: none;
 }
 
+.text-left {
+  text-align: left;
+}
+
 .text-right {
   text-align: right;
 }
@@ -61,22 +64,16 @@
 .pos-cell {
   font-weight: bold;
   color: #aaa;
-  width: 50px;
+  width: 60px; /* Spazio controllato fisso per la colonna podio/emoji */
   font-size: 14px;
 }
 
 .team-cell-info {
+  /* Struttura verticale pulita per ospitare il nome e l'eventuale label penalità */
   display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.mini-logo-table {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  background-color: #121214;
-  object-fit: cover;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
 }
 
 .table-team-name {
@@ -104,6 +101,6 @@
   font-size: 13px;
 }
 
-/* Evidenzia il podio */
-.row-pos-1 { background-color: rgba(255, 215, 0, 0.03); }
+/* Evidenziazione cromatica morbida per il primo in classifica */
+.row-pos-1 { background-color: rgba(255, 215, 0, 0.02); }
 .row-pos-1 .pos-cell { color: #ffd700; font-size: 18px; }

@@ -53,7 +53,6 @@ const Classifica = () => {
           return {
             id: squadra.id,
             name: squadra.nome,
-            logo: squadra.url_logo,
             penalita: squadra.penalita || 0,
             points: totaleFinale
           };
@@ -92,8 +91,8 @@ const Classifica = () => {
         <table className="classifica-table">
           <thead>
             <tr>
-              <th>Pos</th>
-              <th>Squadra</th>
+              <th className="text-left">Pos</th>
+              <th className="text-left">Squadra</th>
               <th className="text-right">Punti</th>
             </tr>
           </thead>
@@ -105,20 +104,18 @@ const Classifica = () => {
             ) : (
               leaderboard.map((row) => (
                 <tr key={row.id} className={`row-pos-${row.position}`}>
-                  <td className="pos-cell">
+                  {/* Posizione allineata a sinistra */}
+                  <td className="text-left pos-cell">
                     {row.position === 1 ? '🥇' : row.position === 2 ? '🥈' : row.position === 3 ? '🥉' : `#${row.position}`}
                   </td>
                   
-                  <td>
-                    <div className="team-cell-info">
-                      {row.logo && <img src={row.logo} alt="logo" className="mini-logo-table" />}
-                      <div>
-                        <div className="table-team-name">{row.name}</div>
-                        {row.penalita > 0 && <div className="table-penalty-label">Penalità: -{row.penalita}</div>}
-                      </div>
-                    </div>
+                  {/* Nome Squadra e Penalità allineati a sinistra, senza logo */}
+                  <td className="text-left team-cell-info">
+                    <div className="table-team-name">{row.name}</div>
+                    {row.penalita > 0 && <div className="table-penalty-label">Penalità: -{row.penalita}</div>}
                   </td>
                   
+                  {/* Punti allineati a destra */}
                   <td className="text-right points-cell">
                     {row.points.toFixed(1)}
                   </td>
