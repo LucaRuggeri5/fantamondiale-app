@@ -4,8 +4,9 @@
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh; /* Altezza dinamica per evitare tagli su smartphone */
   background-color: rgba(0, 0, 0, 0.6);
-  z-index: 999;
+  z-index: 1000; /* Superiore alla BottomNavbar che è a 999 */
   backdrop-filter: blur(2px);
 }
 
@@ -15,8 +16,9 @@
   left: -280px;
   width: 280px;
   height: 100vh;
+  height: 100dvh; /* Altezza dinamica perfetta che si adatta alle barre del browser mobile */
   background-color: #1e1e24;
-  z-index: 1000;
+  z-index: 1001; /* Il livello più alto in assoluto della pagina */
   display: flex;
   flex-direction: column;
   transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -89,7 +91,7 @@
   display: flex;
   flex-direction: column;
   gap: 25px;
-  overflow-y: auto;
+  overflow-y: auto; /* Permette lo scroll se ci sono tante voci di menu o schermi piccoli */
 }
 
 .menu-section .section-title {

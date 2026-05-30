@@ -10,11 +10,12 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
     } else {
       console.log(`Navigazione verso: ${targetPage}`);
     }
-    onClose();
+    onClose(); // Chiude automaticamente la sidebar dopo il click su una rotta
   };
 
   return (
     <>
+      {/* Sfondo oscurato che intercetta i click e chiude il menu */}
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
 
       <div className={`sidebar-container ${isOpen ? 'open' : ''}`}>
@@ -56,7 +57,7 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
           {userRole === 'admin' && (
             <div className="menu-section admin-section">
               <p className="section-title admin-title">👑 Gestione Admin</p>
-              <ul>
+              <ul window-tether="true">
                 <li onClick={() => handleNav('admin-permessi')}>
                   Assegna Permessi Admin
                 </li>
@@ -69,7 +70,6 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
                 <li onClick={() => handleNav('admin-giornate')}>
                   Configura e Gestisci Giornate
                 </li>
-                {/* NUOVE SEZIONI RICHIESTE */}
                 <li onClick={() => handleNav('admin-modifica-formazioni')}>
                   Modifica Formazioni
                 </li>

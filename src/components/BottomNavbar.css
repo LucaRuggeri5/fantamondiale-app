@@ -9,7 +9,7 @@
   justify-content: space-around;
   align-items: center;
   border-top: 1px solid #25252d;
-  z-index: 999;
+  z-index: 999; /* Inferiore rispetto a overlay e container per evitare click indesiderati */
 }
 
 .nav-item {
