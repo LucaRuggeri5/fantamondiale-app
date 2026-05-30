@@ -14,8 +14,10 @@ const InserisciFormazione = () => {
   const [giornata, setGiornata] = useState(null);
   const [squadraId, setSquadraId] = useState(null);
 
-  // Lista di tutti i calciatori presenti nella rosa del club
+  // Rosa dei calciatori e filtri di ricerca
   const [rosa, setRosa] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeFilter, setActiveFilter] = useState('ALL');
   
   // Scelte tattiche dell'utente
   const [modulo, setModulo] = useState('4-4-2');
@@ -46,7 +48,6 @@ const InserisciFormazione = () => {
         if (gErr) throw gErr;
         setGiornata(gData);
 
-        // NUOVA LOGICA TEMPORALE ALLINEATA ALLA DASHBOARD
         const adesso = new Date();
         const inizioFormazioni = new Date(gData.apertura_formazioni);
         const scadenzaFormazione = new Date(gData.scadenza_formazione);
@@ -73,7 +74,7 @@ const InserisciFormazione = () => {
         if (uErr || !uData?.squadra_id) throw new Error("Squadra non configurata.");
         setSquadraId(uData.squadra_id);
 
-        // 3. RECUPERO ROSA CON JOIN ESPLICITA SU SCHEMA PERSONALIZZATO
+        // 3. Recupero rosa
         const { data: rosaData, error: rErr } = await supabase
           .from('rose_squadre')
           .select(`
@@ -84,7 +85,6 @@ const InserisciFormazione = () => {
 
         if (rErr) throw rErr;
 
-        // Estraiamo i dati gestendo correttamente l'oggetto o l'array ritornato dalla join
         const listaCalciatori = rosaData.map(r => {
           if (!r.calciatori_reali) return null;
           return Array.isArray(r.calciatori_reali) ? r.calciatori_reali[0] : r.calciatori_reali;
@@ -92,7 +92,7 @@ const InserisciFormazione = () => {
 
         setRosa(listaCalciatori);
 
-        // 4. Controlla se l'utente aveva già salvato una formazione precedentemente per questo turno
+        // 4. Recupera formazione salvata precedentemente
         const { data: formEsistente, error: fErr } = await supabase
           .from('formazioni')
           .select('*')
@@ -103,7 +103,6 @@ const InserisciFormazione = () => {
         if (formEsistente) {
           setModulo(formEsistente.modulo);
           
-          // Recupera i singoli calciatori già schierati
           const { data: calcSchierati, error: csErr } = await supabase
             .from('formazioni_calciatori')
             .select('*')
@@ -219,6 +218,14 @@ const InserisciFormazione = () => {
 
       const recordCalciatori = titolari.map((giocatore, index) => ({
         formazione_id: formSalvata.id,
+        calciatore_id: player.id, 
+        ruolo: giocatore.ruolo,
+        posizione: index + 1
+      }));
+
+      // Correzione bug: mapping corretto dell'identificatore del giocatore
+      const recordCalciatoriValidi = titolari.map((giocatore, index) => ({
+        formazione_id: formSalvata.id,
         calciatore_id: giocatore.id, 
         ruolo: giocatore.ruolo,
         posizione: index + 1
@@ -227,7 +234,7 @@ const InserisciFormazione = () => {
       let indexPanchina = 12;
       ['P', 'D', 'C', 'A'].forEach(ruoloKey => {
         panchina[ruoloKey].forEach(giocatore => {
-          recordCalciatori.push({
+          recordCalciatoriValidi.push({
             formazione_id: formSalvata.id,
             calciatore_id: giocatore.id,
             ruolo: giocatore.ruolo,
@@ -239,7 +246,7 @@ const InserisciFormazione = () => {
 
       const { error: bulkErr } = await supabase
         .from('formazioni_calciatori')
-        .insert(recordCalciatori);
+        .insert(recordCalciatoriValidi);
 
       if (bulkErr) throw bulkErr;
 
@@ -254,116 +261,223 @@ const InserisciFormazione = () => {
     }
   };
 
+  // Logica di filtraggio combinata (Ricerca testo + Filtro ruolo)
+  const getFilteredRosa = () => {
+    return rosa.filter(g => {
+      const matchCerca = g.nome.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchRuolo = activeFilter === 'ALL' ? true : g.ruolo === activeFilter;
+      return matchCerca && matchRuolo;
+    });
+  };
+
   if (loading) return <div className="formazione-loading">Lettura della rosa in corso... 🏃‍♂️</div>;
+
+  // Suddivisione dei titolari per il rendering dinamico sul rettangolo del campo da gioco
+  const titolariPerRuolo = (ruolo) => titolari.filter(t => t.ruolo === ruolo);
 
   return (
     <div className="inserisci-formazione-page">
+      
+      {/* HEADER */}
       <div className="formazione-header">
         <div className="formazione-header-title-container">
           <button className="btn-back-formazione" onClick={() => navigate('/dashboard')}>
-            ⬅️ Indietro
+            ⬅️ Dashboard
           </button>
           <h2>Schiera Squadra - Giornata {giornata?.numero_giornata}</h2>
         </div>
-        <p className="subtitle">Componi il tuo 11 titolare ed ordina le riserve per ruolo</p>
+        <p className="subtitle">Componi l'undici titolare sul campo strutturato e configura la panchina</p>
       </div>
 
-      <div className="modulo-selector-card">
-        <label>Scegli il Modulo:</label>
-        <div className="moduli-buttons">
-          {Object.keys(moduliDisponibili).map(m => (
-            <button 
-              key={m} 
-              className={`btn-modulo ${modulo === m ? 'attivo' : ''}`}
-              onClick={() => handleCambioModulo(m)}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="recap-schieramento">
-        <div className="recap-stat">Titolari: <b>{titolari.length} / 11</b></div>
-        <div className="recap-stat">Panchina: <b>{panchina.P.length + panchina.D.length + panchina.C.length + panchina.A.length}</b></div>
-      </div>
-
-      <div className="workspace-formazione">
-        <div className="rosa-picker-section">
-          <h3>La Tua Rosa Reale</h3>
-          <p className="pick-hint">Clicca su un calciatore per metterlo Titolare, premi "Panchina" per metterlo in riserva.</p>
-          
-          <div className="rosa-list-scroll">
-            {['P', 'D', 'C', 'A'].map(ruoloFiltro => {
-              const giocatoriRuolo = rosa.filter(g => g.ruolo === ruoloFiltro);
-              if (giocatoriRuolo.length === 0) return null;
-
-              return (
-                <div key={ruoloFiltro} className="ruolo-group-box">
-                  <h4>{ruoloFiltro === 'P' ? 'Portieri' : ruoloFiltro === 'D' ? 'Difensori' : ruoloFiltro === 'C' ? 'Centrocampisti' : 'Attaccanti'}</h4>
-                  {giocatoriRuolo.map(g => {
-                    const isTitolare = titolari.some(t => t.id === g.id);
-                    const isPanchina = panchina[g.ruolo].some(p => p.id === g.id);
-
-                    return (
-                      <div key={g.id} className={`calciatore-picker-row ${isTitolare ? 'selected-tit' : isPanchina ? 'selected-pan' : ''}`}>
-                        <div className="calc-info" onClick={() => toggleTitolare(g)}>
-                          <span className={`badge-ruolo-mini ${g.ruolo}`}>{g.ruolo}</span>
-                          <span className="calc-name">{g.nome}</span>
-                          <span className="calc-nation">({g.nazionale})</span>
-                        </div>
-                        
-                        {!isTitolare && (
-                          <button 
-                            className={`btn-add-panchina ${isPanchina ? 'active' : ''}`}
-                            onClick={() => assegnaInPanchina(g)}
-                          >
-                            {isPanchina ? 'Rimuovi' : 'Panchina'}
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              );
-            })}
+      {/* STRUMENTI DI CONFIGURAZIONE */}
+      <div className="config-top-bar">
+        <div className="modulo-selector-card">
+          <label>Modulo Tattico:</label>
+          <div className="moduli-buttons">
+            {Object.keys(moduliDisponibili).map(m => (
+              <button 
+                key={m} 
+                className={`btn-modulo ${modulo === m ? 'attivo' : ''}`}
+                onClick={() => handleCambioModulo(m)}
+              >
+                {m}
+              </button>
+            ))}
           </div>
         </div>
 
-        <div className="campo-visual-section">
-          <div className="campo-container">
-            <h3>Titolari Schierati ({modulo})</h3>
-            
-            <div className="titolari-visual-list">
-              {titolari.length === 0 ? (
-                <p className="no-players-campo">Il campo è vuoto. Seleziona i calciatori dalla tua rosa a sinistra per popolare il rettangolo verde.</p>
-              ) : (
-                titolari.map((t, idx) => (
-                  <div key={t.id} className="campo-player-card" onClick={() => toggleTitolare(t)}>
-                    <span className="pos-number">{idx + 1}</span>
-                    <span className={`badge-ruolo-mini ${t.ruolo}`}>{t.ruolo}</span>
-                    <span className="campo-player-name">{t.nome}</span>
-                  </div>
-                ))
-              )}
+        <div className="recap-schieramento">
+          <div className="recap-stat">
+            <span>Titolari</span>
+            <b className={titolari.length === 11 ? 'completo' : ''}>{titolari.length} / 11</b>
+          </div>
+          <div className="recap-stat">
+            <span>Panchina</span>
+            <b>{panchina.P.length + panchina.D.length + panchina.C.length + panchina.A.length} scelti</b>
+          </div>
+        </div>
+      </div>
+
+      {/* CONTESTO OPERATIVO */}
+      <div className="workspace-formazione">
+        
+        {/* SEZIONE COMPONENTI ROSA (SINISTRA) */}
+        <div className="rosa-picker-section">
+          <h3>Scegli Calciatori</h3>
+          
+          {/* Box di ricerca e filtri ad accesso rapido */}
+          <div className="search-filter-box">
+            <input 
+              type="text" 
+              placeholder="🔍 Cerca calciatore per nome..." 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="input-search-calciatore"
+            />
+            <div className="filter-chips-container">
+              {['ALL', 'P', 'D', 'C', 'A'].map(f => (
+                <button
+                  key={f}
+                  onClick={() => setActiveFilter(f)}
+                  className={`chip-filter ${activeFilter === f ? 'active' : ''} ${f}`}
+                >
+                  {f === 'ALL' ? 'Tutti' : f}
+                </button>
+              ))}
             </div>
           </div>
 
-          <div className="panchina-container">
-            <h3>Panchina</h3>
-            <div className="panchina-ruoli-grid">
-              {['P', 'D', 'C', 'A'].map(r => (
-                <div key={r} className="panchina-ruolo-box">
-                  <h5>{r}</h5>
-                  {panchina[r].length === 0 ? (
-                    <span className="empty-pan-text">Nessuno</span>
-                  ) : (
-                    panchina[r].map((p, index) => (
-                      <div key={p.id} className="panchinaro-item" onClick={() => rimuoviDaPanchina(p)}>
-                        <span>{index + 1}. {p.nome}</span>
+          <div className="slots-role-indicator">
+            {Object.entries(moduliDisponibili[modulo]).map(([ruoloKey, maxSlot]) => {
+              const attuali = titolari.filter(t => t.ruolo === ruoloKey).length;
+              return (
+                <span key={ruoloKey} className={`role-badge-indicator ${ruoloKey}`}>
+                  {ruoloKey}: {attuali}/{maxSlot}
+                </span>
+              );
+            })}
+          </div>
+          
+          <div className="rosa-list-scroll">
+            {getFilteredRosa().length === 0 ? (
+              <p className="no-players-found">Nessun calciatore corrisponde ai filtri selezionati.</p>
+            ) : (
+              getFilteredRosa().map(g => {
+                const isTitolare = titolari.some(t => t.id === g.id);
+                const isPanchina = panchina[g.ruolo].some(p => p.id === g.id);
+
+                return (
+                  <div key={g.id} className={`calciatore-picker-row ${isTitolare ? 'selected-tit' : isPanchina ? 'selected-pan' : ''}`}>
+                    <div className="calc-info">
+                      <span className={`badge-ruolo-mini ${g.ruolo}`}>{g.ruolo}</span>
+                      <div className="calc-meta">
+                        <span className="calc-name">{g.nome}</span>
+                        <span className="calc-nation">{g.nazionale}</span>
                       </div>
-                    ))
-                  )}
+                    </div>
+                    
+                    <div className="action-row-buttons">
+                      <button 
+                        className={`btn-action-tit ${isTitolare ? 'remove' : ''}`}
+                        onClick={() => toggleTitolare(g)}
+                        disabled={!isTitolare && isPanchina}
+                      >
+                        {isTitolare ? 'Rimuovi' : '+ Tit'}
+                      </button>
+                      
+                      {!isTitolare && (
+                        <button 
+                          className={`btn-action-pan ${isPanchina ? 'remove' : ''}`}
+                          onClick={() => {
+                            if(isPanchina) rimuoviDaPanchina(g);
+                            else assegnaInPanchina(g);
+                          }}
+                        >
+                          {isPanchina ? 'Rimuovi' : '+ Pan'}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+
+        {/* SEZIONE CAMPO DA GIOCO ED ERBA VISIVA (DESTRA) */}
+        <div className="campo-visual-section">
+          <div className="campo-calcio-greenboard">
+            <div className="campo-linea-centrale"></div>
+            <div className="campo-area-rigore top"></div>
+            <div className="campo-area-rigore bottom"></div>
+            
+            {/* LINEA ATTACCANTI */}
+            <div className="campo-row-reparto">
+              {titolariPerRuolo('A').map(t => (
+                <div key={t.id} className="pitch-player-node A" onClick={() => toggleTitolare(t)}>
+                  <div className="node-avatar">🏃‍♂️</div>
+                  <span className="node-name">{t.nome}</span>
+                </div>
+              ))}
+              {titolariPerRuolo('A').length === 0 && <span className="placeholder-reparto-text">Nessun Attaccante</span>}
+            </div>
+
+            {/* LINEA CENTROCAMPISTI */}
+            <div className="campo-row-reparto">
+              {titolariPerRuolo('C').map(t => (
+                <div key={t.id} className="pitch-player-node C" onClick={() => toggleTitolare(t)}>
+                  <div className="node-avatar">🏃‍♂️</div>
+                  <span className="node-name">{t.nome}</span>
+                </div>
+              ))}
+              {titolariPerRuolo('C').length === 0 && <span className="placeholder-reparto-text">Nessun Centrocampista</span>}
+            </div>
+
+            {/* LINEA DIFENSORI */}
+            <div className="campo-row-reparto">
+              {titolariPerRuolo('D').map(t => (
+                <div key={t.id} className="pitch-player-node D" onClick={() => toggleTitolare(t)}>
+                  <div className="node-avatar">🏃‍♂️</div>
+                  <span className="node-name">{t.nome}</span>
+                </div>
+              ))}
+              {titolariPerRuolo('D').length === 0 && <span className="placeholder-reparto-text">Nessun Difensore</span>}
+            </div>
+
+            {/* LINEA PORTIERE */}
+            <div className="campo-row-reparto portiere-row">
+              {titolariPerRuolo('P').map(t => (
+                <div key={t.id} className="pitch-player-node P" onClick={() => toggleTitolare(t)}>
+                  <div className="node-avatar">🧤</div>
+                  <span className="node-name">{t.nome}</span>
+                </div>
+              ))}
+              {titolariPerRuolo('P').length === 0 && <span className="placeholder-reparto-text">Scegli il Portiere</span>}
+            </div>
+          </div>
+
+          {/* COMPONENTE PANCHINA BOTTOM */}
+          <div className="panchina-container-modern">
+            <div className="panchina-header-title">
+              <h4>Panchina di Riserva</h4>
+              <small>Clicca su un panchinaro per rimuoverlo rapidamente</small>
+            </div>
+            <div className="panchina-ruoli-grid-modern">
+              {['P', 'D', 'C', 'A'].map(r => (
+                <div key={r} className={`panchina-column-box ${r}`}>
+                  <div className="column-head-badge">{r}</div>
+                  <div className="column-list-items">
+                    {panchina[r].length === 0 ? (
+                      <span className="pan-slot-empty">-</span>
+                    ) : (
+                      panchina[r].map((p, index) => (
+                        <div key={p.id} className="panchinaro-card-item" onClick={() => rimuoviDaPanchina(p)}>
+                          <span className="idx-pan">{index + 1}</span>
+                          <span className="name-pan">{p.nome}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -371,13 +485,14 @@ const InserisciFormazione = () => {
         </div>
       </div>
 
+      {/* AZIONI DI SALVATAGGIO */}
       <div className="formazione-footer-actions">
         <button 
           className="btn-save-formazione-def"
           onClick={handleSalvaFormazione}
           disabled={saving || titolari.length !== 11}
         >
-          {saving ? 'Salvataggio in corso...' : '💾 Salva e Conferma Formazione'}
+          {saving ? 'Salvataggio in corso... ⏳' : '💾 Blocca e Salva Formazione Ufficiale'}
         </button>
       </div>
     </div>
