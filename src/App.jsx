@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { SignedIn, SignedOut, SignIn, useUser } from '@clerk/clerk-react';
 import { supabase } from './supabaseClient'; 
 
@@ -24,6 +24,13 @@ import './App.css';
 
 const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLeague }) => {
   const navigate = useNavigate();
+  const location = useLocation(); // Sente in quale URL si trova l'utente in tempo reale
+
+  // Nasconde la navbar nelle rotte admin, inserimento formazioni e inserimento voti
+  const nascondiNavbar = 
+    location.pathname.startsWith('/admin') || 
+    location.pathname.startsWith('/formazione') || 
+    location.pathname.startsWith('/voti');
 
   return (
     <div className="app-container">
@@ -46,7 +53,7 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
           } else if (targetPage === 'admin-modifica-voti') {
             navigate('/admin/modifica-voti');
           } else {
-            alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fases!`);
+            alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fasi!`);
           }
         }}
       />
@@ -100,7 +107,8 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
         </Routes>
       </main>
 
-      <BottomNavbar />
+      {/* Renderizza la BottomNavbar solo se non siamo nelle pagine inserite nei filtri sopra */}
+      {!nascondiNavbar && <BottomNavbar />}
     </div>
   );
 };

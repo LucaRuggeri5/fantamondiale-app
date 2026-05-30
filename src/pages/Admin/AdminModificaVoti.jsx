@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importato per gestire il ritorno
 import { supabase } from '../../supabaseClient';
 import '../InserisciVoti.css'; // Riutilizziamo lo stile CSS esistente per coerenza visiva
 
 const AdminModificaVoti = () => {
+  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
   const [loadingSetup, setLoadingSetup] = useState(true);
   const [loadingDati, setLoadingDati] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -202,7 +204,7 @@ const AdminModificaVoti = () => {
       
       const updates = calciatoriList.map(c => ({
         id: c.id_relazione,
-        formazione_id: formazioneId,
+        formazione_id: formationeId,
         calciatore_id: c.calciatore_id,
         ruolo: c.ruolo,
         posizione: c.posizione,
@@ -241,8 +243,13 @@ const AdminModificaVoti = () => {
   return (
     <div className="voti-page-container">
       <div className="voti-header" style={{ borderBottom: '3px solid #20bf6b', paddingBottom: '15px' }}>
-        <h2>📊 Pannello Admin: Rettifica Voti & Calcolo Classifiche</h2>
-        <p style={{ color: '#20bf6b', fontWeight: 'bold' }}>✓ Permette di editare a consuntivo i voti e aggiornare istantaneamente i tabellini totali.</p>
+        <div className="admin-voti-header-container">
+          <button className="btn-back-voti-admin" onClick={() => navigate(-1)}>
+            ⬅️ Indietro
+          </button>
+          <h2>📊 Pannello Admin: Rettifica Voti & Calcolo Classifiche</h2>
+        </div>
+        <p style={{ color: '#20bf6b', fontWeight: 'bold', marginTop: '10px' }}>✓ Permette di editare a consuntivo i voti e aggiornare istantaneamente i tabellini totali.</p>
       </div>
 
       {/* FILTRI DI SELEZIONE SQUADRA / GIORNATA */}

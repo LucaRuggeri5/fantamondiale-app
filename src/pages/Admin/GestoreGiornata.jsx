@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importato per gestire il ritorno
 import { useUser } from '@clerk/clerk-react'; // Importiamo il controllo utente di Clerk
 import { supabase } from '../../supabaseClient'; // Connessione client Supabase
 import './GestoreGiornata.css';
 
 const GestoreGiornata = () => {
   const { user } = useUser(); // Otteniamo l'utente Clerk corrente
+  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
   const [giornate, setGiornate] = useState([]); // Elenco di tutte le giornate
   const [loading, setLoading] = useState(true); // Stato di caricamento iniziale
   const [editingId, setEditingId] = useState(null); // ID della giornata che stiamo modificando (se applicabile)
@@ -12,7 +14,7 @@ const GestoreGiornata = () => {
   
   // Campi del form per l'inserimento o la modifica di una giornata
   const [numeroGiornata, setNumeroGiornata] = useState('');
-  const [aperturaFormazioni, setAperturaFormazioni] = useState(''); // <-- NUOVO STATO: per gestire l'inizio inserimento
+  const [aperturaFormazioni, setAperturaFormazioni] = useState(''); // Gestisce l'inizio inserimento
   const [scadenzaFormazione, setScadenzaFormazione] = useState('');
   const [scadenzaVoti, setScadenzaVoti] = useState('');
 
@@ -92,7 +94,7 @@ const GestoreGiornata = () => {
   const handleEditClick = (g) => {
     setEditingId(g.id);
     setNumeroGiornata(g.numero_giornata);
-    setAperturaFormazioni(formatDataPerInput(g.apertura_formazioni)); // <-- Impostiamo la nuova data nel form
+    setAperturaFormazioni(formatDataPerInput(g.apertura_formazioni)); // Impostiamo la nuova data nel form
     setScadenzaFormazione(formatDataPerInput(g.scadenza_formazione));
     setScadenzaVoti(formatDataPerInput(g.scadenza_voti));
   };
@@ -101,7 +103,7 @@ const GestoreGiornata = () => {
   const resetForm = () => {
     setEditingId(null);
     setNumeroGiornata('');
-    setAperturaFormazioni(''); // <-- Resettiamo il nuovo campo
+    setAperturaFormazioni(''); // Resettiamo il campo
     setScadenzaFormazione('');
     setScadenzaVoti('');
   };
@@ -123,7 +125,7 @@ const GestoreGiornata = () => {
     // Costruiamo l'oggetto payload convertendo le date locali in stringhe ISO UTC globali
     const payload = {
       numero_giornata: parseInt(numeroGiornata, 10),
-      apertura_formazioni: new Date(aperturaFormazioni).toISOString(), // <-- Inviamo la nuova colonna
+      apertura_formazioni: new Date(aperturaFormazioni).toISOString(), // Inviamo la nuova colonna
       scadenza_formazione: new Date(scadenzaFormazione).toISOString(),
       scadenza_voti: new Date(scadenzaVoti).toISOString(),
       lega_id: adminLegaId 
@@ -161,7 +163,12 @@ const GestoreGiornata = () => {
   return (
     <div className="gestore-giornate-page">
       <div className="admin-giornate-header">
-        <h2>👑 Configurazione Turni & Scadenze</h2>
+        <div className="admin-giornate-header-title-container">
+          <button className="btn-back-giornate" onClick={() => navigate(-1)}>
+            ⬅️ Indietro
+          </button>
+          <h2>👑 Configurazione Turni & Scadenze</h2>
+        </div>
         <p>Pannello di controllo del calendario per impostare blocchi formazioni e stati della giornata</p>
       </div>
 
@@ -180,7 +187,6 @@ const GestoreGiornata = () => {
             />
           </div>
 
-          {/* NUOVO CAMPO DI INPUT NEL FORM INTERFACCIA */}
           <div className="form-input-group">
             <label>Inizio / Apertura Inserimento Formazioni:</label>
             <input 
@@ -243,7 +249,7 @@ const GestoreGiornata = () => {
                       <td>{new Date(g.apertura_formazioni).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
                       <td>{new Date(g.scadenza_formazione).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
                       <td>
-                        <span className={`badge-stato-turno ${statoReale}`}>
+                        <span className={`badge-stato-turno ${statoReale.replace(' ', '-')}`}>
                           {statoReale}
                         </span>
                       </td>

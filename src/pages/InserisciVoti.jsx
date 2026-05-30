@@ -135,7 +135,7 @@ const InserisciVoti = () => {
     const titolari = calciatoriList.filter(c => c.posizione <= 11);
     const panchina = calciatoriList.filter(c => c.posizione > 11);
 
-    let sostituzioniEffettuate = 0;
+    let SostituzioniEffettuate = 0;
     const conteggiati = [];
     let totaleSquadra = 0;
 
@@ -175,14 +175,14 @@ const InserisciVoti = () => {
         }
         if (!subentrato) {
           conteggiati.push({
-            nome: t.nome, ruolo: t.ruolo, tipo: 'Non Sostituito',
+            nome: t.nome, ruolo: t.ruolo, tipo: 'Non Sostuito',
             voto_fanta: 0, dettaglio: 'Senza Voto / Panchina Esaurita'
           });
         }
       }
     });
 
-    setCalcoloRisultato({ totaleSquadra, sostituzioniEffettuate, giocatoriConteggiati: conteggiati });
+    setCalcoloRisultato({ totaleSquadra, SostituzioniEffettuate, giocatoriConteggiati: conteggiati });
   }, [calciatoriList]);
 
   const handleInputChange = (idRelazione, campo, valore) => {
@@ -255,7 +255,12 @@ const InserisciVoti = () => {
   return (
     <div className="voti-page-container">
       <div className="voti-header">
-        <h2>Inserimento Voti Giornata {giornataInfo?.numero_giornata} 📊</h2>
+        <div className="voti-header-action-container">
+          <button className="btn-back-voti" onClick={() => navigate('/calendario')}>
+            ⬅️ Indietro
+          </button>
+          <h2>Inserimento Voti Giornata {giornataInfo?.numero_giornata} 📊</h2>
+        </div>
         <p className="voti-subtitle">Inserisci i voti base e i bonus/malus. Il sistema gestirà i subentri in tempo reale.</p>
       </div>
 
@@ -321,12 +326,28 @@ const InserisciVoti = () => {
               <span className="score-label">PUNTEGGIO SQUADRA</span>
               <span className="score-number-value">{calcoloRisultato.totaleSquadra.toFixed(1)}</span>
             </div>
+            
             <div className="substitution-counter-row">
               <span>Sostituzioni effettuate:</span>
               <span className={`sub-count-badge ${calcoloRisultato.sostituzioniEffettuate > 0 ? 'active' : ''}`}>
                 {calcoloRisultato.sostituzioniEffettuate} / 4
               </span>
             </div>
+
+            <h4 className="components-title">Formazione Conteggiata:</h4>
+            <div className="components-list">
+              {calcoloRisultato.giocatoriConteggiati.map((gc, i) => (
+                <div key={i} className={`component-item-row ${gc.voto_fanta === 0 ? 'zero-score' : ''}`}>
+                  <div className="comp-meta">
+                    <span className="comp-name"><b>[{gc.ruolo}]</b> {gc.nome}</span>
+                    <span className="comp-type">{gc.tipo}</span>
+                    <span className="comp-math">{gc.dettaglio}</span>
+                  </div>
+                  <span className="comp-points">{gc.voto_fanta.toFixed(1)}</span>
+                </div>
+              ))}
+            </div>
+
             <button className="btn-salva-voti-complessivo" onClick={handleSalvaTuttiVoti} disabled={saving}>
               {saving ? 'Salvataggio...' : '💾 Salva Voti'}
             </button>

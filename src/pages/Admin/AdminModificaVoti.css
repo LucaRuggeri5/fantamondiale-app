@@ -2,6 +2,44 @@
    ESTENSIONI PER PANNELLO AMMINISTRAZIONE RETTIFICA VOTI (ADMIN)
    ========================================================================== */
 
+/* Layout contenitore per tasto Indietro e Titolo Header */
+.admin-voti-header-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Pulsante Indietro customizzato per Voti Admin */
+.btn-back-voti-admin {
+  background-color: #2f3542;
+  color: #ffffff;
+  border: 1px solid #57606f;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-back-voti-admin:hover {
+  background-color: #57606f;
+  border-color: #747d8c;
+  transform: translateX(-2px);
+}
+
+/* Allineamento e font del titolo principale dell'Header */
+.voti-page-container .voti-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Spaziatura Layout Principale Voti */
 .voti-main-layout {
   display: flex;

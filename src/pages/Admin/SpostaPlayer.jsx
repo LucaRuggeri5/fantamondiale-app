@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importato per gestire il ritorno
 import { supabase } from '../../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import './SpostaPlayer.css';
 
 const SpostaPlayer = () => {
   const { user } = useUser();
+  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
   const [loading, setLoading] = useState(true);
   const [utentiLega, setUtentiLega] = useState([]);
   const [squadreLega, setSquadreLega] = useState([]);
@@ -76,7 +78,12 @@ const SpostaPlayer = () => {
   return (
     <div className="sposta-page-container">
       <div className="sposta-header">
-        <h2>Sposta Player di Squadra ⚽</h2>
+        <div className="sposta-header-title-container">
+          <button className="btn-back-sposta" onClick={() => navigate(-1)}>
+            ⬅️ Indietro
+          </button>
+          <h2>Sposta Player di Squadra ⚽</h2>
+        </div>
         <p className="sposta-subtitle">Assegna i fantallenatori della lega al rispettivo club o rimuovili per lasciarli svincolati.</p>
       </div>
 

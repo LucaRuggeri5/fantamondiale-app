@@ -10,8 +10,38 @@
   font-size: 14px;
 }
 
+/* Allineamento Tasto Indietro e Titolo Principale */
+.permessi-header-title-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+/* Bottone Torna Indietro customizzato */
+.btn-back-permessi {
+  background-color: #1e1e24;
+  color: #ffffff;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-back-permessi:hover {
+  background-color: #2e2e38;
+  border-color: #ff9100;
+  transform: translateX(-2px);
+}
+
 .permessi-header h2 {
-  margin: 0 0 4px 0;
+  margin: 0;
   font-size: 20px;
   color: #ff9100;
 }

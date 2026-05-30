@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importato per gestire il ritorno
 import { supabase } from '../../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import './GestioneRose.css';
 
 const GestioneRose = () => {
   const { user } = useUser();
+  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
   const [loading, setLoading] = useState(true);
   const [adminUser, setAdminUser] = useState(null);
   const [squadreLega, setSquadreLega] = useState([]);
@@ -134,7 +136,12 @@ const GestioneRose = () => {
   return (
     <div className="admin-rose-container">
       <div className="admin-rose-header">
-        <h2>Pannello Mercato & Rose 👑</h2>
+        <div className="admin-rose-header-title-container">
+          <button className="btn-back-rose" onClick={() => navigate(-1)}>
+            ⬅️ Indietro
+          </button>
+          <h2>Pannello Mercato & Rose 👑</h2>
+        </div>
         <p>Seleziona una squadra della tua lega per gestirne la rosa di calciatori reali.</p>
       </div>
 
@@ -155,8 +162,6 @@ const GestioneRose = () => {
 
       {selectedSquadraId && (
         <div className="workspace-grid">
-
-
 
           {/* Colonna Sinistra: Listone Calciatori Liberi per inserimento */}
           <div className="workspace-column market-pool-box">

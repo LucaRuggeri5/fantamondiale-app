@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importato per gestire il ritorno
 import { supabase } from '../../supabaseClient';
 import '../InserisciFormazione.css'; // Riutilizziamo lo stile CSS esistente per coerenza visiva
 
 const AdminModificaFormazioni = () => {
+  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
   const [loadingSetup, setLoadingSetup] = useState(true);
   const [loadingDati, setLoadingDati] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -244,8 +246,13 @@ const AdminModificaFormazioni = () => {
   return (
     <div className="inserisci-formazione-page">
       <div className="formazione-header" style={{ borderBottom: '3px solid #ff4757', paddingBottom: '15px' }}>
-        <h2>👑 Pannello Admin: Modifica Forzosa Formazioni</h2>
-        <p style={{ color: '#ff4757', fontWeight: 'bold' }}>⚠️ MODALITÀ APERTA - Qualsiasi vincolo temporale o di blocco turno è disattivato.</p>
+        <div className="admin-header-title-container">
+          <button className="btn-back-admin" onClick={() => navigate(-1)}>
+            ⬅️ Indietro
+          </button>
+          <h2>👑 Pannello Admin: Modifica Forzosa Formazioni</h2>
+        </div>
+        <p style={{ color: '#ff4757', fontWeight: 'bold', marginTop: '10px' }}>⚠️ MODALITÀ APERTA - Qualsiasi vincolo temporale o di blocco turno è disattivato.</p>
       </div>
 
       {/* FILTRI DI SELEZIONE SQUADRA / GIORNATA */}
@@ -297,7 +304,7 @@ const AdminModificaFormazioni = () => {
               <h3>Rosa del Club Selezionato</h3>
               <div className="rosa-list-scroll">
                 {['P', 'D', 'C', 'A'].map(ruoloFiltro => {
-                  const giocatoriRuolo = rosa.filter(g => g.ruolo ===`ruoloFiltro` || g.ruolo === ruoloFiltro);
+                  const giocatoriRuolo = rosa.filter(g => g.ruolo === `ruoloFiltro` || g.ruolo === ruoloFiltro);
                   if (giocatoriRuolo.length === 0) return null;
 
                   return (

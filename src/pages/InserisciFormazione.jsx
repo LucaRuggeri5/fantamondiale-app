@@ -259,7 +259,12 @@ const InserisciFormazione = () => {
   return (
     <div className="inserisci-formazione-page">
       <div className="formazione-header">
-        <h2>Schiera Squadra - Giornata {giornata?.numero_giornata}</h2>
+        <div className="formazione-header-title-container">
+          <button className="btn-back-formazione" onClick={() => navigate('/dashboard')}>
+            ⬅️ Indietro
+          </button>
+          <h2>Schiera Squadra - Giornata {giornata?.numero_giornata}</h2>
+        </div>
         <p className="subtitle">Componi il tuo 11 titolare ed ordina le riserve per ruolo</p>
       </div>
 

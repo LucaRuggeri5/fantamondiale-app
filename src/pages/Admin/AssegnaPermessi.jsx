@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importato per gestire la navigazione di ritorno
 import { supabase } from '../../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import './AssegnaPermessi.css';
 
 const AssegnaPermessi = () => {
   const { user } = useUser();
+  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
   const [loading, setLoading] = useState(true);
   const [utentiLega, setUtentiLega] = useState([]);
   const [adminContext, setAdminContext] = useState(null);
@@ -73,7 +75,12 @@ const AssegnaPermessi = () => {
   return (
     <div className="permessi-page-container">
       <div className="permessi-header">
-        <h2>Assegna Permessi Admin 👑</h2>
+        <div className="permessi-header-title-container">
+          <button className="btn-back-permessi" onClick={() => navigate(-1)}>
+            ⬅️ Indietro
+          </button>
+          <h2>Assegna Permessi Admin 👑</h2>
+        </div>
         <p className="permessi-subtitle">Promuovi i partecipanti ad Amministratori della lega o revoca i loro accessi di controllo.</p>
       </div>
 

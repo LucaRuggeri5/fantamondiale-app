@@ -2,11 +2,42 @@
    ESTENSIONI PER PANNELLO AMMINISTRAZIONE MODIFICA FORMAZIONI (ADMIN)
    ========================================================================== */
 
+/* Struttura contenitore per pulsante indietro e titolo */
+.admin-header-title-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Pulsante Indietro customizzato */
+.btn-back-admin {
+  background-color: #2f3542;
+  color: #ffffff;
+  border: 1px solid #57606f;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-back-admin:hover {
+  background-color: #57606f;
+  border-color: #747d8c;
+  transform: translateX(-2px);
+}
+
 /* Header specifico Admin */
 .inserisci-formazione-page .formazione-header h2 {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin: 0;
+  font-size: 1.4rem;
 }
 
 /* Modulo Selector Card customizzato per Admin */

@@ -10,8 +10,38 @@
   color: #aaa;
 }
 
+/* Allineamento Tasto Indietro e Titolo Principale */
+.admin-giornate-header-title-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+/* Bottone Torna Indietro customizzato */
+.btn-back-giornate {
+  background-color: #1e1e24;
+  color: #ffffff;
+  border: 1px solid #333;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-back-giornate:hover {
+  background-color: #2e2e38;
+  border-color: #00e676;
+  transform: translateX(-2px);
+}
+
 .admin-giornate-header h2 {
-  margin: 0 0 5px 0;
+  margin: 0;
   color: #00e676;
   font-size: 22px;
 }
@@ -160,9 +190,10 @@
   display: inline-block;
 }
 
+/* Correzione selettori classi degli stati temporali */
 .badge-stato-turno.in-programma { background-color: #333; color: #aaa; }
 .badge-stato-turno.in-corso { background-color: #0288d1; color: #fff; }
-.badge-stato-turno.inserimento-voti { background-color: #f57c00; color: #fff; }
+.badge-stato-turno.fase-calcolo { background-color: #f57c00; color: #fff; }
 .badge-stato-turno.conclusa { background-color: #388e3c; color: #fff; }
 
 .btn-table-edit {
