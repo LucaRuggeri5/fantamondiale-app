@@ -135,7 +135,8 @@ const InserisciVoti = () => {
     const titolari = calciatoriList.filter(c => c.posizione <= 11);
     const panchina = calciatoriList.filter(c => c.posizione > 11);
 
-    let SostituzioniEffettuate = 0;
+    // RISOLTO: Uniformata la variabile in minuscolo per evitare il ReferenceError
+    let contatoreSostituzioni = 0;
     const conteggiati = [];
     let totaleSquadra = 0;
 
@@ -155,13 +156,15 @@ const InserisciVoti = () => {
         totaleSquadra += fantaVoto;
       } else {
         let subentrato = false;
-        if (sostituzioniEffettuate < 4) {
+        
+        // Controllo se abbiamo ancora slot sostituzioni disponibili (Max 4 totali)
+        if (contatoreSostituzioni < 4) {
           const sostituto = panchinaStato.find(p => 
             p.ruolo === t.ruolo && !p.utilizzato && !p.senzaVoto && !isNaN(parseFloat(p.voto_base))
           );
           if (sostituto) {
             sostituto.utilizzato = true;
-            sostituzioniEffettuate++;
+            contatoreSostituzioni++;
             subentrato = true;
             const sBase = parseFloat(sostituto.voto_base);
             const sBm = parseFloat(sostituto.bonus_malus) || 0;
@@ -175,23 +178,31 @@ const InserisciVoti = () => {
         }
         if (!subentrato) {
           conteggiati.push({
-            nome: t.nome, ruolo: t.ruolo, tipo: 'Non Sostuito',
+            nome: t.nome, ruolo: t.ruolo, tipo: 'Non Sostituito',
             voto_fanta: 0, dettaglio: 'Senza Voto / Panchina Esaurita'
           });
         }
       }
     });
 
-    setCalcoloRisultato({ totaleSquadra, SostituzioniEffettuate, giocatoriConteggiati: conteggiati });
+    setCalcoloRisultato({ 
+      totaleSquadra, 
+      sostituzioniEffettuate: contatoreSostituzioni, 
+      giocatoriConteggiati: conteggiati 
+    });
   }, [calciatoriList]);
 
   const handleInputChange = (idRelazione, campo, valore) => {
     setCalciatoriList(prev => prev.map(c => {
       if (c.id_relazione !== idRelazione) return c;
       const aggiornato = { ...c, [campo]: valore };
+      
       if (campo === 'voto_base') aggiornato.senzaVoto = valore.trim() === '';
+      
       const vBase = parseFloat(aggiornato.voto_base);
       const vBm = parseFloat(aggiornato.bonus_malus) || 0;
+      
+      // Manteniamo aggiornato il voto fanta istantaneo garantendo operazioni matematiche pulite
       aggiornato.voto_fanta = !isNaN(vBase) ? vBase + vBm : 0;
       return aggiornato;
     }));

@@ -178,7 +178,7 @@
   color: white;
   border-radius: 12px;
   padding: 22px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 18 rgba(0,0,0,0.12);
 }
 
 .summary-sticky-card h3 {
@@ -278,6 +278,14 @@
 
 .btn-salva-voti-complessivo:hover { background: #27ae60; }
 .btn-salva-voti-complessivo:disabled { background: #95a5a6; cursor: not-allowed; }
+
+.voti-loading {
+  text-align: center;
+  padding: 50px;
+  font-size: 18px;
+  color: #2c3e50;
+  font-weight: bold;
+}
 
 /* Desktop Grid layout subentri */
 @media (min-width: 850px) {
