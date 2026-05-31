@@ -1,142 +1,106 @@
 /* ==========================================================================
-   ESTENSIONI PER PANNELLO AMMINISTRAZIONE MODIFICA FORMAZIONI (ADMIN)
+   ESTENSIONI STRUTTURALI COMPATTE - INTERFACCIA ADMIN MODIFICA
    ========================================================================== */
 
-/* Struttura contenitore per pulsante indietro e titolo */
+.admin-border-header {
+  border-bottom: 3px solid #ff4757;
+  padding-bottom: 15px;
+  flex-direction: column;
+  align-items: flex-start !important;
+  gap: 5px !important;
+}
+
 .admin-header-title-container {
   display: flex;
   align-items: center;
   gap: 15px;
-  flex-wrap: wrap;
+  width: 100%;
 }
 
-/* Pulsante Indietro customizzato */
 .btn-back-admin {
   background-color: #2f3542;
   color: #ffffff;
   border: 1px solid #57606f;
-  padding: 8px 16px;
+  padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 12px;
   transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
 }
 
 .btn-back-admin:hover {
   background-color: #57606f;
-  border-color: #747d8c;
   transform: translateX(-2px);
 }
 
-/* Header specifico Admin */
-.inserisci-formazione-page .formazione-header h2 {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  font-size: 1.4rem;
+.admin-warning-text {
+  color: #ff4757; 
+  font-weight: bold; 
+  margin: 5px 0 0 0;
+  font-size: 12px;
 }
 
-/* Modulo Selector Card customizzato per Admin */
-.modulo-selector-card {
-  background: #1e222b;
-  padding: 20px;
+/* Barra superiore Filtri Multipli */
+.admin-filter-bar {
+  display: flex;
+  gap: 12px;
+  background-color: #1e1e24;
+  padding: 12px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #333;
+}
+
+.admin-filter-bar .filter-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-filter-bar label {
+  color: #ccc;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.admin-filter-bar select {
+  background-color: #121214;
+  border: 1px solid #444;
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.admin-filter-bar select:focus {
+  outline: none;
+  border-color: #ff4757;
+}
+
+/* Modifiche Layout Campo ad uso Admin */
+.admin-page-wrapper .modulo-selector-card {
   border-left: 4px solid #ff4757;
 }
 
-.modulo-selector-card label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 12px;
-  color: #f1f2f6;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
+.admin-btn-override {
+  background-color: #ff4757 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 10px rgba(255, 71, 87, 0.2);
+  transition: background 0.2s, transform 0.1s;
 }
 
-/* Forzatura stili sui Filtri Select Admin inline */
-.inserisci-formazione-page select {
-  background-color: #1e222b;
-  border: 1px solid #4f5664;
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 500;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  cursor: pointer;
+.admin-btn-override:hover:not(:disabled) {
+  background-color: #ff6b81 !important;
+  transform: translateY(-1px);
 }
 
-.inserisci-formazione-page select:focus {
-  outline: none;
-  border-color: #ff4757;
-  box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.2);
-}
-
-/* Stati di selezione specifici nella lista picker */
-.calciatore-picker-row.selected-tit {
-  background-color: rgba(255, 71, 87, 0.15) !important;
-  border-left: 4px solid #ff4757 !important;
-}
-
-.calciatore-picker-row.selected-pan {
-  background-color: rgba(255, 165, 2, 0.15) !important;
-  border-left: 4px solid #ffa502 !important;
-}
-
-/* Pulsante Panchina Admin */
-.btn-add-panchina {
-  background: #2f3542;
-  color: #f1f2f6;
-  border: 1px solid #57606f;
-  padding: 6px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
-}
-
-.btn-add-panchina:hover {
-  background: #ffa502;
-  color: #1e222b;
-  border-color: #ffa502;
-}
-
-.btn-add-panchina.active {
-  background: #ff4754;
-  color: white;
-  border-color: #ff4754;
-}
-
-/* Bottone di salvataggio definitivo */
-.btn-save-formazione-def {
-  width: 100%;
-  padding: 16px;
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-  transition: transform 0.1s ease, background 0.2s ease;
-}
-
-.btn-save-formazione-def:hover:not(:disabled) {
-  background: #ff6b81 !important;
-  transform: translateY(-2px);
-}
-
-.btn-save-formazione-def:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn-save-formazione-def:disabled {
-  background: #747d8c !important;
-  opacity: 0.6;
+.admin-btn-override:disabled {
+  background-color: #57606f !important;
   cursor: not-allowed;
+  opacity: 0.5;
 }
