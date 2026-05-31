@@ -1,32 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importato per gestire il ritorno
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
-import '../InserisciVoti.css'; // Riutilizziamo lo stile CSS esistente per coerenza visiva
+import './AdminModificaVoti.css'; // Nuovo file CSS dedicato e isolato
 
 const AdminModificaVoti = () => {
-  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
+  const navigate = useNavigate();
+  
+  // Stati di caricamento dell'interfaccia
   const [loadingSetup, setLoadingSetup] = useState(true);
   const [loadingDati, setLoadingDati] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Liste per i Filtri Globali Admin
+  // Stati per i filtri di selezione (Giornate e Squadre)
   const [giornate, setGiornate] = useState([]);
   const [squadre, setSquadre] = useState([]);
-
-  // Selezioni Correnti
   const [giornataId, setGiornataId] = useState('');
   const [squadraId, setSquadraId] = useState('');
 
-  // Strutture Voti e Calcolo Live
+  // Stati core per i dati dei calciatori e i risultati calcolati live
   const [formazioneId, setFormazioneId] = useState(null);
   const [calciatoriList, setCalciatoriList] = useState([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false); // Gestione drawer riepilogo su mobile
   const [calcoloRisultato, setCalcoloRisultato] = useState({
     totaleSquadra: 0,
     sostituzioniEffettuate: 0,
     giocatoriConteggiati: []
   });
 
-  // Caricamento Iniziale Filtri
+  // EFFETTO 1: Caricamento iniziale dei filtri Admin
   useEffect(() => {
     const fetchSetupVotiAdmin = async () => {
       try {
@@ -40,7 +41,7 @@ const AdminModificaVoti = () => {
         if (gData?.length > 0) setGiornataId(gData[0].id);
         if (sData?.length > 0) setSquadraId(sData[0].id);
       } catch (err) {
-        console.error(err);
+        console.error("Errore setup filtri admin:", err);
       } finally {
         setLoadingSetup(false);
       }
@@ -48,7 +49,7 @@ const AdminModificaVoti = () => {
     fetchSetupVotiAdmin();
   }, []);
 
-  // Recupero Dati Formazione ed Elementi Schierati per la combinazione Squadra/Giornata
+  // EFFETTO 2: Recupero dei calciatori in base alla combinazione selezionata
   useEffect(() => {
     if (!giornataId || !squadraId) return;
 
@@ -66,22 +67,14 @@ const AdminModificaVoti = () => {
           .maybeSingle();
 
         if (formErr) throw formErr;
-        if (!formData) {
-          return; // Nessuna formazione inserita da questa squadra per questo turno
-        }
+        if (!formData) return; // Nessuna formazione schierata per questa squadra
 
         setFormazioneId(formData.id);
 
         const { data: fcData, error: fcErr } = await supabase
           .from('formazioni_calciatori')
           .select(`
-            id,
-            posizione,
-            ruolo,
-            calciatore_id,
-            voto_base,
-            bonus_malus,
-            voto_fanta,
+            id, posizione, ruolo, calciatore_id, voto_base, bonus_malus, voto_fanta, 
             calciatori_reali!calciatore_id (id, nome)
           `)
           .eq('formazione_id', formData.id)
@@ -89,7 +82,7 @@ const AdminModificaVoti = () => {
 
         if (fcErr) throw fcErr;
 
-        const normalizzati = fcData.map(fc => {
+        setCalciatoriList(fcData.map(fc => {
           const infoC = Array.isArray(fc.calciatori_reali) ? fc.calciatori_reali[0] : fc.calciatori_reali;
           return {
             id_relazione: fc.id,
@@ -97,260 +90,182 @@ const AdminModificaVoti = () => {
             posizione: fc.posizione,
             ruolo: fc.ruolo,
             nome: infoC?.nome || 'Calciatore Sconosciuto',
-            voto_base: fc.voto_base !== null && fc.voto_base !== undefined ? fc.voto_base.toString() : '',
-            bonus_malus: fc.bonus_malus !== null && fc.bonus_malus !== undefined ? fc.bonus_malus.toString() : '0',
+            voto_base: fc.voto_base != null ? fc.voto_base.toString() : '',
+            bonus_malus: fc.bonus_malus != null ? fc.bonus_malus.toString() : '0',
             voto_fanta: fc.voto_fanta || 0,
-            senzaVoto: fc.voto_base === null || fc.voto_base === undefined
+            senzaVoto: fc.voto_base == null
           };
-        });
-
-        setCalciatoriList(normalizzati);
+        }));
       } catch (err) {
-        console.error("Errore recupero voti admin:", err);
+        console.error("Errore caricamento formazione admin:", err);
       } finally {
         setLoadingDati(false);
       }
     };
-
     caricaDatiVotiAdmin();
   }, [giornataId, squadraId]);
 
-  // Algoritmo di Ricalcolo Dinamico dei Subentri (Dal tuo InserisciVoti.jsx)
+  // EFFETTO 3: Algoritmo di ricalcolo dinamico dei subentri e del totale live
   useEffect(() => {
     if (calciatoriList.length === 0) return;
 
-    const titolari = calciatoriList.filter(c => c.posizione <= 11);
-    const panchina = calciatoriList.filter(c => c.posizione > 11);
-
-    let sostituzioniEffettuate = 0;
+    let sost = 0, totale = 0;
     const conteggiati = [];
-    let totaleSquadra = 0;
+    const panchina = calciatoriList.filter(c => c.posizione > 11).map(p => ({ ...p, utilizzato: false }));
 
-    const panchinaStato = panchina.map(p => ({ ...p, utilizzato: false }));
-
-    titolari.forEach(t => {
+    calciatoriList.filter(c => c.posizione <= 11).forEach(t => {
       const baseNum = parseFloat(t.voto_base);
-      const haVotoValido = !t.senzaVoto && !isNaN(baseNum);
-
-      if (haVotoValido) {
-        const bm = parseFloat(t.bonus_malus) || 0;
-        const fantaVoto = baseNum + bm;
-        conteggiati.push({
-          nome: t.nome, ruolo: t.ruolo, tipo: 'Titolare',
-          voto_fanta: fantaVoto, dettaglio: `${baseNum} (Voto) + ${bm >= 0 ? '+' : ''}${bm} (B/M)`
-        });
-        totaleSquadra += fantaVoto;
+      if (!t.senzaVoto && !isNaN(baseNum)) {
+        const fanta = baseNum + (parseFloat(t.bonus_malus) || 0);
+        conteggiati.push({ nome: t.nome, ruolo: t.ruolo, tipo: 'Titolare', voto_fanta: fanta });
+        totale += fanta;
       } else {
-        let subentrato = false;
-        if (sostituzioniEffettuate < 4) {
-          const sostituto = panchinaStato.find(p => 
-            p.ruolo === t.ruolo && !p.utilizzato && !p.senzaVoto && !isNaN(parseFloat(p.voto_base))
-          );
-          if (sostituto) {
-            sostituto.utilizzato = true;
-            sostituzioniEffettuate++;
-            subentrato = true;
-            const sBase = parseFloat(sostituto.voto_base);
-            const sBm = parseFloat(sostituto.bonus_malus) || 0;
-            const sFanta = sBase + sBm;
-            conteggiati.push({
-              nome: sostituto.nome, ruolo: sostituto.ruolo, tipo: `Subentrato (Panchina)`,
-              voto_fanta: sFanta, dettaglio: `${sBase} (Voto) + ${sBm >= 0 ? '+' : ''}${sBm} (B/M)`
-            });
-            totaleSquadra += sFanta;
-          }
-        }
-        if (!subentrato) {
-          conteggiati.push({
-            nome: t.nome, ruolo: t.ruolo, tipo: 'Non Sostituito',
-            voto_fanta: 0, dettaglio: 'Senza Voto / Riserve Esaurite'
-          });
+        const sub = sost < 4 && panchina.find(p => p.ruolo === t.ruolo && !p.utilizzato && !p.senzaVoto && !isNaN(parseFloat(p.voto_base)));
+        if (sub) {
+          sub.utilizzato = true; sost++;
+          const fanta = parseFloat(sub.voto_base) + (parseFloat(sub.bonus_malus) || 0);
+          conteggiati.push({ nome: sub.nome, ruolo: sub.ruolo, tipo: 'Subentrato', voto_fanta: fanta });
+          totale += fanta;
+        } else {
+          conteggiati.push({ nome: t.nome, ruolo: t.ruolo, tipo: 'Non Sostituito', voto_fanta: 0 });
         }
       }
     });
-
-    setCalcoloRisultato({ totaleSquadra, sostituzioniEffettuate, giocatoriConteggiati: conteggiati });
+    setCalcoloRisultato({ totaleSquadra: totale, sostituzioniEffettuate: sost, giocatoriConteggiati: conteggiati });
   }, [calciatoriList]);
 
-  const handleInputChange = (idRelazione, campo, valore) => {
+  // Handler unico per aggiornare le proprietà modificate negli input
+  const updateGiocatoreAdmin = (id, campi) => {
     setCalciatoriList(prev => prev.map(c => {
-      if (c.id_relazione !== idRelazione) return c;
-      const aggiornato = { ...c, [campo]: valore };
-      if (campo === 'voto_base') aggiornato.senzaVoto = valore.trim() === '';
-      const vBase = parseFloat(aggiornato.voto_base);
-      const vBm = parseFloat(aggiornato.bonus_malus) || 0;
-      aggiornato.voto_fanta = !isNaN(vBase) ? vBase + vBm : 0;
-      return aggiornato;
+      if (c.id_relazione !== id) return c;
+      const proxy = { ...c, ...campi };
+      if ('voto_base' in campi) proxy.senzaVoto = campi.voto_base.trim() === '';
+      const b = parseFloat(proxy.voto_base), bm = parseFloat(proxy.bonus_malus) || 0;
+      proxy.voto_fanta = !isNaN(b) ? b + bm : 0;
+      return proxy;
     }));
   };
 
-  const handleToggleSenzaVoto = (idRelazione) => {
-    setCalciatoriList(prev => prev.map(c => {
-      if (c.id_relazione !== idRelazione) return c;
-      const invertito = !c.senzaVoto;
-      return {
-        ...c, senzaVoto: invertito,
-        voto_base: invertito ? '' : '6',
-        voto_fanta: invertito ? 0 : 6 + (parseFloat(c.bonus_malus) || 0)
-      };
-    }));
-  };
-
+  // Salvataggio definitivo dei dati su Supabase
   const handleSalvaRettificaVotiAdmin = async () => {
     if (!formazioneId) return;
-
     try {
       setSaving(true);
-      
       const updates = calciatoriList.map(c => ({
-        id: c.id_relazione,
-        formazione_id: formationeId,
-        calciatore_id: c.calciatore_id,
-        ruolo: c.ruolo,
-        posizione: c.posizione,
+        id: c.id_relazione, formazione_id: formazioneId, calciatore_id: c.calciatore_id, ruolo: c.ruolo, posizione: c.posizione,
         voto_base: c.senzaVoto || c.voto_base === '' ? null : parseFloat(c.voto_base),
-        bonus_malus: parseFloat(c.bonus_malus) || 0,
-        voto_fanta: c.senzaVoto ? 0 : c.voto_fanta
+        bonus_malus: parseFloat(c.bonus_malus) || 0, voto_fanta: c.senzaVoto ? 0 : c.voto_fanta
       }));
 
-      const { error: upsertErr } = await supabase
-        .from('formazioni_calciatori')
-        .upsert(updates);
+      await supabase.from('formazioni_calciatori').upsert(updates);
+      await supabase.from('formazioni').update({ punteggio_totale: calcoloRisultato.totaleSquadra }).eq('id', formazioneId);
 
-      if (upsertErr) throw upsertErr;
-
-      const { error: formUpdateErr } = await supabase
-        .from('formazioni')
-        .update({ punteggio_totale: calcoloRisultato.totaleSquadra })
-        .eq('id', formazioneId);
-
-      if (formUpdateErr) throw formUpdateErr;
-
-      alert("Voti rettificati e punteggio aggiornato con successo dall'Admin!");
+      alert("Voti salvati d'autorità con successo!");
     } catch (err) {
-      console.error(err);
-      alert("Errore durante il salvataggio autoritativo dei voti.");
+      alert("Errore durante il salvataggio dei voti.");
     } finally {
       setSaving(false);
     }
   };
 
-  if (loadingSetup) return <div className="voti-loading">Apertura Registro Voti Generale... ⏳</div>;
+  if (loadingSetup) return <div className="admin-voti-loading">Apertura Registro Voti Generale... ⏳</div>;
 
-  const titolari = calciatoriList.filter(c => c.posizione <= 11);
-  const panchina = calciatoriList.filter(c => c.posizione > 11);
+  // Renderizzatore della riga calciatore (Struttura fluida ottimizzata)
+  const renderRowAdmin = (c, isRiserva = false) => (
+    <div key={c.id_relazione} className={`admin-voti-player-row ${isRiserva ? 'riserva' : ''} ${c.senzaVoto ? 'player-sv' : ''}`}>
+      <div className="admin-col-player">
+        {isRiserva && <span className="admin-order-num">#{c.posizione - 11}</span>}
+        <span className={`admin-badge-ruolo admin-ruolo-${c.ruolo}`}>{c.ruolo}</span>
+        <span className="admin-giocatore-nome">{c.nome}</span>
+      </div>
+      <div className="admin-voti-player-controls">
+        <div className="admin-input-cell">
+          <span className="admin-mobile-label">S.V.</span>
+          <input type="checkbox" checked={c.senzaVoto} onChange={() => updateGiocatoreAdmin(c.id_relazione, { senzaVoto: !c.senzaVoto, voto_base: c.senzaVoto ? '6' : '' })} />
+        </div>
+        <div className="admin-input-cell">
+          <span className="admin-mobile-label">Voto</span>
+          <input type="number" step="0.5" placeholder="-" value={c.voto_base} disabled={c.senzaVoto} onChange={e => updateGiocatoreAdmin(c.id_relazione, { voto_base: e.target.value })} />
+        </div>
+        <div className="admin-input-cell">
+          <span className="admin-mobile-label">B/M</span>
+          <input type="number" step="0.5" placeholder="0" value={c.bonus_malus} onChange={e => updateGiocatoreAdmin(c.id_relazione, { bonus_malus: e.target.value })} />
+        </div>
+        <div className="admin-input-cell">
+          <span className="admin-mobile-label">Tot</span>
+          <span className="admin-tot-val">{c.senzaVoto ? 'S.V.' : c.voto_fanta.toFixed(1)}</span>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="voti-page-container">
-      <div className="voti-header" style={{ borderBottom: '3px solid #20bf6b', paddingBottom: '15px' }}>
-        <div className="admin-voti-header-container">
-          <button className="btn-back-voti-admin" onClick={() => navigate(-1)}>
-            ⬅️ Indietro
-          </button>
-          <h2>📊 Pannello Admin: Rettifica Voti & Calcolo Classifiche</h2>
-        </div>
-        <p style={{ color: '#20bf6b', fontWeight: 'bold', marginTop: '10px' }}>✓ Permette di editare a consuntivo i voti e aggiornare istantaneamente i tabellini totali.</p>
+    <div className="admin-voti-page-wrapper">
+      {/* HEADER PRINCIPALE */}
+      <div className="admin-voti-main-header">
+        <button className="admin-btn-back" onClick={() => navigate(-1)}>⬅️ Indietro</button>
+        <h2>Rettifica Voti & Calcolo Classifiche ⚡</h2>
       </div>
 
-      {/* FILTRI DI SELEZIONE SQUADRA / GIORNATA */}
-      <div style={{ display: 'flex', gap: '15px', background: '#2f3542', padding: '15px', borderRadius: '8px', margin: '15px 0' }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>Seleziona Turno:</label>
-          <select value={giornataId} onChange={(e) => setGiornataId(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '5px' }}>
-            {giornate.map(g => (
-              <option key={g.id} value={g.id}>Giornata {g.numero_giornata}</option>
-            ))}
+      {/* FILTRI DI SELEZIONE TURNI E SQUADRE */}
+      <div className="admin-voti-filters-card">
+        <div className="admin-filter-select-group">
+          <label>Seleziona Turno:</label>
+          <select value={giornataId} onChange={e => setGiornataId(e.target.value)}>
+            {giornate.map(g => <option key={g.id} value={g.id}>Giornata {g.numero_giornata}</option>)}
           </select>
         </div>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: 'block', marginBottom: '5px', color: '#fff' }}>Seleziona Formazione Squadra:</label>
-          <select value={squadraId} onChange={(e) => setSquadraId(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '5px' }}>
-            {squadre.map(s => (
-              <option key={s.id} value={s.id}>{s.nome}</option>
-            ))}
+        <div className="admin-filter-select-group">
+          <label>Seleziona Formazione Squadra:</label>
+          <select value={squadraId} onChange={e => setSquadraId(e.target.value)}>
+            {squadre.map(s => <option key={s.id} value={s.id}>{s.nome}</option>)}
           </select>
         </div>
       </div>
 
+      {/* BODY INTERFACCIA */}
       {loadingDati ? (
-        <div className="voti-loading">Recupero dati dal database... ⏳</div>
+        <div className="admin-voti-loading">Recupero dati dal database... ⏳</div>
       ) : !formazioneId ? (
-        <div style={{ padding: '30px', background: '#ffeaa7', borderRadius: '8px', color: '#d35400', fontWeight: 'bold', textAlign: 'center', marginTop: '20px' }}>
-          🚨 ATTENZIONE: La squadra selezionata non ha inserito nessuna formazione per questo turno. Non è possibile inserire voti.
+        <div className="admin-voti-empty-alert">
+          🚨 ATTENZIONE: La squadra selezionata non ha inserito nessuna formazione per questo turno. Inserimento disabilitato.
         </div>
       ) : (
-        <div className="voti-main-layout">
-          <div className="voti-inputs-column">
-            <div className="voti-section-card">
-              <h3>Titolari d'Ufficio</h3>
-              <div className="voti-table-header">
-                <span className="col-player">Calciatore</span>
-                <span className="col-sv">S.V.</span>
-                <span className="col-voto">Voto</span>
-                <span className="col-bm">B/M</span>
-                <span className="col-tot">Tot</span>
-              </div>
-              {titolari.map(c => (
-                <div key={c.id_relazione} className={`voti-player-row ${c.senzaVoto ? 'player-sv' : ''}`}>
-                  <div className="col-player">
-                    <span className={`badge-ruolo ${c.ruolo}`}>{c.ruolo}</span>
-                    <span className="giocatore-nome-txt">{c.nome}</span>
-                  </div>
-                  <div className="col-sv">
-                    <input type="checkbox" checked={c.senzaVoto} onChange={() => handleToggleSenzaVoto(c.id_relazione)} />
-                  </div>
-                  <div className="col-voto">
-                    <input type="number" step="0.5" value={c.voto_base} disabled={c.senzaVoto} onChange={(e) => handleInputChange(c.id_relazione, 'voto_base', e.target.value)} />
-                  </div>
-                  <div className="col-bm">
-                    <input type="number" step="0.5" value={c.bonus_malus} onChange={(e) => handleInputChange(c.id_relazione, 'bonus_malus', e.target.value)} />
-                  </div>
-                  <div className="col-tot">{c.senzaVoto ? 'S.V.' : c.voto_fanta.toFixed(1)}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="voti-section-card margin-top-card">
-              <h3>Riserve in Panchina</h3>
-              {panchina.map(c => (
-                <div key={c.id_relazione} className={`voti-player-row riserva ${c.senzaVoto ? 'player-sv' : ''}`}>
-                  <div className="col-player">
-                    <span className="order-num">#{c.posizione - 11}</span>
-                    <span className={`badge-ruolo ${c.ruolo}`}>{c.ruolo}</span>
-                    <span className="giocatore-nome-txt">{c.nome}</span>
-                  </div>
-                  <div className="col-sv">
-                    <input type="checkbox" checked={c.senzaVoto} onChange={() => handleToggleSenzaVoto(c.id_relazione)} />
-                  </div>
-                  <div className="col-voto">
-                    <input type="number" step="0.5" value={c.voto_base} disabled={c.senzaVoto} onChange={(e) => handleInputChange(c.id_relazione, 'voto_base', e.target.value)} />
-                  </div>
-                  <div className="col-bm">
-                    <input type="number" step="0.5" value={c.bonus_malus} onChange={(e) => handleInputChange(c.id_relazione, 'bonus_malus', e.target.value)} />
-                  </div>
-                  <div className="col-tot">{c.senzaVoto ? 'S.V.' : c.voto_fanta.toFixed(1)}</div>
-                </div>
-              ))}
-            </div>
+        <div className="admin-voti-split-layout">
+          {/* ELENCO DEI CALCIATORI */}
+          <div className="admin-voti-inputs-pane">
+            <div className="admin-voti-section-box"><h3>Titolari d'Ufficio</h3>{calciatoriList.filter(c => c.posizione <= 11).map(c => renderRowAdmin(c))}</div>
+            <div className="admin-voti-section-box admin-mt-12"><h3>Riserves in Panchina</h3>{calciatoriList.filter(c => c.posizione > 11).map(c => renderRowAdmin(c, true))}</div>
           </div>
 
-          <div className="voti-summary-column">
-            <div className="summary-sticky-card" style={{ borderTop: '4px solid #20bf6b' }}>
-              <h3>Ricalcolo d'Autorità</h3>
-              <div className="score-main-display">
-                <span className="score-label">TOTALE SQUADRA</span>
-                <span className="score-number-value" style={{ color: '#20bf6b' }}>{calcoloRisultato.totaleSquadra.toFixed(1)}</span>
+          {/* COLONNA INFORMAZIONI E COMPONENTI (SIDEBAR / DRAWER) */}
+          <div className={`admin-voti-summary-pane ${isDrawerOpen ? 'drawer-is-open' : ''}`}>
+            <div className="admin-voti-backdrop" onClick={() => setIsDrawerOpen(false)}></div>
+            <div className="admin-voti-sticky-card">
+              <div className="admin-drawer-mobile-header"><h3>Riepilogo Live Admin</h3><button onClick={() => setIsDrawerOpen(false)}>✕</button></div>
+              <div className="admin-score-large-display"><span className="admin-score-title">TOTALE SQUADRA</span><span className="admin-score-value">{calcoloRisultato.totaleSquadra.toFixed(1)}</span></div>
+              <div className="admin-summary-row"><span>Sostituzioni applicate:</span><span className="admin-badge-count">{calcoloRisultato.sostituzioniEffettuate} / 4</span></div>
+              <div className="admin-components-scroll-list">
+                {calcoloRisultato.giocatoriConteggiati.map((gc, i) => (
+                  <div key={i} className="admin-component-row-item">
+                    <div><b>[{gc.ruolo}]</b> {gc.nome} <small>({gc.tipo})</small></div>
+                    <div className="admin-comp-points-val">{gc.voto_fanta.toFixed(1)}</div>
+                  </div>
+                ))}
               </div>
-              <div className="substitution-counter-row">
-                <span>Sostituzioni applicate:</span>
-                <span className="sub-count-badge active">
-                  {calcoloRisultato.sostituzioniEffettuate} / 4
-                </span>
-              </div>
-              <button className="btn-salva-voti-complessivo" onClick={handleSalvaRettificaVotiAdmin} disabled={saving} style={{ background: '#20bf6b' }}>
-                {saving ? 'Modifica in corso...' : '⚡ Consolida Voti Admin'}
-              </button>
+              <button className="admin-btn-save-desktop" onClick={handleSalvaRettificaVotiAdmin} disabled={saving}>{saving ? 'Salvataggio...' : '⚡ Consolida Voti'}</button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* BARRA FISSA DI CONTROLLO INFERIORE PER MOBILE */}
+      {formazioneId && !loadingDati && (
+        <div className="admin-voti-mobile-fixed-bar">
+          <div className="admin-m-bar-info"><span>Totale Live:</span><strong>{calcoloRisultato.totaleSquadra.toFixed(1)}</strong></div>
+          <div className="admin-m-bar-actions">
+            <button className="admin-btn-m-secondary" onClick={() => setIsDrawerOpen(true)}>Riepilogo 📋</button>
+            <button className="admin-btn-m-primary" onClick={handleSalvaRettificaVotiAdmin} disabled={saving}>{saving ? '...' : '⚡ Salva'}</button>
           </div>
         </div>
       )}
