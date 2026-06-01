@@ -45,13 +45,13 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
                 <span>🏠</span> Dashboard
               </li>
               <li onClick={() => handleNav('squadre')}>
-              Squadre
+                Squadre
               </li>
               <li onClick={() => handleNav('calendario')}>
-              Calendario
+                Calendario
               </li>
               <li onClick={() => handleNav('classifica')}>
-              Classifica
+                Classifica
               </li>
             </ul>
           </div>
@@ -94,6 +94,9 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
                 </li>
                 <li onClick={() => handleNav('admin-modifica-voti')}>
                   Rettifica Voti e Bonus
+                </li>
+                <li onClick={() => handleNav('admin-penalita')}>
+                  Gestione Penalità Classifica
                 </li>
               </ul>
             </div>

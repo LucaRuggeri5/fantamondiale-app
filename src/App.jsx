@@ -17,6 +17,7 @@ import SpostaPlayer from './pages/Admin/SpostaPlayer';
 import GestoreGiornata from './pages/Admin/GestoreGiornata'; 
 import AdminModificaFormazioni from './pages/Admin/AdminModificaFormazioni'; 
 import AdminModificaVoti from './pages/Admin/AdminModificaVoti'; 
+import AdminPenalita from './pages/Admin/AdminPenalita'; // Nuova pagina importata
 import BottomNavbar from './components/BottomNavbar';
 import Sidebar from './components/Sidebar'; 
 
@@ -74,6 +75,9 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
             case 'admin-modifica-voti':
               navigate('/admin/modifica-voti');
               break;
+            case 'admin-penalita':
+              navigate('/admin/penalita');
+              break;
             
             default:
               alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fasi!`);
@@ -124,6 +128,10 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
           <Route 
             path="/admin/modifica-voti" 
             element={currentUser?.ruolo === 'admin' ? <AdminModificaVoti /> : <Navigate to="/" />} 
+          />
+          <Route 
+            path="/admin/penalita" 
+            element={currentUser?.ruolo === 'admin' ? <AdminPenalita /> : <Navigate to="/" />} 
           />
           
           <Route path="*" element={<Navigate to="/" />} />

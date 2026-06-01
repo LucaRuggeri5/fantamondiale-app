@@ -1,0 +1,202 @@
+.admin-penalita-container {
+  padding: 12px;
+  max-width: 800px;
+  margin: 0 auto;
+  color: #f1f2f6;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Header */
+.admin-penalita-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+  border-bottom: 3px solid #c0392b;
+  padding-bottom: 12px;
+}
+
+.admin-penalita-btn-back {
+  background-color: #2f3542;
+  color: #ffffff;
+  border: 1px solid #57606f;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.admin-penalita-header h2 {
+  font-size: 18px;
+  margin: 0;
+  color: #ffffff;
+}
+
+/* Box Informativo */
+.admin-penalita-info-card {
+  background: #2f3542;
+  border-left: 4px solid #f1c40f;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.admin-penalita-info-card code {
+  background: #1e222b;
+  padding: 2px 5px;
+  border-radius: 4px;
+  color: #e74c3c;
+}
+
+/* Lista */
+.admin-penalita-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Scheda Squadra */
+.admin-penalita-card {
+  background: #2f3542;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border: 1px solid #3a4150;
+  transition: border-color 0.2s;
+}
+
+.admin-penalita-card.has-penalty {
+  border-color: #c0392b;
+  background: linear-gradient(145deg, #2f3542 0%, rgba(192, 57, 43, 0.05) 100%);
+}
+
+/* Logo e Testi */
+.admin-penalita-team-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-penalita-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #1e222b;
+  padding: 2px;
+}
+
+.admin-penalita-logo-placeholder {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e222b;
+  border-radius: 4px;
+  font-size: 18px;
+}
+
+.admin-penalita-team-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.admin-penalita-team-name {
+  font-size: 15px;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.admin-penalita-team-points {
+  font-size: 12px;
+  color: #a4b0be;
+}
+
+/* Controlli Input */
+.admin-penalita-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1e222b;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.admin-penalita-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-penalita-input-group label {
+  font-size: 12px;
+  color: #a4b0be;
+  font-weight: 600;
+}
+
+.admin-penalita-input-group input {
+  width: 65px;
+  padding: 6px;
+  border: 1px solid #57606f;
+  background: #2f3542;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.admin-penalita-btn-save {
+  background: #c0392b;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.admin-penalita-btn-save:hover {
+  background: #e74c3c;
+}
+
+.admin-penalita-btn-save:disabled {
+  background: #57606f;
+  cursor: not-allowed;
+}
+
+.admin-penalita-loading, .admin-penalita-empty {
+  text-align: center;
+  padding: 40px;
+  color: #a4b0be;
+  font-weight: 600;
+}
+
+/* Responsive Desktop */
+@media (min-width: 600px) {
+  .admin-penalita-header h2 {
+    font-size: 22px;
+  }
+  
+  .admin-penalita-card {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px;
+  }
+
+  .admin-penalita-controls {
+    background: transparent;
+    padding: 0;
+    gap: 15px;
+  }
+}
