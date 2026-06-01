@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../supabaseClient';
 import './Calendario.css';
 
 const Calendario = () => {
   const { user } = useUser();
-  const navigate = useNavigate();
   
   const [loading, setLoading] = useState(true);
   const [giornate, setGiornate] = useState([]);
   const [currentUserData, setCurrentUserData] = useState(null);
 
-  // Stati per gestire l'apertura e la visualizzazione interattiva dei dettagli di un turno
+  // Stati per la gestione dei dropdown interattivi
   const [giornataSelezionata, setGiornataSelezionata] = useState(null);
   const [squadreFormazioni, setSquadreFormazioni] = useState([]);
   const [loadingSquadre, setLoadingSquadre] = useState(false);
@@ -21,7 +19,6 @@ const Calendario = () => {
   const [dettaglioFormazione, setDettaglioFormazione] = useState({ titolari: [], panchina: [] });
   const [loadingDettaglio, setLoadingDettaglio] = useState(false);
 
-  // Carica i dati dell'utente loggato e della rispettiva lega
   const fetchCalendarioData = async () => {
     try {
       setLoading(true);
@@ -29,7 +26,7 @@ const Calendario = () => {
 
       const { data: userData, error: userErr } = await supabase
         .from('utenti')
-        .select('lega_id, squadra_id, ruolo')
+        .select('lega_id, ruolo')
         .eq('id', user.id)
         .single();
 
@@ -59,7 +56,6 @@ const Calendario = () => {
     }
   }, [user]);
 
-  // FUNZIONE CHIAVE: Calcola lo stato temporale esatto ed esplicito di un turno
   const calcolaStatoInTempoReale = (day) => {
     const adesso = new Date();
     const inizioFormazioni = new Date(day.apertura_formazioni);
@@ -72,7 +68,6 @@ const Calendario = () => {
     return 'conclusa';
   };
 
-  // Carica le formazioni inserite per la giornata selezionata (impedito se in programma)
   const handleSelezionaGiornataVisualizza = async (giornata, statoReale) => {
     if (statoReale === 'in programma') {
       alert("Turno in programma: le formazioni non sono ancora accessibili.");
@@ -98,7 +93,7 @@ const Calendario = () => {
           id,
           modulo,
           punteggio_totale,
-          squadre!squadra_id (id, nome, url_logo) 
+          squadre!squadra_id (id, nome) 
         `)
         .eq('giornata_id', giornata.id);
 
@@ -111,7 +106,6 @@ const Calendario = () => {
     }
   };
 
-  // Carica i dettagli dei calciatori della formazione scelta
   const handleVediDettaglioFormazione = async (formazione) => {
     if (squadraSelezionata?.id === formazione.id) {
       setSquadraSelezionata(null);
@@ -126,10 +120,8 @@ const Calendario = () => {
         .select(`
           posizione,
           ruolo,
-          voto_base,
-          bonus_malus,
           voto_fanta,
-          calciatori_reali!calciatore_id (id, nome, ruolo, nazionale)
+          calciatori_reali!calciatore_id (id, nome)
         `)
         .eq('formazione_id', formazione.id)
         .order('posizione', { ascending: true });
@@ -142,8 +134,7 @@ const Calendario = () => {
         return { 
           ...c, 
           posizione: fc.posizione,
-          voto_base: fc.voto_base,
-          bonus_malus: fc.bonus_malus,
+          ruolo: fc.ruolo,
           voto_fanta: fc.voto_fanta
         };
       }).filter(Boolean);
@@ -159,87 +150,57 @@ const Calendario = () => {
     }
   };
 
-  // Naviga alla pagina d'azione corretta in base allo stato temporale reale
-  const handleAzioneGiornata = (giornata, statoReale) => {
-    if (!currentUserData?.squadra_id) {
-      alert("Attenzione: devi prima essere assegnato a una squadra per poter interagire con le giornate.");
-      return;
-    }
-
-    if (statoReale === 'in corso') {
-      navigate(`/formazione/inserisci/${giornata.id}`);
-    } else if (statoReale === 'fase calcolo') {
-      navigate(`/voti/inserisci/${giornata.id}`);
-    } else if (statoReale === 'conclusa') {
-      navigate(`/calendario/risultati/${giornata.id}`);
-    } else {
-      alert("Questa giornata non è ancora aperta alle modifiche.");
-    }
-  };
-
   const formattaData = (isoString) => {
     if (!isoString) return 'Da definire';
     const opzioni = { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' };
     return new Date(isoString).toLocaleDateString('it-IT', opzioni);
   };
 
-  if (loading) return <div className="calendario-loading">Caricamento calendario in corso... ⏳</div>;
+  if (loading) return <div className="calendario-loading">Caricamento calendario... ⏳</div>;
 
   return (
     <div className="calendario-page">
       <div className="calendario-top-bar">
         <div>
-          <h2>Calendario della Lega 📅</h2>
-          <p className="subtitle">Consulta lo stato delle giornate e premi sulla riga del turno per spiare le formazioni e i voti inseriti:</p>
+          <h2>Calendario 📅</h2>
+          <p className="subtitle">Tocca una giornata per vedere i dettagli e le formazioni schierate.</p>
         </div>
-        {currentUserData?.ruolo === 'admin' && (
-          <button className="btn-admin-setup-veloce" onClick={() => navigate('/admin/giornate')}>
-            👑 Gestisci Giornate
-          </button>
-        )}
       </div>
 
       <div className="matchdays-list">
         {giornate.length === 0 ? (
-          <p className="no-giornate-msg">Nessuna giornata presente in questa lega. L'amministratore attiverà i turni a breve.</p>
+          <p className="no-giornate-msg">Nessuna giornata presente in questa lega.</p>
         ) : (
           giornate.map((day) => {
-            // Calcoliamo lo stato temporale esatto per ogni singola riga di giornata generata
             const statoReale = calcolaStatoInTempoReale(day);
             
             let statoTesto = 'IN PROGRAMMA';
-            let bottoneTesto = 'Non Attivo';
             let classeStato = 'creata'; 
-            let isBttnDisabled = false;
 
             if (statoReale === 'in corso') {
               statoTesto = 'IN CORSO';
-              bottoneTesto = 'Schiera';
               classeStato = 'in_corso';
             } else if (statoReale === 'fase calcolo') {
-              statoTesto = 'INSERIMENTO VOTI';
-              bottoneTesto = 'Invia Voti';
+              statoTesto = 'CALCOLO';
               classeStato = 'calcolo';
             } else if (statoReale === 'conclusa') {
               statoTesto = 'CONCLUSA';
-              bottoneTesto = 'Vedi Risultati';
               classeStato = 'conclusa';
-            } else {
-              isBttnDisabled = true;
             }
 
             const rigaAperta = giornataSelezionata?.id === day.id;
 
             return (
               <div key={day.id} className="matchday-card-container">
-                <div className={`matchday-row ${classeStato} ${rigaAperta ? 'aperta' : ''}`}>
-                  <div className="matchday-clickable-zone" onClick={() => handleSelezionaGiornataVisualizza(day, statoReale)}>
-                    <div className="matchday-details">
-                      <span className="matchday-number">G{day.numero_giornata}</span>
-                      <div className="matchday-scadenze-block">
-                        <span className="scadenza-item">🏁 Apertura: <b>{formattaData(day.apertura_formazioni)}</b></span>
-                        <span className="scadenza-item">⏳ Consegna: <b>{formattaData(day.scadenza_formazione)}</b></span>
-                      </div>
+                <div 
+                  className={`matchday-row ${classeStato} ${rigaAperta ? 'aperta' : ''}`}
+                  onClick={() => handleSelezionaGiornataVisualizza(day, statoReale)}
+                >
+                  <div className="matchday-details">
+                    <span className="matchday-number">G{day.numero_giornata}</span>
+                    <div className="matchday-scadenze-block">
+                      <span className="scadenza-item">🏁 Inizio: <b>{formattaData(day.apertura_formazioni)}</b></span>
+                      <span className="scadenza-item">⏳ Consegna: <b>{formattaData(day.scadenza_formazione)}</b></span>
                     </div>
                   </div>
                   
@@ -247,25 +208,17 @@ const Calendario = () => {
                     <span className={`status-badge ${classeStato}`}>
                       {statoTesto}
                     </span>
-                    
-                    <button 
-                      className={`btn-action-giornata ${classeStato}`}
-                      onClick={() => handleAzioneGiornata(day, statoReale)}
-                      disabled={isBttnDisabled}
-                    >
-                      {bottoneTesto}
-                    </button>
                   </div>
                 </div>
 
-                {/* Blocco Espandibile delle formazioni */}
+                {/* Dropdown delle formazioni */}
                 {rigaAperta && statoReale !== 'in programma' && (
                   <div className="matchday-dropdown-formazioni">
-                    <h4>Formazioni e Punteggi Inseriti</h4>
+                    <h4>Schieramenti Lega</h4>
                     {loadingSquadre ? (
-                      <p className="dropdown-loading-txt">Pescando schieramenti registrati... 🏃‍♂️</p>
+                      <p className="dropdown-loading-txt">Caricamento squadre... 🏃‍♂️</p>
                     ) : squadreFormazioni.length === 0 ? (
-                      <p className="dropdown-loading-txt-empty">Nessuna formazione inserita per questa giornata.</p>
+                      <p className="dropdown-loading-txt-empty">Nessuna formazione inserita.</p>
                     ) : (
                       <div className="dropdown-split-layout">
                         <div className="dropdown-squadre-list">
@@ -275,58 +228,64 @@ const Calendario = () => {
                             const selezionata = squadraSelezionata?.id === sf.id;
 
                             return (
-                              <button 
-                                key={sf.id} 
-                                className={`btn-club-formazione-trigger ${selezionata ? 'attivo' : ''}`}
-                                onClick={() => handleVediDettaglioFormazione(sf)}
-                              >
-                                <span>⚽ {infoSquadra.nome} <span className="modulo-tag-badge">{sf.modulo}</span></span>
-                                {sf.punteggio_totale !== null && (
-                                  <span className="punteggio-totale-badge">{sf.punteggio_totale.toFixed(1)} pt</span>
+                              <React.Fragment key={sf.id}>
+                                <button 
+                                  className={`btn-club-formazione-trigger ${selezionata ? 'attivo' : ''}`}
+                                  onClick={() => handleVediDettaglioFormazione(sf)}
+                                >
+                                  <div className="club-name-group">
+                                    <span className="emoji-club">⚽</span>
+                                    <span className="club-title">{infoSquadra.nome}</span>
+                                    <span className="modulo-tag-badge">{sf.modulo}</span>
+                                  </div>
+                                  {sf.punteggio_totale !== null && (
+                                    <span className="punteggio-totale-badge">{sf.punteggio_totale.toFixed(1)} pt</span>
+                                  )}
+                                </button>
+
+                                {/* Visualizzatore Formazione Mobile-First direttamente sotto la squadra cliccata */}
+                                {selezionata && (
+                                  <div className="dropdown-formazione-visualizzatore">
+                                    {loadingDettaglio ? (
+                                      <p className="clean-msg">Recupero voti...</p>
+                                    ) : (
+                                      <div className="campo-mini-render">
+                                        <h5>Titolari ({sf.modulo})</h5>
+                                        <div className="lista-calciatori-campo">
+                                          {dettaglioFormazione.titolari.map(t => (
+                                            <div key={t.id} className="riga-giocatore-campo">
+                                              <span className={`mini-ruolo-indicator ${t.ruolo}`}>{t.ruolo}</span>
+                                              <span className="nome-giocatore-campo">{t.nome}</span>
+                                              <span className="voto-giocatore-campo-live">
+                                                {t.voto_fanta !== null ? `${t.voto_fanta}` : 'S.V.'}
+                                              </span>
+                                            </div>
+                                          ))}
+                                        </div>
+
+                                        <h5 className="margin-top-panchina">Panchina</h5>
+                                        <div className="lista-calciatori-campo riserve">
+                                          {dettaglioFormazione.panchina.length === 0 ? (
+                                            <p className="no-panchina-text">Nessuna riserva inserita</p>
+                                          ) : (
+                                            dettaglioFormazione.panchina.map(p => (
+                                              <div key={p.id} className="riga-giocatore-campo">
+                                                <span className={`mini-ruolo-indicator ${p.ruolo}`}>{p.ruolo}</span>
+                                                <span className="nome-giocatore-campo">{p.nome}</span>
+                                                <span className="voto-giocatore-campo-live">
+                                                  {p.voto_fanta !== null ? `${p.voto_fanta}` : 'S.V.'}
+                                                </span>
+                                              </div>
+                                            ))
+                                          )}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
                                 )}
-                              </button>
+                              </React.Fragment>
                             );
                           })}
-                        </div>
-
-                        <div className="dropdown-formazione-visualizzatore">
-                          {loadingDettaglio ? (
-                            <p className="clean-msg">Lettura tattica e voti...</p>
-                          ) : squadraSelezionata ? (
-                            <div className="campo-mini-render">
-                              <h5>Titolari ({squadraSelezionata.modulo})</h5>
-                              <div className="lista-calciatori-campo">
-                                {dettaglioFormazione.titolari.map(t => (
-                                  <div key={t.id} className="riga-giocatore-campo">
-                                    <span className={`mini-ruolo-indicator ${t.ruolo}`}>{t.ruolo}</span>
-                                    <span className="nome-giocatore-campo">{t.nome}</span>
-                                    <span className="voto-giocatore-campo-live">
-                                      {t.voto_base !== null ? `${t.voto_base} [${t.bonus_malus >= 0 ? '+' : ''}${t.bonus_malus}] = ${t.voto_fanta}` : 'S.V.'}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-
-                              <h5 className="margin-top-panchina">Panchina</h5>
-                              <div className="lista-calciatori-campo riserve">
-                                {dettaglioFormazione.panchina.length === 0 ? (
-                                  <p className="no-panchina-text">Nessuna riserva inserita</p>
-                                ) : (
-                                  dettaglioFormazione.panchina.map(p => (
-                                    <div key={p.id} className="riga-giocatore-campo">
-                                      <span className={`mini-ruolo-indicator ${p.ruolo}`}>{p.ruolo}</span>
-                                      <span className="nome-giocatore-campo">{p.nome}</span>
-                                      <span className="voto-giocatore-campo-live">
-                                        {p.voto_base !== null ? `${p.voto_base} [${p.bonus_malus >= 0 ? '+' : ''}${p.bonus_malus}] = ${p.voto_fanta}` : 'S.V.'}
-                                      </span>
-                                    </div>
-                                  ))
-                                )}
-                              </div>
-                            </div>
-                          ) : (
-                            <p className="select-club-hint">Seleziona uno dei club a sinistra per analizzare i voti ed i modificatori.</p>
-                          )}
                         </div>
                       </div>
                     )}
