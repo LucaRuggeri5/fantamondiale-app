@@ -50,7 +50,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  flex: 1; /* Distribuisce le tre colonne equamente */
+  flex: 1;
 }
 
 .recap-label {
@@ -71,13 +71,13 @@
   color: #00b0ff;
 }
 .recap-value.rank-1 {
-  color: #ffd700; /* Oro */
+  color: #ffd700;
 }
 .recap-value.rank-2 {
-  color: #c0c0c0; /* Argento */
+  color: #c0c0c0;
 }
 .recap-value.rank-3 {
-  color: #cd7f32; /* Bronzo */
+  color: #cd7f32;
 }
 
 .recap-value.total-points {
@@ -107,6 +107,12 @@
   border-radius: 8px;
   display: flex;
   flex-direction: column;
+  transition: opacity 0.3s ease;
+}
+
+/* Pannello opaco se non ci sono azioni disponibili */
+.action-status-card.inactive-panel {
+  opacity: 0.6;
 }
 
 .action-card-header {
@@ -114,6 +120,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 6px;
+  gap: 10px;
 }
 
 .action-status-card h3 {
@@ -123,15 +130,16 @@
   color: #fff;
 }
 
+/* Countdown dinamico */
 .time-countdown {
   font-size: 12px;
   font-weight: bold;
   color: #ffca28;
-}
-
-.date-deadline {
-  font-size: 12px;
-  color: #aaa;
+  white-space: nowrap;
+  background: #2a2a35;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #3e3e4f;
 }
 
 .action-card-description {
@@ -143,12 +151,13 @@
 
 .btn-action-trigger {
   border: none;
-  padding: 10px;
+  padding: 11px;
   border-radius: 4px;
   font-size: 13px;
   font-weight: bold;
   cursor: pointer;
   text-align: center;
+  transition: background-color 0.2s, opacity 0.2s;
 }
 
 .btn-action-trigger.btn-formation {
@@ -157,13 +166,19 @@
 }
 
 .btn-action-trigger.btn-votes {
-  background-color: #2a2a35;
+  background-color: #00b0ff;
   color: #fff;
-  border: 1px solid #444;
 }
 
-.btn-action-trigger:hover {
-  opacity: 0.9;
+.btn-action-trigger:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.btn-action-trigger:disabled {
+  background-color: #2e2e38 !important;
+  color: #666 !important;
+  border: 1px solid #3a3a45 !important;
+  cursor: not-allowed;
 }
 
 /* Form e Creazione Club */
@@ -227,11 +242,6 @@
   font-size: 13px;
   font-weight: bold;
   cursor: pointer;
-}
-
-.dashboard-form button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 
 .error-text {

@@ -7,6 +7,7 @@ import './Dashboard.css';
 const Dashboard = () => {
   const { user } = useUser();
   const navigate = useNavigate();
+  
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState(null);
   const [leagueData, setLeagueData] = useState(null);
@@ -19,15 +20,36 @@ const Dashboard = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Stati per memorizzare i turni operativi calcolati al volo
-  const [giornataFormazione, setGiornataFormazione] = useState(null);
-  const [giornataVoti, setGiornataVoti] = useState(null);
+  // Riferimenti temporali precisi salvati nello stato
+  const [targetDates, setTargetDates] = useState({
+    formazioneTarget: null,
+    formazioneIsApertura: false, // true se stiamo aspettando l'apertura futura, false se scade
+    votiTarget: null,
+    giornataFormazioneId: null,
+    giornataVotiId: null,
+    numeroGiornataFormazione: null,
+    numeroGiornataVoti: null
+  });
+
+  // Stringhe visualizzate nei countdown live
   const [formationCountdown, setFormationCountdown] = useState("Nessun turno attivo");
   const [votesCountdown, setVotesCountdown] = useState("Nessun calcolo attivo");
 
-  // Funzione helper locale per formattare la data e l'ora
-  const formattaDataOra = (dataOggetto) => {
-    return dataOggetto.toLocaleDateString('it-IT') + ' ore ' + dataOggetto.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+  // Funzione helper interna per calcolare la stringa del timer a ritroso
+  const calcolaRimanente = (targetDate) => {
+    if (!targetDate) return null;
+    const diff = new Date(targetDate) - new Date();
+    if (diff <= 0) return "Scaduto 🏁";
+
+    const giorni = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const ore = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minuti = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secondi = Math.floor((diff % (1000 * 60)) / 1000);
+
+    let stringaMancante = "";
+    if (giorni > 0) stringaMancante += `${giorni}g `;
+    stringaMancante += `${ore.toString().padStart(2, '0')}o ${minuti.toString().padStart(2, '0')}m ${secondi.toString().padStart(2, '0')}s`;
+    return stringaMancante;
   };
 
   const loadDashboardData = async () => {
@@ -35,7 +57,7 @@ const Dashboard = () => {
       setLoading(true);
       if (!user) return;
 
-      // 1. Recupero informazioni sull'utente corrente
+      // 1. Info Utente
       const { data: utente, error: userError } = await supabase
         .from('utenti')
         .select('*')
@@ -46,7 +68,7 @@ const Dashboard = () => {
       setUserData(utente);
 
       if (utente.lega_id) {
-        // 2. Recupero informazioni sulla lega dell'utente
+        // 2. Info Lega
         const { data: lega, error: leagueError } = await supabase
           .from('leghe')
           .select('*')
@@ -56,7 +78,7 @@ const Dashboard = () => {
         if (leagueError) throw leagueError;
         setLeagueData(lega);
 
-        // 3. Recupero tutte le squadre appartenenti alla stessa lega
+        // 3. Squadre e Classifica real-time
         const { data: squadre, error: teamsError } = await supabase
           .from('squadre')
           .select('*')
@@ -66,7 +88,6 @@ const Dashboard = () => {
         setExistingTeams(squadre || []);
 
         if (utente.squadra_id) {
-          // LOGICA CALCOLO PUNTI E CLASSIFICA IN TEMPO REALE
           const { data: punteggi, error: pError } = await supabase
             .from('formazioni')
             .select('squadra_id, punteggio_totale')
@@ -74,24 +95,19 @@ const Dashboard = () => {
 
           if (!pError && punteggi) {
             const classificaCalcolata = squadre.map(squadra => {
-              const puntiSquadra = punteggi
+              const puntiSulCampo = punteggi
                 .filter(p => p.squadra_id === squadra.id)
                 .reduce((acc, curr) => acc + (curr.punteggio_totale || 0), 0);
 
               return {
                 id: squadra.id,
-                penalita: squadra.penalita || 0,
-                points: puntiSquadra - (squadra.penalita || 0)
+                points: puntiSulCampo - (squadra.penalita || 0)
               };
             });
 
-            // Ordinamento decrescente dei punteggi per stabilire il ranking
             classificaCalcolata.sort((a, b) => b.points - a.points);
-
             const miaPosizioneIndex = classificaCalcolata.findIndex(s => s.id === utente.squadra_id);
-            if (miaPosizioneIndex !== -1) {
-              setMyRankPosition(miaPosizioneIndex + 1);
-            }
+            if (miaPosizioneIndex !== -1) setMyRankPosition(miaPosizioneIndex + 1);
 
             const squadraPersonale = squadre.find(s => s.id === utente.squadra_id);
             if (squadraPersonale) {
@@ -99,12 +115,11 @@ const Dashboard = () => {
               setMyTeamData({ ...squadraPersonale, punti_totali: puntiAggiornati });
             }
           } else {
-            const squadraPersonale = squadre.find(s => s.id === utente.squadra_id);
-            setMyTeamData(squadraPersonale || null);
+            setMyTeamData(squadre.find(s => s.id === utente.squadra_id) || null);
           }
         }
 
-        // 4. NUOVA LOGICA TEMPORALE APPLICATA SUL CALENDARIO GIORNATE
+        // 4. Analisi scadenze temporali giornate
         const { data: giornateReal, error: gError } = await supabase
           .from('giornate')
           .select('*')
@@ -113,49 +128,55 @@ const Dashboard = () => {
 
         if (!gError && giornateReal) {
           const adesso = new Date();
-          
-          // Cerchiamo se c'è un turno in cui la finestra per schierare sia aperta
+          let fTarget = null;
+          let fIsApertura = false;
+          let vTarget = null;
+          let gFormId = null;
+          let gVotiId = null;
+          let numGForm = null;
+          let numGVoti = null;
+
+          // Trova turno attivo per schieramento
           const gForm = giornateReal.find(g => {
-            const inizio = new Date(g.apertura_formazioni);
-            const fine = new Date(g.scadenza_formazione);
-            return adesso >= inizio && adesso < fine;
+            return adesso >= new Date(g.apertura_formazioni) && adesso < new Date(g.scadenza_formazione);
           });
 
           if (gForm) {
-            setGiornataFormazione(gForm);
-            const scadenza = new Date(gForm.scadenza_formazione);
-            setFormationCountdown(`Scade il ${formattaDataOra(scadenza)}`);
+            fTarget = gForm.scadenza_formazione;
+            gFormId = gForm.id;
+            numGForm = gForm.numero_giornata;
           } else {
-            // Se nessun turno è attivo adesso, cerchiamo il primo turno futuro
+            // Cerca eventuale turno futuro che deve ancora aprire
             const gFutura = giornateReal.find(g => adesso < new Date(g.apertura_formazioni));
-            
             if (gFutura) {
-              const dataApertura = new Date(gFutura.apertura_formazioni);
-              setFormationCountdown(`G${gFutura.numero_giornata} aprirà il ${formattaDataOra(dataApertura)}`);
-            } else {
-              setFormationCountdown("Nessun turno attivo per le formazioni");
+              fTarget = gFutura.apertura_formazioni;
+              fIsApertura = true;
+              numGForm = gFutura.numero_giornata;
             }
-            setGiornataFormazione(null);
           }
 
-          // Cerchiamo se c'è un turno attualmente bloccato e in attesa dei voti dall'admin
+          // Trova turno in attesa di calcolo voti
           const gVoti = giornateReal.find(g => {
-            const fineFormazioni = new Date(g.scadenza_formazione);
-            const fineVoti = new Date(g.scadenza_voti);
-            return adesso >= fineFormazioni && adesso < fineVoti;
+            return adesso >= new Date(g.scadenza_formazione) && adesso < new Date(g.scadenza_voti);
           });
 
           if (gVoti) {
-            setGiornataVoti(gVoti);
-            const scadVoti = new Date(gVoti.scadenza_voti);
-            setVotesCountdown(`Entro il ${formattaDataOra(scadVoti)}`);
-          } else {
-            setVotesCountdown("Nessun calcolo attivo");
-            setGiornataVoti(null);
+            vTarget = gVoti.scadenza_voti;
+            gVotiId = gVoti.id;
+            numGVoti = gVoti.numero_giornata;
           }
+
+          setTargetDates({
+            formazioneTarget: fTarget,
+            formazioneIsApertura: fIsApertura,
+            votiTarget: vTarget,
+            giornataFormazioneId: gFormId,
+            giornataVotiId: gVotiId,
+            numeroGiornataFormazione: numGForm,
+            numeroGiornataVoti: numGVoti
+          });
         }
       }
-
     } catch (err) {
       console.error("Errore nel caricamento della Dashboard:", err);
     } finally {
@@ -167,27 +188,55 @@ const Dashboard = () => {
     loadDashboardData();
   }, [user]);
 
+  // ENGINE TIMER RITROSO LIVE
+  useEffect(() => {
+    if (loading) return;
+
+    const aggiornaOgniSecondo = () => {
+      // Countdown Formazioni
+      if (targetDates.formazioneTarget) {
+        const tempoMancante = calcolaRimanente(targetDates.formazioneTarget);
+        if (tempoMancante === "Scaduto 🏁") {
+          setFormationCountdown("Finestra Chiusa 🔒");
+        } else {
+          const prefisso = targetDates.formazioneIsApertura ? `Apre G${targetDates.numeroGiornataFormazione}: ` : "";
+          setFormationCountdown(`${prefisso}${tempoMancante}`);
+        }
+      } else {
+        setFormationCountdown("Nessun turno attivo");
+      }
+
+      // Countdown Voti
+      if (targetDates.votiTarget) {
+        const tempoMancante = calcolaRimanente(targetDates.votiTarget);
+        setVotesCountdown(tempoMancante === "Scaduto 🏁" ? "Tempo Scaduto 🔒" : tempoMancante);
+      } else {
+        setVotesCountdown("Nessun calcolo attivo");
+      }
+    };
+
+    aggiornaOgniSecondo(); // Esecuzione istantanea al mount
+    const intervallo = setInterval(aggiornaOgniSecondo, 1000);
+
+    return () => clearInterval(intervallo);
+  }, [targetDates, loading]);
+
   const handleCreateTeam = async (e) => {
     e.preventDefault();
-    if (!teamName.trim()) return;
-
+    if (!teamName.trim() || submitting) return;
     try {
       setSubmitting(true);
       setError('');
-
       const { data: newTeam, error: teamError } = await supabase
         .from('squadre')
-        .insert([
-          {
-            nome: teamName.trim(),
-            lega_id: userData.lega_id,
-            url_logo: `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(teamName.trim())}`,
-            punti_totali: 0,
-            penalita: 0
-          }
-        ])
-        .select()
-        .single();
+        .insert([{
+          nome: teamName.trim(),
+          lega_id: userData.lega_id,
+          url_logo: `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(teamName.trim())}`,
+          punti_totali: 0,
+          penalita: 0
+        }])
+        .select().single();
 
       if (teamError) throw teamError;
 
@@ -197,11 +246,8 @@ const Dashboard = () => {
         .eq('id', user.id);
 
       if (userUpdateError) throw userUpdateError;
-
       await loadDashboardData();
-
     } catch (err) {
-      console.error(err);
       setError("Impossibile creare la squadra.");
     } finally {
       setSubmitting(false);
@@ -210,27 +256,19 @@ const Dashboard = () => {
 
   const handleJoinTeam = async (e) => {
     e.preventDefault();
-    if (!selectedTeamId) {
-      setError("Seleziona una squadra dalla lista!");
-      return;
-    }
-
+    if (!selectedTeamId || submitting) return;
     try {
       setSubmitting(true);
       setError('');
-
       const { error: userUpdateError } = await supabase
         .from('utenti')
         .update({ squadra_id: selectedTeamId })
         .eq('id', user.id);
 
       if (userUpdateError) throw userUpdateError;
-
       await loadDashboardData();
-
     } catch (err) {
-      console.error(err);
-      setError("Impossibile unire l'utente alla squadra selezionata.");
+      setError("Impossibile unire l'utente alla squadra.");
     } finally {
       setSubmitting(false);
     }
@@ -254,7 +292,6 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      
       <div className="league-header-card hero-card">
         <div className="hero-main-info">
           <h1>{leagueData?.nome || "La tua Lega"}</h1>
@@ -270,7 +307,6 @@ const Dashboard = () => {
             <div className="create-team-card spacing-bottom">
               <h2>Scegli una Squadra esistente 🏢</h2>
               <p>Seleziona il tuo team di appartenenza dalla lista per prenderne il controllo:</p>
-
               <form onSubmit={handleJoinTeam} className="dashboard-form">
                 <select
                   value={selectedTeamId}
@@ -293,7 +329,6 @@ const Dashboard = () => {
           <div className="create-team-card">
             <h2>Oppure, crea una nuova Squadra! 📝</h2>
             <p>Se la tua squadra non è presente nell'elenco sopra, inserisci il nome qui sotto per fondarla.</p>
-
             <form onSubmit={handleCreateTeam} className="dashboard-form">
               <input
                 type="text"
@@ -334,47 +369,45 @@ const Dashboard = () => {
           </div>
 
           <div className="operative-cards-grid">
-            
-            {/* Card Formazione */}
-            <div className="action-status-card formation">
+            {/* Card Inserimento Formazione */}
+            <div className={`action-status-card formation ${!targetDates.giornataFormazioneId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
-                <h3>{giornataFormazione ? `Giornata ${giornataFormazione.numero_giornata} 🏟️` : "Schieramento Formazione"}</h3>
+                <h3>{targetDates.giornataFormazioneId ? `Giornata ${targetDates.numeroGiornataFormazione} 🏟️` : "Schieramento Formazione"}</h3>
                 <span className="time-countdown">⏳ {formationCountdown}</span>
               </div>
               <p className="action-card-description">
-                {giornataFormazione 
+                {targetDates.giornataFormazioneId 
                   ? "Tempo utile rimanente per schierare e congelare i tuoi 11 titolari."
-                  : "Controlla la data sopra per scoprire quando potrai inserire la prossima formazione."}
+                  : "Finestra di inserimento momentaneamente chiusa o in attesa di apertura turno futuro."}
               </p>
               <button 
                 className="btn-action-trigger btn-formation"
-                disabled={!giornataFormazione}
-                onClick={() => navigate(`/formazione/inserisci/${giornataFormazione.id}`)}
+                disabled={!targetDates.giornataFormazioneId}
+                onClick={() => navigate(`/formazione/inserisci/${targetDates.giornataFormazioneId}`)}
               >
                 🏃‍♂️ Inserisci Formazione
               </button>
             </div>
 
-            {/* Card Voti */}
-            <div className="action-status-card votes">
+            {/* Card Inserimento Voti Admin */}
+            <div className={`action-status-card votes ${!targetDates.giornataVotiId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
-                <h3>{giornataVoti ? `Calcolo Giornata ${giornataVoti.numero_giornata} 📝` : "Inserimento Voti 📝"}</h3>
-                <span className="date-deadline">{votesCountdown}</span>
+                <h3>{targetDates.giornataVotiId ? `Calcolo Giornata ${targetDates.numeroGiornataVoti} 📝` : "Inserimento Voti 📝"}</h3>
+                <span className="time-countdown client-timer">⏳ {votesCountdown}</span>
               </div>
               <p className="action-card-description">
-                {giornataVoti 
-                  ? "Il turno è bloccato. L'amministratore può ora procedere all'inserimento dei voti ufficiali."
-                  : "I conteggi per i turni precedenti sono terminati o non ancora avviati."}
+                {targetDates.giornataVotiId 
+                  ? "Il turno di gioco è terminato ed è bloccato. L'amministratore può inserire i voti."
+                  : "Nessun calcolo voti pendente o finestre di rettifica aperte al momento."}
               </p>
               <button 
                 className="btn-action-trigger btn-votes"
-                disabled={!giornataVoti}
-                onClick={() => navigate(`/voti/inserisci/${giornataVoti.id}`)}
+                disabled={!targetDates.giornataVotiId}
+                onClick={() => navigate(`/voti/inserisci/${targetDates.giornataVotiId}`)}
               >
                 📊 Inserisci Voti
               </button>
             </div>
-
           </div>
         </>
       )}
