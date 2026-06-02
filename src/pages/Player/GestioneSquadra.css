@@ -1,0 +1,189 @@
+.gestione-page-container {
+  padding: 14px;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #fff;
+}
+
+.gestione-page-header {
+  margin-bottom: 20px;
+}
+
+.gestione-page-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.gestione-page-subtitle {
+  color: #aaa;
+  font-size: 12px;
+  margin: 0;
+}
+
+.gestione-loading {
+  text-align: center;
+  padding-top: 40vh;
+  color: #888;
+  font-size: 14px;
+}
+
+/* BOX DI INFO RIGUARDO LA SQUADRA */
+.gestione-card-info {
+  background-color: #1e1e24;
+  border: 1px solid #2e2e38;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  border-bottom: 1px solid #262630;
+  padding-bottom: 8px;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.info-label {
+  color: #8a8a93;
+  font-weight: 500;
+}
+
+.info-value {
+  color: #fff;
+  font-weight: 600;
+}
+
+.info-value.club-attuale {
+  color: #00b0ff;
+}
+
+/* FORM DI MODIFICA */
+.gestione-form-box {
+  background-color: #1e1e24;
+  border: 1px solid #2e2e38;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.gestione-form-box h3 {
+  margin: 0 0 14px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #00b0ff;
+}
+
+.form-edit-squadra {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-group label {
+  font-size: 12px;
+  color: #aaa;
+  font-weight: 500;
+}
+
+.input-group input {
+  background-color: #121214;
+  border: 1px solid #2e2e38;
+  padding: 12px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-group input:focus {
+  border-color: #00b0ff;
+}
+
+/* MESSAGGI FEEDBACK */
+.form-feedback-msg {
+  font-size: 12px;
+  padding: 10px;
+  border-radius: 6px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.form-feedback-msg.success {
+  background-color: rgba(0, 230, 118, 0.1);
+  color: #00e676;
+  border: 1px solid rgba(0, 230, 118, 0.2);
+}
+
+.form-feedback-msg.error {
+  background-color: rgba(255, 23, 68, 0.1);
+  color: #ff1744;
+  border: 1px solid rgba(255, 23, 68, 0.2);
+}
+
+.form-feedback-msg.info {
+  background-color: rgba(0, 176, 255, 0.1);
+  color: #00b0ff;
+  border: 1px solid rgba(0, 176, 255, 0.2);
+}
+
+/* BOTTONE SALVATAGGIO */
+.btn-salva-squadra {
+  background-color: #00b0ff;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-salva-squadra:hover:not(:disabled) {
+  background-color: #0091ea;
+}
+
+.btn-salva-squadra:disabled {
+  background-color: #2e2e38;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* NO SQUADRA FALLBACK BOX */
+.no-squadra-box {
+  background-color: #1e1e24;
+  border: 1px solid #2e2e38;
+  border-radius: 8px;
+  padding: 24px;
+  text-align: center;
+  margin-top: 20vh;
+}
+
+.no-squadra-box h3 {
+  margin: 0 0 8px 0;
+  color: #ff1744;
+  font-size: 16px;
+}
+
+.no-squadra-box p {
+  margin: 0;
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.5;
+}

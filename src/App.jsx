@@ -22,6 +22,7 @@ import AdminPenalita from './pages/Admin/AdminPenalita';
 // Nuove pagine della cartella Player
 import PartecipantiLega from './pages/Player/PartecipantiLega';
 import ListoneCalciatori from './pages/Player/ListoneCalciatori';
+import GestioneSquadra from './pages/Player/GestioneSquadra';
 
 import BottomNavbar from './components/BottomNavbar';
 import Sidebar from './components/Sidebar'; 
@@ -62,6 +63,9 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
               break;
             
             // Nuove Rotte Info (Consultazione Player)
+            case 'gestione-squadra':
+              navigate('/gestione-squadra');
+              break;
             case 'partecipanti':
               navigate('/partecipanti');
               break;
@@ -93,7 +97,7 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
               break;
             
             default:
-              alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fasi!`);
+              alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fases!`);
           }
         }}
       />
@@ -114,6 +118,7 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
           <Route path="/classifica" element={<Classifica />} />
           
           {/* Nuove Rotte Informative inserite all'interno del flusso */}
+          <Route path="/gestione-squadra" element={<GestioneSquadra currentUser={currentUser} />} />
           <Route path="/partecipanti" element={<PartecipantiLega currentUser={currentUser} />} />
           <Route path="/listone" element={<ListoneCalciatori />} />
           

@@ -3,7 +3,7 @@ import { UserButton } from '@clerk/clerk-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
-  
+
   const handleNav = (targetPage) => {
     if (onNavigate) {
       onNavigate(targetPage);
@@ -19,7 +19,7 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
 
       <div className={`sidebar-container ${isOpen ? 'open' : ''}`}>
-        
+
         {/* HEADER: Benvenuto, Ruolo e Tasto Chiusura */}
         <div className="sidebar-header">
           <div className="user-welcome">
@@ -35,7 +35,7 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
 
         {/* CONTENUTO MENU */}
         <div className="sidebar-menu-content">
-          
+
           {/* NUOVA SEZIONE PRINCIPALE (Integrazione BottomNavbar) */}
           <div className="menu-section">
             <p className="section-title">Navigazione</p>
@@ -59,14 +59,17 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
           <div className="menu-section">
             <p className="section-title">Info</p>
             <ul>
+              <li onClick={() => handleNav('gestione-squadra')}>
+                Gestione Squadra
+              </li>
               <li onClick={() => handleNav('regolamento')}>
-              Regolamento Mondiale
+                Regolamento Mondiale
               </li>
               <li onClick={() => handleNav('partecipanti')}>
-              Partecipanti Lega
+                Partecipanti Lega
               </li>
               <li onClick={() => handleNav('listone')}>
-              Listone Calciatori
+                Listone Calciatori
               </li>
             </ul>
           </div>
