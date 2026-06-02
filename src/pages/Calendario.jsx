@@ -19,6 +19,9 @@ const Calendario = () => {
   const [dettaglioFormazione, setDettaglioFormazione] = useState({ titolari: [], panchina: [] });
   const [loadingDettaglio, setLoadingDettaglio] = useState(false);
 
+  // Mappa di peso dei ruoli per garantire l'ordine fisso P -> D -> C -> A
+  const ordineRuoli = { 'P': 1, 'D': 2, 'C': 3, 'A': 4 };
+
   const fetchCalendarioData = async () => {
     try {
       setLoading(true);
@@ -139,9 +142,19 @@ const Calendario = () => {
         };
       }).filter(Boolean);
 
+      // Ordiniamo in modo deterministico i titolari per Ruolo (P -> D -> C -> A) e poi per Posizione
+      const listaTitolari = mappati
+        .filter(f => f.posizione <= 11)
+        .sort((a, b) => (ordineRuoli[a.ruolo] || 99) - (ordineRuoli[b.ruolo] || 99) || a.posizione - b.posizione);
+
+      // Ordiniamo in modo deterministico le riserve sempre per Ruolo (P -> D -> C -> A) e poi per Posizione
+      const listaPanchina = mappati
+        .filter(f => f.posizione > 11)
+        .sort((a, b) => (ordineRuoli[a.ruolo] || 99) - (ordineRuoli[b.ruolo] || 99) || a.posizione - b.posizione);
+
       setDettaglioFormazione({
-        titolari: mappati.filter(f => f.posizione <= 11),
-        panchina: mappati.filter(f => f.posizione > 11)
+        titolari: listaTitolari,
+        panchina: listaPanchina
       });
     } catch (err) {
       console.error("Errore caricamento calciatori:", err);
@@ -243,7 +256,7 @@ const Calendario = () => {
                                   )}
                                 </button>
 
-                                {/* Visualizzatore Formazione Mobile-First direttamente sotto la squadra cliccata */}
+                                {/* Visualizzatore Formazione con Bordi Colorati */}
                                 {selezionata && (
                                   <div className="dropdown-formazione-visualizzatore">
                                     {loadingDettaglio ? (
@@ -253,7 +266,7 @@ const Calendario = () => {
                                         <h5>Titolari ({sf.modulo})</h5>
                                         <div className="lista-calciatori-campo">
                                           {dettaglioFormazione.titolari.map(t => (
-                                            <div key={t.id} className="riga-giocatore-campo">
+                                            <div key={t.id} className={`riga-giocatore-campo cal-border-${t.ruolo}`}>
                                               <span className={`mini-ruolo-indicator ${t.ruolo}`}>{t.ruolo}</span>
                                               <span className="nome-giocatore-campo">{t.nome}</span>
                                               <span className="voto-giocatore-campo-live">
@@ -269,7 +282,7 @@ const Calendario = () => {
                                             <p className="no-panchina-text">Nessuna riserva inserita</p>
                                           ) : (
                                             dettaglioFormazione.panchina.map(p => (
-                                              <div key={p.id} className="riga-giocatore-campo">
+                                              <div key={p.id} className={`riga-giocatore-campo cal-border-${p.ruolo}`}>
                                                 <span className={`mini-ruolo-indicator ${p.ruolo}`}>{p.ruolo}</span>
                                                 <span className="nome-giocatore-campo">{p.nome}</span>
                                                 <span className="voto-giocatore-campo-live">

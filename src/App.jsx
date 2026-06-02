@@ -17,7 +17,12 @@ import SpostaPlayer from './pages/Admin/SpostaPlayer';
 import GestoreGiornata from './pages/Admin/GestoreGiornata'; 
 import AdminModificaFormazioni from './pages/Admin/AdminModificaFormazioni'; 
 import AdminModificaVoti from './pages/Admin/AdminModificaVoti'; 
-import AdminPenalita from './pages/Admin/AdminPenalita'; // Nuova pagina importata
+import AdminPenalita from './pages/Admin/AdminPenalita'; 
+
+// Nuove pagine della cartella Player
+import PartecipantiLega from './pages/Player/PartecipantiLega';
+import ListoneCalciatori from './pages/Player/ListoneCalciatori';
+
 import BottomNavbar from './components/BottomNavbar';
 import Sidebar from './components/Sidebar'; 
 
@@ -54,6 +59,14 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
               break;
             case 'classifica':
               navigate('/classifica');
+              break;
+            
+            // Nuove Rotte Info (Consultazione Player)
+            case 'partecipanti':
+              navigate('/partecipanti');
+              break;
+            case 'listone':
+              navigate('/listone');
               break;
             
             // Rotte Amministrazione
@@ -99,6 +112,10 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
           <Route path="/squadre/:squadraId" element={<DettaglioSquadra />} />
           <Route path="/calendario" element={<Calendario />} />
           <Route path="/classifica" element={<Classifica />} />
+          
+          {/* Nuove Rotte Informative inserite all'interno del flusso */}
+          <Route path="/partecipanti" element={<PartecipantiLega currentUser={currentUser} />} />
+          <Route path="/listone" element={<ListoneCalciatori />} />
           
           {/* Rotte operative per i Turni di Gioco */}
           <Route path="/formazione/inserisci/:giornataId" element={<InserisciFormazione />} />

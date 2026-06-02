@@ -1,0 +1,217 @@
+.player-page-container {
+  padding: 14px;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #fff;
+}
+
+.player-page-header {
+  margin-bottom: 16px;
+}
+
+.player-page-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.player-page-subtitle {
+  color: #aaa;
+  font-size: 12px;
+  margin: 0;
+}
+
+.player-loading {
+  text-align: center;
+  padding-top: 40vh;
+  color: #888;
+  font-size: 14px;
+}
+
+.listone-filtri-box {
+  background-color: #1e1e24;
+  border: 1px solid #2e2e38;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.search-calciatore-input {
+  background-color: #121214;
+  border: 1px solid #2e2e38;
+  padding: 10px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.search-calciatore-input:focus {
+  border-color: #00b0ff;
+}
+
+.ruolo-filter-row {
+  display: flex;
+  gap: 6px;
+}
+
+.filter-role-btn {
+  flex: 1;
+  background-color: #121214;
+  border: 1px solid #2e2e38;
+  color: #aaa;
+  padding: 8px 0;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-role-btn.active.TUTTI { background-color: #2e2e38; color: #fff; border-color: #aaa; }
+.filter-role-btn.active.P { background-color: #ffca28; color: #121214; border-color: #ffca28; }
+.filter-role-btn.active.D { background-color: #00b0ff; color: #fff; border-color: #00b0ff; }
+.filter-role-btn.active.C { background-color: #00e676; color: #121214; border-color: #00e676; }
+.filter-role-btn.active.A { background-color: #ff1744; color: #fff; border-color: #ff1744; }
+
+.risultati-count {
+  font-size: 11px;
+  color: #8a8a93;
+  margin: 0 0 14px 4px;
+  font-weight: 500;
+}
+
+/* --- MODALITÀ INIZIALE: BLOCCHI PER SQUADRE (NAZIONALI) --- */
+.nazioni-blocks-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.nazione-block-card {
+  background-color: #1e1e24;
+  border: 1px solid #2e2e38;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nazione-block-header {
+  background-color: #15151a;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #2e2e38;
+}
+
+.nazione-block-header h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #00b0ff;
+  letter-spacing: 0.5px;
+}
+
+.nazione-count-badge {
+  font-size: 10px;
+  background-color: #26262f;
+  color: #bbb;
+  padding: 3px 8px;
+  border-radius: 20px;
+  border: 1px solid #333;
+}
+
+.nazione-block-players {
+  display: flex;
+  flex-direction: column;
+}
+
+.listone-player-mini-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid #18181d;
+  border-left: 3px solid #444;
+}
+
+.listone-player-mini-row:last-child {
+  border-bottom: none;
+}
+
+.mini-row-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* --- MODALITÀ FILTRATA: LISTA LINEARE --- */
+.listone-linear-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calciatore-listone-row {
+  background-color: #1e1e24;
+  border: 1px solid #2e2e38;
+  border-left: 3px solid #444;
+  border-radius: 6px;
+  padding: 11px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Bordi colorati Ruoli */
+.border-P { border-left-color: #ffca28 !important; }
+.border-D { border-left-color: #00b0ff !important; }
+.border-C { border-left-color: #00e676 !important; }
+.border-A { border-left-color: #ff1744 !important; }
+
+.left-calc-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.listone-ruolo-badge {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  min-width: 14px;
+  text-align: center;
+  color: #121214;
+}
+
+.listone-ruolo-badge.P { background-color: #ffca28; }
+.listone-ruolo-badge.D { background-color: #00b0ff; color: #fff; }
+.listone-ruolo-badge.C { background-color: #00e676; }
+.listone-ruolo-badge.A { background-color: #ff1744; color: #fff; }
+
+.name-nat-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.calc-name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.calc-nat {
+  font-size: 10.5px;
+  color: #8a8a93;
+  margin-top: 2px;
+}
+
+.no-data-msg {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  padding: 30px;
+}

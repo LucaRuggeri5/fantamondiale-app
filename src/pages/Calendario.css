@@ -258,7 +258,14 @@
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 12px;
+  border-left: 3px solid #333; /* Bordo sinistro ereditato dai ruoli */
 }
+
+/* Bordi sinistri colorati per i ruoli nel calendario */
+.riga-giocatore-campo.cal-border-P { border-left-color: #ffca28; }
+.riga-giocatore-campo.cal-border-D { border-left-color: #00b0ff; }
+.riga-giocatore-campo.cal-border-C { border-left-color: #00e676; }
+.riga-giocatore-campo.cal-border-A { border-left-color: #ff1744; }
 
 .mini-ruolo-indicator {
   font-size: 9px;
@@ -268,7 +275,7 @@
   min-width: 13px;
   text-align: center;
   color: #121214;
-  margin-right: 4px;
+  margin-right: 8px;
 }
 
 .mini-ruolo-indicator.P { background-color: #ffca28; }

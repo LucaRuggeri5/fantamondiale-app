@@ -44,13 +44,13 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
                 <span>🏠</span> Dashboard
               </li>
               <li onClick={() => handleNav('squadre')}>
-                Squadre
+                <span>🛡️</span> Squadre
               </li>
               <li onClick={() => handleNav('calendario')}>
-                Calendario
+                <span>📅</span> Calendario
               </li>
               <li onClick={() => handleNav('classifica')}>
-                Classifica
+                <span>📊</span> Classifica
               </li>
             </ul>
           </div>
@@ -60,13 +60,13 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
             <p className="section-title">Info</p>
             <ul>
               <li onClick={() => handleNav('regolamento')}>
-                Regolamento Mondiale
+              Regolamento Mondiale
               </li>
               <li onClick={() => handleNav('partecipanti')}>
-                Partecipanti Lega
+              Partecipanti Lega
               </li>
               <li onClick={() => handleNav('listone')}>
-                Listone Calciatori
+              Listone Calciatori
               </li>
             </ul>
           </div>

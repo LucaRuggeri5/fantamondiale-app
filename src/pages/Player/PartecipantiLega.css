@@ -1,0 +1,105 @@
+.player-page-container {
+  padding: 14px;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #fff;
+}
+
+.player-page-header {
+  margin-bottom: 20px;
+}
+
+.player-page-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.player-page-subtitle {
+  color: #aaa;
+  font-size: 12px;
+  margin: 0;
+}
+
+.player-loading {
+  text-align: center;
+  padding-top: 40vh;
+  color: #888;
+  font-size: 14px;
+}
+
+.partecipanti-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.partecipante-card {
+  background-color: #1e1e24;
+  border: 1px solid #2e2e38;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.partecipante-avatar-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-placeholder {
+  width: 36px;
+  height: 36px;
+  background-color: #2e2e38;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #00b0ff;
+  border: 1px solid #444;
+}
+
+.partecipante-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.part-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.part-email {
+  font-size: 11px;
+  color: #8a8a93;
+}
+
+.badge-role-view {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.badge-role-view.admin {
+  background-color: rgba(255, 202, 40, 0.12);
+  color: #ffca28;
+}
+
+.badge-role-view.player {
+  background-color: rgba(0, 176, 255, 0.12);
+  color: #00b0ff;
+}
+
+.no-data-msg {
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+  padding: 20px;
+}
