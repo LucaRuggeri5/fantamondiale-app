@@ -106,7 +106,9 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
         <button className="btn-hamburger" onClick={() => setIsSidebarOpen(true)}>
           ☰
         </button>
-        <span className="app-title">FantaMondiale ⚽</span>
+        <span className="app-title" onClick={() => navigate('/')}>
+          FantaMondiale ⚽
+        </span>
       </header>
 
       <main className="main-content">

@@ -46,11 +46,18 @@
   padding: 0 5px;
 }
 
-/* Titolo dell'applicazione - CORRETTA SINTASSI ALLA RIGA 42 */
+/* Titolo dell'applicazione - Modificato per feedback al passaggio del mouse */
 .app-title {
   color: #00e676;
   font-weight: bold; 
   font-size: 18px;
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s ease;
+}
+
+.app-title:hover {
+  opacity: 0.85;
 }
 
 /* Area di contenuto dove cambiano le pagine */
