@@ -5,7 +5,7 @@
 }
 
 .player-page-header {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .player-page-header h2 {
@@ -20,6 +20,66 @@
   margin: 0;
 }
 
+/* STYLING COMPONENTE INVITO/COPIA CODICE */
+.codice-invito-container {
+  background-color: #1e1e24;
+  border: 1px solid #2e2e38;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.codice-label {
+  font-size: 11px;
+  color: #8a8a93;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.codice-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #121214;
+  border: 1px solid #2e2e38;
+  padding: 8px 12px;
+  border-radius: 6px;
+}
+
+.codice-valore {
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: bold;
+  color: #00e676;
+  letter-spacing: 1px;
+}
+
+.btn-copia-codice {
+  background-color: #00b0ff;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copia-codice:hover {
+  background-color: #0091ea;
+}
+
+.btn-copia-codice.success {
+  background-color: #00e676;
+  color: #121214;
+}
+
+/* LISTA PARTECIPANTI */
 .player-loading {
   text-align: center;
   padding-top: 40vh;
