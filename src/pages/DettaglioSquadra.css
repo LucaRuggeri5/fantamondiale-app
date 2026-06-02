@@ -110,6 +110,12 @@
   border: 1px solid #222;
 }
 
+/* Allineamento orizzontale per la bandiera e il nome */
+.player-detail-left {
+  display: flex;
+  align-items: center;
+}
+
 .player-detail-card strong {
   color: #fff;
   font-size: 13px;
@@ -118,4 +124,5 @@
 .player-nation {
   color: #666;
   font-size: 11px;
+  text-transform: capitalize;
 }

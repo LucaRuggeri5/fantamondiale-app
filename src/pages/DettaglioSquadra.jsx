@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import BandieraNazionale from '../components/BandieraNazionale/BandieraNazionale';
 import './DettaglioSquadra.css';
 
 const DettaglioSquadra = () => {
@@ -94,8 +95,11 @@ const DettaglioSquadra = () => {
               <div className="players-subgrid">
                 {rosaOrdinata.P.map(p => (
                   <div key={p.id} className="player-detail-card">
-                    <strong>{p.nome}</strong>
-                    <span className="player-nation">{p.nazionale}</span>
+                    <div className="player-detail-left">
+                      <BandieraNazionale nazione={p.nazionale} />
+                      <strong>{p.nome}</strong>
+                    </div>
+                    <span className="player-nation">{p.nazionale || 'N/D'}</span>
                   </div>
                 ))}
               </div>
@@ -109,8 +113,11 @@ const DettaglioSquadra = () => {
               <div className="players-subgrid">
                 {rosaOrdinata.D.map(p => (
                   <div key={p.id} className="player-detail-card">
-                    <strong>{p.nome}</strong>
-                    <span className="player-nation">{p.nazionale}</span>
+                    <div className="player-detail-left">
+                      <BandieraNazionale nazione={p.nazionale} />
+                      <strong>{p.nome}</strong>
+                    </div>
+                    <span className="player-nation">{p.nazionale || 'N/D'}</span>
                   </div>
                 ))}
               </div>
@@ -124,8 +131,11 @@ const DettaglioSquadra = () => {
               <div className="players-subgrid">
                 {rosaOrdinata.C.map(p => (
                   <div key={p.id} className="player-detail-card">
-                    <strong>{p.nome}</strong>
-                    <span className="player-nation">{p.nazionale}</span>
+                    <div className="player-detail-left">
+                      <BandieraNazionale nazione={p.nazionale} />
+                      <strong>{p.nome}</strong>
+                    </div>
+                    <span className="player-nation">{p.nazionale || 'N/D'}</span>
                   </div>
                 ))}
               </div>
@@ -139,8 +149,11 @@ const DettaglioSquadra = () => {
               <div className="players-subgrid">
                 {rosaOrdinata.A.map(p => (
                   <div key={p.id} className="player-detail-card">
-                    <strong>{p.nome}</strong>
-                    <span className="player-nation">{p.nazionale}</span>
+                    <div className="player-detail-left">
+                      <BandieraNazionale nazione={p.nazionale} />
+                      <strong>{p.nome}</strong>
+                    </div>
+                    <span className="player-nation">{p.nazionale || 'N/D'}</span>
                   </div>
                 ))}
               </div>
