@@ -214,7 +214,7 @@ const AdminModificaFormazioni = () => {
     }
   };
 
-  // Render Linee Campo (Identico a InserisciFormazione)
+  // Render Linee Campo (Allineato a InserisciFormazione con classi colore bordo)
   const renderLineaSquadra = (ruoloKey) => {
     const postiMassimi = regoleModuli[modulo][ruoloKey];
     const schieratiQuestoRuolo = titolari.filter(t => t.ruolo === ruoloKey);
@@ -224,7 +224,7 @@ const AdminModificaFormazioni = () => {
       const giocatore = schieratiQuestoRuolo[i];
       if (giocatore) {
         nodi.push(
-          <div key={`tit-${ruoloKey}-${i}`} className="campo-player-card occupato" onClick={() => gestisciTitolare(giocatore)} title={giocatore.nome}>
+          <div key={`tit-${ruoloKey}-${i}`} className={`campo-player-card occupato border-${ruoloKey}`} onClick={() => gestisciTitolare(giocatore)} title={giocatore.nome}>
             <span className={`badge-ruolo-mini ${giocatore.ruolo}`}>{giocatore.ruolo}</span>
             <span className="campo-player-name">{giocatore.nome}</span>
             <span className="remove-icon">✕</span>
@@ -232,7 +232,7 @@ const AdminModificaFormazioni = () => {
         );
       } else {
         nodi.push(
-          <div key={`slot-vuoto-${ruoloKey}-${i}`} className="campo-player-card vuoto" onClick={() => setOverlay({ isOpen: true, ruolo: ruoloKey, tipo: 'titolare' })}>
+          <div key={`slot-vuoto-${ruoloKey}-${i}`} className={`campo-player-card vuoto border-${ruoloKey}`} onClick={() => setOverlay({ isOpen: true, ruolo: ruoloKey, tipo: 'titolare' })}>
             <span className="add-icon">+</span>
             <span className="add-label">Aggiungi</span>
           </div>
@@ -242,7 +242,6 @@ const AdminModificaFormazioni = () => {
     return nodi;
   };
 
-  // Filtro dinamico per l'overlay popup
   const giocatoriSelezionabili = rosa.filter(g => {
     if (g.ruolo !== overlay.ruolo) return false;
     if (titolari.some(t => t.id === g.id)) return false;
@@ -300,7 +299,7 @@ const AdminModificaFormazioni = () => {
             <div>Panchina: <b>{panchina.length} / 7</b></div>
           </div>
 
-          {/* LAYOUT CAMPO + PANCHINA (LAYOUT PULITO DA INSERISCIFORMAZIONE) */}
+          {/* LAYOUT CAMPO + PANCHINA ALLINEATO */}
           <div className="campo-visual-section">
             <div className="campo-container">
               <div className="campo-erba">
@@ -315,23 +314,34 @@ const AdminModificaFormazioni = () => {
               </div>
             </div>
 
+            {/* PANCHINA STRUTTURATA IN VERTICALE MONOCOLONNA */}
             <div className="panchina-container">
-              <h3>Panchina (Max: 1P, 2D, 2C, 2A)</h3>
-              <div className="panchina-ruoli-grid">
+              <h3>Panchina</h3>
+              <div className="panchina-vertical-list">
                 {['P', 'D', 'C', 'A'].map(r => {
                   const riserveRuolo = panchina.filter(p => p.ruolo === r);
                   return (
-                    <div key={r} className="panchina-ruolo-box">
-                      <div className="panchina-ruolo-header" onClick={() => setOverlay({ isOpen: true, ruolo: r, tipo: 'panchina' })}>
-                        <h5>{r === 'P' ? 'Portieri' : r === 'D' ? 'Difensori' : r === 'C' ? 'Centrocampisti' : 'Attaccanti'} ({riserveRuolo.length}/{limitiPanchina[r]})</h5>
-                        <button className="btn-add-riserva-plus">+</button>
+                    <div key={r} className="panchina-ruolo-row">
+                      <div className="panchina-ruolo-header-flat" onClick={() => setOverlay({ isOpen: true, ruolo: r, tipo: 'panchina' })}>
+                        <div className="header-flat-left">
+                          <span className={`badge-ruolo-mini static-badge ${r}`}>{r}</span>
+                          <span className="ruolo-flat-title">
+                            {r === 'P' ? 'Portieri' : r === 'D' ? 'Difensori' : r === 'C' ? 'Centrocampisti' : 'Attaccanti'}
+                          </span>
+                        </div>
+                        <span className="counter-flat-riserve">
+                          {riserveRuolo.length} / {limitiPanchina[r]} <b className="plus-indicator-flat">+</b>
+                        </span>
                       </div>
-                      <div className="panchina-items-list">
-                        {riserveRuolo.length === 0 ? <span className="empty-pan-text">Vuoto</span> : (
+                      
+                      <div className="panchina-items-vertical-stack">
+                        {riserveRuolo.length === 0 ? (
+                          <span className="empty-pan-text-flat">Nessun giocatore inserito</span>
+                        ) : (
                           riserveRuolo.map(p => (
-                            <div key={p.id} className="panchinaro-item" onClick={() => setPanchina(prev => prev.filter(item => item.id !== p.id))}>
-                              <span className="panchinaro-name">{p.nome}</span>
-                              <span className="remove-text-mini">✕</span>
+                            <div key={p.id} className={`panchinaro-item-flat flat-border-${r}`} onClick={() => setPanchina(prev => prev.filter(item => item.id !== p.id))}>
+                              <span className="panchinaro-name-flat">{p.nome}</span>
+                              <span className="remove-icon-flat">✕</span>
                             </div>
                           ))
                         )}

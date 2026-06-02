@@ -9,23 +9,18 @@ const InserisciFormazione = () => {
   const { user } = useUser();
   const navigate = useNavigate();
 
-  // Stati per la gestione dei dati e caricamenti
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [giornata, setGiornata] = useState(null);
   const [squadraId, setSquadraId] = useState(null);
   const [rosa, setRosa] = useState([]);
   
-  // Stati per le scelte dell'utente (Modulo e Liste Giocatori)
   const [modulo, setModulo] = useState('4-4-2');
   const [titolari, setTitolari] = useState([]);
-  // Gestiamo la panchina come un unico array piatto per alleggerire il codice
   const [panchina, setPanchina] = useState([]);
 
-  // Stato per la finestra modale di selezione
   const [overlay, setOverlay] = useState({ isOpen: false, ruolo: '', tipo: '' });
 
-  // Configurazione dei moduli (quanti giocatori per ruolo nei titolari)
   const regoleModuli = {
     '4-4-2': { P: 1, D: 4, C: 4, A: 2 },
     '3-4-3': { P: 1, D: 3, C: 4, A: 3 },
@@ -34,7 +29,6 @@ const InserisciFormazione = () => {
     '4-5-1': { P: 1, D: 4, C: 5, A: 1 }
   };
 
-  // Nuovi limiti rigidi per la panchina richiesti
   const limitiPanchina = { P: 1, D: 2, C: 2, A: 2 };
 
   useEffect(() => {
@@ -42,22 +36,17 @@ const InserisciFormazione = () => {
       try {
         if (!user || !giornataId) return;
 
-        // 1. Recuperiamo i dettagli della giornata attuale
         const { data: gData } = await supabase.from('giornate').select('*').eq('id', giornataId).single();
         setGiornata(gData);
 
-        // 2. Recuperiamo l'ID della squadra dell'utente loggato
         const { data: uData } = await supabase.from('utenti').select('squadra_id').eq('id', user.id).single();
         setSquadraId(uData.squadra_id);
 
-        // 3. Recuperiamo tutti i calciatori facenti parte della rosa del club
         const { data: rosaData } = await supabase.from('rose_squadre').select('calciatore_id, calciatori_reali(id, nome, ruolo, nazionale)').eq('squadra_id', uData.squadra_id);
         
-        // Puliamo i dati annidati di Supabase estraendo solo i profili dei calciatori
         const listaCalciatori = rosaData.map(r => Array.isArray(r.calciatori_reali) ? r.calciatori_reali[0] : r.calciatori_reali).filter(Boolean);
         setRosa(listaCalciatori);
 
-        // 4. Carichiamo l'eventuale formazione salvata in precedenza per questa giornata
         const { data: formEsistente } = await supabase.from('formazioni').select('*').eq('squadra_id', uData.squadra_id).eq('giornata_id', giornataId).maybeSingle();
 
         if (formEsistente) {
@@ -71,7 +60,6 @@ const InserisciFormazione = () => {
             calcSchierati.forEach(cs => {
               const info = listaCalciatori.find(item => item.id === cs.calciatore_id);
               if (info) {
-                // Le posizioni da 1 a 11 rappresentano i titolari sul campo
                 if (cs.posizione <= 11) {
                   vecchiTitolari.push(info);
                 } else {
@@ -93,13 +81,10 @@ const InserisciFormazione = () => {
     inizializzaPagina();
   }, [user, giornataId]);
 
-  // Gestione click su uno slot dei Titolari
   const gestisciTitolare = (calciatore) => {
-    // Se è già titolare, lo rimuoviamo (click per svuotare lo slot)
     if (titolari.some(t => t.id === calciatore.id)) {
       setTitolari(prev => prev.filter(t => t.id !== calciatore.id));
     } else {
-      // Altrimenti controlliamo se c'è spazio nel modulo per quel ruolo specifico
       const limiteRuolo = regoleModuli[modulo][calciatore.ruolo];
       const attualiRuolo = titolari.filter(t => t.ruolo === calciatore.ruolo).length;
 
@@ -108,16 +93,13 @@ const InserisciFormazione = () => {
         return;
       }
       
-      // Rimuoviamo il giocatore dalla panchina se era stato messo lì, poi lo inseriamo nei titolari
       setPanchina(prev => prev.filter(p => p.id !== calciatore.id));
       setTitolari(prev => [...prev, calciatore]);
     }
     setOverlay({ isOpen: false, ruolo: '', tipo: '' });
   };
 
-  // Gestione inserimento nelle Riserve
   const gestisciPanchina = (calciatore) => {
-    // Controlliamo quanti giocatori di questo ruolo ci sono già in panchina
     const attualiInPanchina = panchina.filter(p => p.ruolo === calciatore.ruolo).length;
     const limiteConsentito = limitiPanchina[calciatore.ruolo];
 
@@ -127,17 +109,15 @@ const InserisciFormazione = () => {
     }
 
     setPanchina(prev => [...prev, calciatore]);
-    setOverlay({ isOpen: false, opacity: '', tipo: '' });
+    setOverlay({ isOpen: false, ruolo: '', tipo: '' });
   };
 
-  // Al cambio modulo resettiamo i campi per evitare incongruenze di ruoli
   const handleCambioModulo = (nuovoModulo) => {
     setModulo(nuovoModulo);
     setTitolari([]);
     setPanchina([]);
   };
 
-  // Funzione di salvataggio modificata: ora basta anche solo un giocatore inserito!
   const handleSalvaFormazione = async () => {
     if (titolari.length === 0 && panchina.length === 0) {
       alert("Inserisci almeno un giocatore (titolare o panchina) prima di salvare!");
@@ -146,7 +126,6 @@ const InserisciFormazione = () => {
 
     try {
       setSaving(true);
-      // Inseriamo o aggiorniamo la testa della formazione
       const { data: formSalvata, error: fErr } = await supabase
         .from('formazioni')
         .upsert({ squadra_id: squadraId, giornata_id: giornataId, modulo: modulo, confermata: true }, { onConflict: 'squadra_id,giornata_id' })
@@ -154,13 +133,11 @@ const InserisciFormazione = () => {
 
       if (fErr) throw fErr;
 
-      // Cancelliamo i vecchi record dei calciatori associati per riscriverli da zero
       await supabase.from('formazioni_calciatori').delete().eq('formazione_id', formSalvata.id);
 
-      // Prepariamo l'array dei record da salvare in blocco
       const recordCalciatori = [];
 
-      // Mappiamo i titolari (posizione da 1 a 11)
+      // CORRETTO: Cambiato player.id in giocatore.id per risolvere il ReferenceError
       titolari.forEach((giocatore, index) => {
         recordCalciatori.push({
           formazione_id: formSalvata.id,
@@ -170,7 +147,6 @@ const InserisciFormazione = () => {
         });
       });
 
-      // Mappiamo i panchinari (posizione partendo da 12 in poi)
       panchina.forEach((giocatore, index) => {
         recordCalciatori.push({
           formazione_id: formSalvata.id,
@@ -191,7 +167,6 @@ const InserisciFormazione = () => {
     }
   };
 
-  // Renderizza graficamente le righe di slot sul campo da gioco
   const renderLineaSquadra = (ruoloKey) => {
     const postiMassimi = regoleModuli[modulo][ruoloKey];
     const schieratiQuestoRuolo = titolari.filter(t => t.ruolo === ruoloKey);
@@ -201,7 +176,7 @@ const InserisciFormazione = () => {
       const giocatore = schieratiQuestoRuolo[i];
       if (giocatore) {
         nodi.push(
-          <div key={`tit-${ruoloKey}-${i}`} className="campo-player-card occupato" onClick={() => gestisciTitolare(giocatore)} title={giocatore.nome}>
+          <div key={`tit-${ruoloKey}-${i}`} className={`campo-player-card occupato border-${ruoloKey}`} onClick={() => gestisciTitolare(giocatore)}>
             <span className={`badge-ruolo-mini ${giocatore.ruolo}`}>{giocatore.ruolo}</span>
             <span className="campo-player-name">{giocatore.nome}</span>
             <span className="remove-icon">✕</span>
@@ -209,7 +184,7 @@ const InserisciFormazione = () => {
         );
       } else {
         nodi.push(
-          <div key={`slot-vuoto-${ruoloKey}-${i}`} className="campo-player-card vuoto" onClick={() => setOverlay({ isOpen: true, ruolo: ruoloKey, tipo: 'titolare' })}>
+          <div key={`slot-vuoto-${ruoloKey}-${i}`} className={`campo-player-card vuoto border-${ruoloKey}`} onClick={() => setOverlay({ isOpen: true, ruolo: ruoloKey, tipo: 'titolare' })}>
             <span className="add-icon">+</span>
             <span className="add-label">Aggiungi</span>
           </div>
@@ -219,7 +194,6 @@ const InserisciFormazione = () => {
     return nodi;
   };
 
-  // Filtra i giocatori da mostrare nella modale di scelta
   const giocatoriSelezionabili = rosa.filter(g => {
     if (g.ruolo !== overlay.ruolo) return false;
     if (titolari.some(t => t.id === g.id)) return false;
@@ -232,17 +206,22 @@ const InserisciFormazione = () => {
   return (
     <div className="inserisci-formazione-page">
       <div className="formazione-header">
-        <button className="btn-back-formazione" onClick={() => navigate('/dashboard')}>⬅️ Indietro</button>
-        <h2>Schiera Squadra - Giornata {giornata?.numero_giornata}</h2>
+        <button className="btn-back-formazione" onClick={() => navigate('/dashboard')}>⬅️</button>
+        <h2>Schiera G{giornata?.numero_giornata}</h2>
       </div>
 
       <div className="modulo-selector-card">
-        <label>Modulo:</label>
-        <div className="moduli-buttons">
+        <label htmlFor="modulo-select">Modulo Tattico:</label>
+        <select 
+          id="modulo-select" 
+          className="select-modulo-dropdown"
+          value={modulo} 
+          onChange={(e) => handleCambioModulo(e.target.value)}
+        >
           {Object.keys(regoleModuli).map(m => (
-            <button key={m} className={`btn-modulo ${modulo === m ? 'attivo' : ''}`} onClick={() => handleCambioModulo(m)}>{m}</button>
+            <option key={m} value={m}>{m}</option>
           ))}
-        </div>
+        </select>
       </div>
 
       <div className="recap-schieramento">
@@ -264,24 +243,33 @@ const InserisciFormazione = () => {
           </div>
         </div>
 
-        {/* SEZIONE PANCHINA SEMPLIFICATA */}
         <div className="panchina-container">
-          <h3>Panchina (Max: 1P, 2D, 2C, 2A)</h3>
-          <div className="panchina-ruoli-grid">
+          <h3>Panchina</h3>
+          <div className="panchina-vertical-list">
             {['P', 'D', 'C', 'A'].map(r => {
               const riserveRuolo = panchina.filter(p => p.ruolo === r);
               return (
-                <div key={r} className="panchina-ruolo-box">
-                  <div className="panchina-ruolo-header" onClick={() => setOverlay({ isOpen: true, ruolo: r, tipo: 'panchina' })}>
-                    <h5>{r === 'P' ? 'Portieri' : r === 'D' ? 'Difensori' : r === 'C' ? 'Centrocampisti' : 'Attaccanti'} ({riserveRuolo.length}/{limitiPanchina[r]})</h5>
-                    <button className="btn-add-riserva-plus">+</button>
+                <div key={r} className="panchina-ruolo-row">
+                  <div className="panchina-ruolo-header-flat" onClick={() => setOverlay({ isOpen: true, ruolo: r, tipo: 'panchina' })}>
+                    <div className="header-flat-left">
+                      <span className={`badge-ruolo-mini static-badge ${r}`}>{r}</span>
+                      <span className="ruolo-flat-title">
+                        {r === 'P' ? 'Portieri' : r === 'D' ? 'Difensori' : r === 'C' ? 'Centrocampisti' : 'Attaccanti'}
+                      </span>
+                    </div>
+                    <span className="counter-flat-riserve">
+                      {riserveRuolo.length} / {limitiPanchina[r]} <b className="plus-indicator-flat">+</b>
+                    </span>
                   </div>
-                  <div className="panchina-items-list">
-                    {riserveRuolo.length === 0 ? <span className="empty-pan-text">Vuoto</span> : (
+                  
+                  <div className="panchina-items-vertical-stack">
+                    {riserveRuolo.length === 0 ? (
+                      <span className="empty-pan-text-flat">Nessun giocatore inserito</span>
+                    ) : (
                       riserveRuolo.map(p => (
-                        <div key={p.id} className="panchinaro-item" onClick={() => setPanchina(prev => prev.filter(item => item.id !== p.id))} title={p.nome}>
-                          <span className="panchinaro-name">{p.nome}</span>
-                          <span className="remove-text-mini">✕</span>
+                        <div key={p.id} className={`panchinaro-item-flat flat-border-${r}`} onClick={() => setPanchina(prev => prev.filter(item => item.id !== p.id))}>
+                          <span className="panchinaro-name-flat">{p.nome}</span>
+                          <span className="remove-icon-flat">✕</span>
                         </div>
                       ))
                     )}
@@ -293,20 +281,19 @@ const InserisciFormazione = () => {
         </div>
       </div>
 
-      {/* OVERLAY SELEZIONE POPUP */}
       {overlay.isOpen && (
         <div className="overlay-scelta-giocatore">
           <div className="overlay-content-card">
             <div className="overlay-header">
-              <h4>Seleziona Ruolo {overlay.ruolo}</h4>
+              <h4>Seleziona {overlay.ruolo === 'P' ? 'Portiere' : overlay.ruolo === 'D' ? 'Difensore' : overlay.ruolo === 'C' ? 'Centrocampista' : 'Attaccante'}</h4>
               <button className="btn-close-overlay" onClick={() => setOverlay({ isOpen: false, ruolo: '', tipo: '' })}>&times;</button>
             </div>
             <div className="overlay-list-scroll">
-              {giocatoriSelezionabili.length === 0 ? <p className="no-players-overlay">Nessun giocatore disponibile.</p> : (
+              {giocatoriSelezionabili.length === 0 ? <p className="no-players-overlay">Nessun giocatore disponibile in rosa.</p> : (
                 giocatoriSelezionabili.map(g => (
                   <div key={g.id} className="giocatore-overlay-row" onClick={() => overlay.tipo === 'titolare' ? gestisciTitolare(g) : gestisciPanchina(g)}>
-                    <span className="giocatore-overlay-name">{g.nome} ({g.nazionale})</span>
-                    <button className="btn-select-giocatore">Scegli</button>
+                    <span className="giocatore-overlay-name">{g.nome}</span>
+                    <button className="btn-select-giocatore">Schiera</button>
                   </div>
                 ))
               )}
@@ -317,7 +304,7 @@ const InserisciFormazione = () => {
 
       <div className="formazione-footer-actions">
         <button className="btn-save-formazione-def" onClick={handleSalvaFormazione} disabled={saving}>
-          {saving ? 'Salvataggio in corso...' : '💾 Salva e Conferma Formazione'}
+          {saving ? 'Salvataggio...' : '💾 Salva e Conferma Formazione'}
         </button>
       </div>
     </div>

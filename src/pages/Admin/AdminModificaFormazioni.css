@@ -82,11 +82,37 @@
   border-color: #ff4757;
 }
 
-/* Modifiche Layout Campo ad uso Admin */
+/* Moduli Selezionabili in orizzontale per Admin */
 .admin-page-wrapper .modulo-selector-card {
   border-left: 4px solid #ff4757;
 }
 
+.moduli-buttons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.btn-modulo {
+  background-color: #121214;
+  color: #ccc;
+  border: 1px solid #3e3e4a;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-modulo.attivo {
+  background-color: #ff4757;
+  color: #fff;
+  border-color: #ff4757;
+}
+
+/* Override bottone salvataggio d'autorità */
 .admin-btn-override {
   background-color: #ff4757 !important;
   color: #fff !important;

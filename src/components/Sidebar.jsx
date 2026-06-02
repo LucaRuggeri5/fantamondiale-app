@@ -23,7 +23,6 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
         {/* HEADER: Benvenuto, Ruolo e Tasto Chiusura */}
         <div className="sidebar-header">
           <div className="user-welcome">
-            <span className="emoji-user">🏃‍♂️</span>
             <div className="user-details">
               <h4>Ciao, {nomeUtente}</h4>
               <span className={`badge-role ${userRole}`}>
