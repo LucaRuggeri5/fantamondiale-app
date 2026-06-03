@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale'; 
@@ -7,18 +7,10 @@ import './ListoneCalciatori.css';
 const ListoneCalciatori = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [loadingSearch, setLoadingSearch] = useState(false);
   
-  // Lista delle sole nazioni distinte presenti nel DB
-  const [nazioni, setNazioni] = useState([]);
+  // Array globale con TUTTI i calciatori attivi del database (superando il limite di 1000)
+  const [tuttiICalciatori, setTuttiICalciatori] = useState([]);
   
-  // Calciatori della singola nazione attualmente espansa (mappa id_nazione -> array calciatori)
-  const [calciatoriPerNazione, setCalciatoriPerNazione] = useState({});
-  const [loadingNazione, setLoadingNazione] = useState(null); // Tiene traccia di quale nazione sta caricando
-
-  // Stato per i risultati di ricerca globale (quando filtri per nome o ruolo)
-  const [calciatoriFiltrati, setCalciatoriFiltrati] = useState([]);
-
   const [cercaNome, setCercaNome] = useState('');
   const [ruoloSelezionato, setRuoloSelezionato] = useState('TUTTI');
   const [nazioneEspansa, setNazioneEspansa] = useState(null);
@@ -26,125 +18,116 @@ const ListoneCalciatori = () => {
   const ordineRuoli = { 'P': 1, 'D': 2, 'C': 3, 'A': 4 };
   const isFiltrato = cercaNome.trim() !== '' || ruoloSelezionato !== 'TUTTI';
 
-  // 1. CARICAMENTO INIZIALE: Prende solo l'elenco UNICO delle nazionali (pochissimi dati, velocissimo)
+  // 1. PAGINAZIONE CICLICA AUTOMATICA: Scarica l'intero database in background senza interruzioni
   useEffect(() => {
-    const fetchNazioni = async () => {
+    const fetchTuttiICalciatori = async () => {
       try {
         setLoading(true);
-        
-        // Seleziona solo la colonna nazionale dei calciatori attivi
-        const { data, error } = await supabase
-          .from('calciatori_reali')
-          .select('nazionale')
-          .eq('stato', 'attivo');
+        let listaCompleta = [];
+        let rigaIniziale = 0;
+        let rigaFinale = 999;
+        let continuaScaricamento = true;
 
-        if (error) throw error;
+        // Cicla automaticamente finché Supabase restituisce record (supera il blocco dei 1000)
+        while (continuaScaricamento) {
+          const { data, error } = await supabase
+            .from('calciatori_reali')
+            .select('*')
+            .eq('stato', 'attivo')
+            .range(rigaIniziale, rigaFinale);
 
-        // Estrae i valori unici eliminando i duplicati ed eventuali valori nulli
-        const listaNazioniUniche = [
-          ...new Set(data.map(item => item.nazionale).filter(Boolean))
-        ].sort((a, b) => a.localeCompare(b));
+          if (error) throw error;
 
-        setNazioni(listaNazioniUniche);
+          if (data && data.length > 0) {
+            listaCompleta = [...listaCompleta, ...data];
+            
+            // Se i record restituiti sono inferiori a 1000, significa che siamo arrivati alla fine della tabella
+            if (data.length < 1000) {
+              continuaScaricamento = false;
+            } else {
+              // Sposta il range in avanti per il prossimo blocco (es. 1000-1999)
+              rigaIniziale += 1000;
+              rigaFinale += 1000;
+            }
+          } else {
+            continuaScaricamento = false;
+          }
+        }
+
+        setTuttiICalciatori(listaCompleta);
       } catch (err) {
-        console.error("Errore caricamento elenco nazionali:", err);
+        console.error("Errore durante il recupero totale dei calciatori:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchNazioni();
+    fetchTuttiICalciatori();
   }, []);
 
-  // 2. QUERY DI RICERCA GLOBALE: Si attiva solo se l'utente digita un nome o filtra per ruolo
-  useEffect(() => {
-    const gestisciRicercaGlobale = async () => {
-      if (!isFiltrato) {
-        setCalciatoriFiltrati([]);
-        return;
+  // 2. ESTRAZIONE DINAMICA DELLE 48 NAZIONALI (Ordinate alfabeticamente)
+  const nazioni = useMemo(() => {
+    const listaNazioni = tuttiICalciatori
+      .map(c => c.nazionale)
+      .filter(n => n && n.trim() !== '');
+    return [...new Set(listaNazioni)].sort((a, b) => a.localeCompare(b));
+  }, [tuttiICalciatori]);
+
+  // 3. MAPPA DEI CALCIATORI DIVISI PER NAZIONE (Già pronti in memoria per l'accordion)
+  const calciatoriPerNazione = useMemo(() => {
+    const mappa = {};
+    
+    // Inizializza la mappa per ogni nazione trovata
+    nazioni.forEach(nazione => {
+      mappa[nazione] = [];
+    });
+
+    // Raggruppa i calciatori nella propria nazione di appartenenza
+    tuttiICalciatori.forEach(c => {
+      if (mappa[c.nazionale]) {
+        mappa[c.nazionale].push(c);
       }
+    });
 
-      try {
-        setLoadingSearch(true);
-        let query = supabase
-          .from('calciatori_reali')
-          .select('*')
-          .eq('stato', 'attivo')
-          .order('nazionale', { ascending: true })
-          .order('ruolo', { ascending: true })
-          .order('nome', { ascending: true });
-
-        if (ruoloSelezionato !== 'TUTTI') {
-          query = query.eq('ruolo', ruoloSelezionato);
-        }
-
-        if (cercaNome.trim() !== '') {
-          query = query.ilike('nome', `%${cercaNome}%`);
-        }
-
-        const { data, error } = await query;
-        if (error) throw error;
-        
-        setCalciatoriFiltrati(data || []);
-      } catch (err) {
-        console.error("Errore nella ricerca dei calciatori:", err);
-      } finally {
-        setLoadingSearch(false);
-      }
-    };
-
-    const delayDebounceFn = setTimeout(() => {
-      gestisciRicercaGlobale();
-    }, 300);
-
-    return () => clearTimeout(delayDebounceFn);
-  }, [cercaNome, ruoloSelezionato, isFiltrato]);
-
-  // 3. CARICAMENTO ON-DEMAND (LAZY LOADING): Chiamato solo al click sulla singola Nazionale
-  const toggleNazione = async (nazione) => {
-    if (nazioneEspansa === nazione) {
-      setNazioneEspansa(null);
-      return;
-    }
-
-    setNazioneEspansa(nazione);
-
-    // Se abbiamo già scaricato i calciatori di questa nazione in precedenza, non rifacciamo la query
-    if (calciatoriPerNazione[nazione]) return;
-
-    try {
-      setLoadingNazione(nazione);
-      
-      const { data, error } = await supabase
-        .from('calciatori_reali')
-        .select('*')
-        .eq('stato', 'attivo')
-        .eq('nazionale', nazione);
-
-      if (error) throw error;
-
-      // Ordina localmente i giocatori di questa specifica nazionale per Ruolo e Nome
-      const calciatoriOrdinati = (data || []).sort((a, b) => {
+    // Ordina i giocatori di ogni singola nazione per Ruolo (P, D, C, A) e Nome
+    Object.keys(mappa).forEach(nazione => {
+      mappa[nazione].sort((a, b) => {
         const pesoA = ordineRuoli[a.ruolo] || 99;
         const pesoB = ordineRuoli[b.ruolo] || 99;
         if (pesoA !== pesoB) return pesoA - pesoB;
         return a.nome.localeCompare(b.nome);
       });
+    });
 
-      // Salva i dati nello stato locale mappandoli sotto il nome della nazione
-      setCalciatoriPerNazione(prev => ({
-        ...prev,
-        [nazione]: calciatoriOrdinati
-      }));
+    return mappa;
+  }, [tuttiICalciatori, nazioni]);
 
-    } catch (err) {
-      console.error(`Errore caricamento rosa per ${nazione}:`, err);
-    } finally {
-      setLoadingNazione(null);
-    }
+  // 4. FILTRO DI RICERCA LOCALE ISTANTANEO (Per nome o ruolo)
+  const calciatoriFiltrati = useMemo(() => {
+    if (!isFiltrato) return [];
+
+    return tuttiICalciatori.filter(c => {
+      const matchRuolo = ruoloSelezionato === 'TUTTI' || c.ruolo === ruoloSelezionato;
+      const matchNome = cercaNome.trim() === '' || c.nome.toLowerCase().includes(cercaNome.toLowerCase());
+      return matchRuolo && matchNome;
+    }).sort((a, b) => {
+      // Ordina i risultati filtrati prima per Nazionale, poi per Ruolo e Nome
+      if (a.nazionale !== b.nazionale) return a.nazionale.localeCompare(b.nazionale);
+      const pesoA = ordineRuoli[a.ruolo] || 99;
+      const pesoB = ordineRuoli[b.ruolo] || 99;
+      if (pesoA !== pesoB) return pesoA - pesoB;
+      return a.nome.localeCompare(b.nome);
+    });
+  }, [tuttiICalciatori, cercaNome, ruoloSelezionato, isFiltrato]);
+
+  // Gestore apertura/chiusura dei blocchi nazionali (Istantaneo perché i dati sono già in memoria)
+  const toggleNazione = (nazione) => {
+    setNazioneEspansa(nazioneEspansa === nazione ? null : nazione);
   };
 
-  if (loading) return <div className="player-loading">Inizializzazione Nazionali in corso... ⏳</div>;
+  if (loading) {
+    return <div className="player-loading">Sincronizzazione Database Mondiale in corso... ⏳</div>;
+  }
 
   return (
     <div className="player-page-container">
@@ -154,7 +137,7 @@ const ListoneCalciatori = () => {
 
       <div className="player-page-header">
         <h2>Listone Calciatori</h2>
-        <p className="player-page-subtitle">Tocca una Nazionale per scoprire la lista completa dei suoi convocati.</p>
+        <p className="player-page-subtitle">Tocca una Nazionale per scoprire la lista completa dei suoi 26 convocati.</p>
       </div>
 
       {/* FILTRI DI RICERCA */}
@@ -182,23 +165,20 @@ const ListoneCalciatori = () => {
 
       {/* CONTEGGIO RISULTATI */}
       <p className="risultati-count">
-        {loadingSearch ? (
-          <span>Ricerca nel database globale... ⏳</span>
-        ) : isFiltrato 
+        {isFiltrato 
           ? `Risultati ricerca: ${calciatoriFiltrati.length} calciatori trovati` 
-          : `Competizione Mondiale: ${nazioni.length} Nazionali registrate`
+          : `Competizione Mondiale: ${nazioni.length} Nazionali caricate (${tuttiICalciatori.length} calciatori totali)`
         }
       </p>
 
       {/* CONTENUTO DINAMICO */}
       <div className="listone-main-wrapper">
         {!isFiltrato ? (
-          /* 1. SE NON CI SONO FILTRI: ELENCO NAZIONALI CON RICHIESTA ON-CLICK */
+          /* 1. SE NON CI SONO FILTRI: MOSTRA I BLOCCHI DELLE NAZIONALI (ACCORDION ISTANTANEO) */
           <div className="nazioni-blocks-container">
             {nazioni.map(nazione => {
               const isOpen = nazioneEspansa === nazione;
               const listaGiocatori = calciatoriPerNazione[nazione] || [];
-              const staCaricandoLaRosa = loadingNazione === nazione;
 
               return (
                 <div key={nazione} className={`nazione-block-card ${isOpen ? 'is-open' : ''}`}>
@@ -211,21 +191,18 @@ const ListoneCalciatori = () => {
                       {nazione.toUpperCase()}
                     </h3>
                     <div className="header-right-zone">
-                      {/* Se abbiamo già i dati mostra la lunghezza reale, altrimenti mostra un indicatore generico prima del click */}
                       <span className="nazione-count-badge">
-                        {calciatoriPerNazione[nazione] ? `${listaGiocatori.length} convocati` : 'Vedi rosa'}
+                        {listaGiocatori.length} convocati
                       </span>
                       <span className="accordion-arrow">{isOpen ? '▲' : '▼'}</span>
                     </div>
                   </div>
                   
-                  {/* Visualizza la lista solo se espanso */}
+                  {/* Contenuto interno ad apertura immediata */}
                   {isOpen && (
                     <div className="nazione-block-players animate-fade-in">
-                      {staCaricandoLaRosa ? (
-                        <div className="loading-players-mini">Scaricamento convocati da Supabase... ⏳</div>
-                      ) : listaGiocatori.length === 0 ? (
-                        <div className="loading-players-mini">Nessun calciatore trovato per questa nazione.</div>
+                      {listaGiocatori.length === 0 ? (
+                        <div className="loading-players-mini">Nessun calciatore presente per questa nazione.</div>
                       ) : (
                         listaGiocatori.map(c => (
                           <div key={c.id} className={`listone-player-mini-row border-${c.ruolo}`}>
@@ -243,10 +220,10 @@ const ListoneCalciatori = () => {
             })}
           </div>
         ) : (
-          /* 2. SE CI SONO FILTRI ATTIVI: LISTA LINEARE DIRETTAMENTE DAL DATABASE */
+          /* 2. SE CI SONO FILTRI ATTIVI: MOSTRA LA LISTA FILTRATA IN TEMPO REALE */
           <div className="listone-linear-list">
             {calciatoriFiltrati.length === 0 ? (
-              <p className="no-data-msg">Nessun calciatore corrisponde ai criteri impostati nel DB globale.</p>
+              <p className="no-data-msg">Nessun calciatore corrisponde ai criteri impostati.</p>
             ) : (
               calciatoriFiltrati.map(c => (
                 <div key={c.id} className={`calciatore-listone-row border-${c.ruolo}`}>

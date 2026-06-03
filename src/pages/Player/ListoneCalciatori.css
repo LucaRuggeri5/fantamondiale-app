@@ -69,7 +69,7 @@
 }
 
 .search-calciatore-input:focus {
-  border-color: #00b0ff;
+  border-color: #04C869;
 }
 
 .ruolo-filter-row {
@@ -117,6 +117,10 @@
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: border-color 0.2s ease;
+}
+
+.nazione-block-card.is-open {
+  border-color: #04C869;
 }
 
 .nazione-block-header.clickable {
@@ -240,10 +244,10 @@
   color: #121214;
 }
 
-.listone-ruolo-badge.P { background-color: #ffca28; }
-.listone-ruolo-badge.D { background-color: #00b0ff; }
-.listone-ruolo-badge.C { background-color: #00e676; }
-.listone-ruolo-badge.A { background-color: #ff1744; }
+.listone-ruolo-badge.P { background-color: #ffca28; color: #121214; }
+.listone-ruolo-badge.D { background-color: #00b0ff; color: #fff; }
+.listone-ruolo-badge.C { background-color: #00e676; color: #121214; }
+.listone-ruolo-badge.A { background-color: #ff1744; color: #fff; }
 
 .name-nat-block {
   display: flex;
@@ -272,7 +276,6 @@
   padding: 30px;
 }
 
-/* Semplice animazione di apertura */
 .animate-fade-in {
   animation: fadeIn 0.2s ease-out;
 }
