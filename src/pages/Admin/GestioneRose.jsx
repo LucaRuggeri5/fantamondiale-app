@@ -1,12 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importato per gestire il ritorno
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
+import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale';
 import './GestioneRose.css';
+
+// Definiamo i limiti massimi per ogni ruolo come costante pulita
+const LIMITI_RUOLI = {
+  P: 3,
+  D: 8,
+  C: 8,
+  A: 6
+};
 
 const GestioneRose = () => {
   const { user } = useUser();
-  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [adminUser, setAdminUser] = useState(null);
   const [squadreLega, setSquadreLega] = useState([]);
@@ -17,6 +26,9 @@ const GestioneRose = () => {
   const [calciatoriOccupatiIds, setCalciatoriOccupatiIds] = useState([]);
   const [filtroRuolo, setFiltroRuolo] = useState('P');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Stato UX Mobile-First: gestisce il tab attivo sui dispositivi mobili
+  const [activeTabMobile, setActiveTabMobile] = useState('market'); // 'market' o 'rosa'
 
   // Carica i dati iniziali dell'amministratore e le squadre della sua lega
   const loadAdminContext = async () => {
@@ -56,15 +68,17 @@ const GestioneRose = () => {
     }
 
     try {
-      // 1. Carica la rosa della squadra selezionata
       const { data: rosa, error: rErr } = await supabase
         .from('rose_squadre')
         .select('calciatore_id, calciatori_reali(*)')
         .eq('squadra_id', selectedSquadraId);
       if (rErr) throw rErr;
-      setRosaAttuale(rosa?.map(item => item.calciatori_reali) || []);
+      
+      const rosaOrdinata = (rosa?.map(item => item.calciatori_reali) || []).sort((a, b) => 
+        a.nome.localeCompare(b.nome)
+      );
+      setRosaAttuale(rosaOrdinata);
 
-      // 2. Trova tutti i calciatori già occupati nella lega attuale per bloccare i duplicati
       const { data: occupati, error: oErr } = await supabase
         .from('rose_squadre')
         .select('calciatore_id')
@@ -72,7 +86,6 @@ const GestioneRose = () => {
       if (oErr) throw oErr;
       setCalciatoriOccupatiIds(occupati?.map(o => o.calciatore_id) || []);
 
-      // 3. Carica il listone completo dei calciatori attivi
       if (listoneCalciatori.length === 0) {
         const { data: listone, error: lErr } = await supabase
           .from('calciatori_reali')
@@ -95,8 +108,31 @@ const GestioneRose = () => {
     loadRosaESvincolati();
   }, [selectedSquadraId]);
 
-  // Aggiunge un calciatore alla rosa del club selezionato
-  const handleAggiungiCalciatore = async (calciatoreId) => {
+  // Conteggi dinamici dei ruoli per la squadra selezionata
+  const conteggioRuoli = useMemo(() => {
+    const dei = { P: 0, D: 0, C: 0, A: 0 };
+    rosaAttuale.forEach(p => { if (dei[p.ruolo] !== undefined) dei[p.ruolo]++; });
+    return dei;
+  }, [rosaAttuale]);
+
+  // Listone filtrato memorizzato per massimizzare le performance di scrolling
+  const calciatoriFiltrati = useMemo(() => {
+    return listoneCalciatori.filter(p => 
+      p.ruolo === filtroRuolo && 
+      p.nome.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [listoneCalciatori, filtroRuolo, searchQuery]);
+
+  const handleAggiungiCalciatore = async (player) => {
+    const ruoloPlayer = player.ruolo;
+    const attualePerRuolo = conteggioRuoli[ruoloPlayer] || 0;
+    const limiteMassimo = LIMITI_RUOLI[ruoloPlayer];
+
+    if (attualePerRuolo >= limiteMassimo) {
+      alert(`Impossibile aggiungere ${player.nome}. Il limite massimo per il ruolo "${ruoloPlayer}" è di ${limiteMassimo} calciatori.`);
+      return;
+    }
+
     try {
       const { error: insErr } = await supabase
         .from('rose_squadre')
@@ -104,18 +140,16 @@ const GestioneRose = () => {
           {
             lega_id: adminUser.lega_id,
             squadra_id: selectedSquadraId,
-            calciatore_id: calciatoreId
+            calciatore_id: player.id
           }
         ]);
       if (insErr) throw insErr;
       await loadRosaESvincolati();
     } catch (err) {
       console.error(err);
-      alert("Errore nell'inserimento del calciatore. Controlla che non sia già stato preso.");
     }
   };
 
-  // Rimuove un calciatore dalla rosa (Svincolo)
   const handleRimuoviCalciatore = async (calciatoreId) => {
     try {
       const { error: delErr } = await supabase
@@ -127,7 +161,6 @@ const GestioneRose = () => {
       await loadRosaESvincolati();
     } catch (err) {
       console.error(err);
-      alert("Impossibile rimuovere il calciatore.");
     }
   };
 
@@ -135,114 +168,178 @@ const GestioneRose = () => {
 
   return (
     <div className="admin-rose-container">
+      {/* Intestazione */}
       <div className="admin-rose-header">
-        <div className="admin-rose-header-title-container">
-          <button className="btn-back-rose" onClick={() => navigate(-1)}>
-            ⬅️ Indietro
-          </button>
-          <h2>Pannello Mercato & Rose 👑</h2>
+        <button className="btn-back-rose" onClick={() => navigate(-1)}>
+          ← Indietro
+        </button>
+        <div className="admin-title-group">
+          <h2>Gestione Rose</h2>
         </div>
-        <p>Seleziona una squadra della tua lega per gestirne la rosa di calciatori reali.</p>
       </div>
 
-      {/* Selettore Squadra */}
+      {/* Box Selezione Squadra */}
       <div className="squadra-select-box">
-        <label>Seleziona Club:</label>
+        <label htmlFor="club-select">Club da Modificare</label>
         <select
+          id="club-select"
           value={selectedSquadraId}
           onChange={(e) => setSelectedSquadraId(e.target.value)}
           className="admin-select"
         >
-          <option value="">-- Scegli una Squadra --</option>
+          <option value="">-- Seleziona una squadra --</option>
           {squadreLega.map(sq => (
             <option key={sq.id} value={sq.id}>{sq.nome}</option>
           ))}
         </select>
       </div>
 
-      {selectedSquadraId && (
-        <div className="workspace-grid">
+      {selectedSquadraId ? (
+        <div className="workspace-wrapper">
+          
+          {/* NAVIGAZIONE A TAB SOLO SU MOBILE */}
+          <div className="mobile-tabs-nav">
+            <button 
+              className={`tab-nav-btn ${activeTabMobile === 'market' ? 'active' : ''}`}
+              onClick={() => setActiveTabMobile('market')}
+            >
+              Acquista
+            </button>
+            <button 
+              className={`tab-nav-btn ${activeTabMobile === 'rosa' ? 'active' : ''}`}
+              onClick={() => setActiveTabMobile('rosa')}
+            >
+              Rosa ({rosaAttuale.length}/25)
+            </button>
+          </div>
 
-          {/* Colonna Sinistra: Listone Calciatori Liberi per inserimento */}
-          <div className="workspace-column market-pool-box">
-            <h3>Aggiungi Calciatori</h3>
+          <div className="workspace-grid">
+            
+            {/* TAB/COLONNA SINISTRA: LISTONE MERCATO */}
+            <div className={`workspace-column market-pool-box ${activeTabMobile === 'market' ? 'show-mobile' : 'hide-mobile'}`}>
+              <div className="column-header">
+                <h3>Acquista Calciatori</h3>
+                <span className="badge-count-liberi">{calciatoriFiltrati.length}</span>
+              </div>
 
-            {/* Filtri di ricerca */}
-            <div className="filter-controls">
-              <input
-                type="text"
-                placeholder="Cerca per nome..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="admin-search-input"
-              />
-              <div className="role-btn-group">
-                {['P', 'D', 'C', 'A'].map(r => (
-                  <button
-                    key={r}
-                    className={`role-filter-btn ${filtroRuolo === r ? 'active' : ''}`}
-                    onClick={() => setFiltroRuolo(r)}
-                  >
-                    {r}
-                  </button>
-                ))}
+              <div className="filter-controls">
+                <div className="search-wrapper">
+                  <input
+                    type="text"
+                    placeholder="Cerca calciatore..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="admin-search-input"
+                  />
+                  {searchQuery && (
+                    <button className="clear-search-btn" onClick={() => setSearchQuery('')}>×</button>
+                  )}
+                </div>
+                
+                <div className="role-btn-group">
+                  {['P', 'D', 'C', 'A'].map(r => (
+                    <button
+                      key={r}
+                      className={`role-filter-btn ${r} ${filtroRuolo === r ? 'active' : ''}`}
+                      onClick={() => setFiltroRuolo(r)}
+                    >
+                      <span className="role-letter">{r}</span>
+                      <span className="role-fraction">{conteggioRuoli[r]}/{LIMITI_RUOLI[r]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="admin-players-list scrollable">
+                {calciatoriFiltrati.length === 0 ? (
+                  <p className="empty-notice">Nessun calciatore trovato.</p>
+                ) : (
+                  calciatoriFiltrati.map(player => {
+                    const isOccupato = calciatoriOccupatiIds.includes(player.id);
+                    const limiteRaggiunto = conteggioRuoli[player.ruolo] >= LIMITI_RUOLI[player.ruolo];
+                    
+                    return (
+                      <div key={player.id} className={`player-admin-card ${isOccupato ? 'disabled-item' : ''}`}>
+                        <div className="player-info-side">
+                          <span className={`role-indicator ${player.ruolo}`}>{player.ruolo}</span>
+                          <div className="player-meta">
+                            <div className="player-name-row">
+                              <BandieraNazionale nazione={player.nazionale} className="admin-flag" />
+                              <strong className="player-name-txt">{player.nome}</strong>
+                            </div>
+                          </div>
+                        </div>
+                        {isOccupato ? (
+                          <span className="status-occupied">🔒 Bloccato</span>
+                        ) : limiteRaggiunto ? (
+                          <span className="status-limit-reached">⚠️ Pieno</span>
+                        ) : (
+                          <button
+                            className="btn-admin-action add"
+                            onClick={() => handleAggiungiCalciatore(player)}
+                          >
+                            Acquista
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })
+                )}
               </div>
             </div>
 
-            {/* Lista Calciatori Filtrata */}
-            <div className="admin-players-list scrollable">
-              {listoneCalciatori
-                .filter(p => p.ruolo === filtroRuolo && p.nome.toLowerCase().includes(searchQuery.toLowerCase()))
-                .map(player => {
-                  const isOccupato = calciatoriOccupatiIds.includes(player.id);
-                  return (
-                    <div key={player.id} className={`player-admin-card ${isOccupato ? 'disabled-item' : ''}`}>
-                      <div>
-                        <strong>{player.nome}</strong>
-                        <span className="nation-txt">🌍 {player.nazionale}</span>
-                      </div>
-                      {isOccupato ? (
-                        <span className="status-occupied">🔒 Occupato</span>
-                      ) : (
-                        <button
-                          className="btn-admin-action add"
-                          onClick={() => handleAggiungiCalciatore(player.id)}
-                        >
-                          ➕ Aggiungi
-                        </button>
-                      )}
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
+            {/* TAB/COLONNA DESTRA: ROSA ATTUALE COMPATTA */}
+            <div className={`workspace-column current-rosa-box ${activeTabMobile === 'rosa' ? 'show-mobile' : 'hide-mobile'}`}>
+              <div className="column-header flex-header">
+                <h3>Rosa Attuale</h3>
+                <span className="badge-count-rosa">{rosaAttuale.length} / 25</span>
+              </div>
 
-          {/* Colonna Destra: Rosa Corrente della squadra */}
-          <div className="workspace-column current-rosa-box">
-            <h3>Rosa Attuale ({rosaAttuale.length} calciatori)</h3>
-            {rosaAttuale.length === 0 ? (
-              <p className="empty-notice">Nessun calciatore inserito in questo club.</p>
-            ) : (
-              <div className="admin-players-list">
-                {rosaAttuale.map(player => (
-                  <div key={player.id} className="player-admin-card row-item">
-                    <div>
-                      <span className={`role-indicator ${player.ruolo}`}>{player.ruolo}</span>
-                      <strong className="player-name-txt">{player.nome}</strong>
-                      <span className="nation-txt">🌍 {player.nazionale}</span>
-                    </div>
-                    <button
-                      className="btn-admin-action delete"
-                      onClick={() => handleRimuoviCalciatore(player.id)}
-                    >
-                      🗑️ Rimuovi
-                    </button>
+              {/* Riepilogo Ruoli Orizzontale con alert cromatico */}
+              <div className="team-roles-summary">
+                {['P', 'D', 'C', 'A'].map(r => (
+                  <div key={r} className={`summary-chip ${r} ${conteggioRuoli[r] >= LIMITI_RUOLI[r] ? 'full' : ''}`}>
+                    {r}: <strong>{conteggioRuoli[r]}/{LIMITI_RUOLI[r]}</strong>
                   </div>
                 ))}
               </div>
-            )}
-          </div>
 
+              {rosaAttuale.length === 0 ? (
+                <div className="empty-notice-box">
+                  <p className="empty-notice">La rosa di questo club è vuota.<br/>Usa il pannello "Acquista" per ingaggiare calciatori.</p>
+                </div>
+              ) : (
+                <div className="admin-players-list scrollable-rosa">
+                  {rosaAttuale.map(player => (
+                    <div key={player.id} className="player-admin-card current-team-row">
+                      <div className="player-info-side">
+                        <span className={`role-indicator ${player.ruolo}`}>{player.ruolo}</span>
+                        <div className="player-meta">
+                          <div className="player-name-row">
+                            <BandieraNazionale nazione={player.nazionale} className="admin-flag" />
+                            <strong className="player-name-txt-white">{player.nome}</strong>
+                          </div>
+                        </div>
+                      </div>
+                      <button
+                        className="btn-admin-action delete"
+                        onClick={() => handleRimuoviCalciatore(player.id)}
+                      >
+                        Svincola 🗑️
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+          </div>
+        </div>
+      ) : (
+        <div className="select-squadra-placeholder">
+          <div className="placeholder-icon">📋</div>
+          <h3>Nessun club selezionato</h3>
+          <p>Scegli una squadra dal menu in alto per visualizzare la rosa attuale ed effettuare operazioni di mercato.</p>
         </div>
       )}
     </div>

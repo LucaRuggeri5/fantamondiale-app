@@ -1,242 +1,444 @@
 .admin-rose-container {
-  padding: 15px;
+  padding: 16px;
+  max-width: 1300px;
+  margin: 0 auto;
   font-family: system-ui, -apple-system, sans-serif;
+  color: #e2e8f0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .admin-rose-loading {
   text-align: center;
   padding-top: 45vh;
-  color: #888;
-  font-size: 15px;
+  color: #a0aec0;
+  font-size: 16px;
+  letter-spacing: 0.5px;
 }
 
-/* Allineamento Tasto Indietro e Titolo Principale */
-.admin-rose-header-title-container {
+/* Header ottimizzato per Mobile */
+.admin-rose-header {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #2d3748;
+  padding-bottom: 14px;
 }
 
-/* Bottone Torna Indietro customizzato */
 .btn-back-rose {
-  background-color: #1e1e24;
-  color: #ffffff;
-  border: 1px solid #333;
-  padding: 8px 16px;
-  border-radius: 4px;
+  background-color: #1a202c;
+  color: #a0aec0;
+  border: 1px solid #2d3748;
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.85rem;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
 }
 
-.btn-back-rose:hover {
-  background-color: #2e2e38;
-  border-color: #ff9100;
-  transform: translateX(-2px);
-}
-
-.admin-rose-header h2 {
+.admin-title-group h2 {
   margin: 0;
   font-size: 20px;
   color: #ff9100;
+  font-weight: 700;
 }
 
-.admin-rose-header p {
-  color: #aaa;
-  font-size: 12px;
-  margin: 0 0 20px 0;
-}
-
+/* Selettore Squadre a pieno schermo largo sui telefoni */
 .squadra-select-box {
-  background-color: #1e1e24;
-  padding: 15px;
-  border-radius: 8px;
+  background-color: #1a202c;
+  padding: 16px;
+  border-radius: 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  margin-bottom: 20px;
-  border-bottom: 2px solid #ff9100;
+  margin-bottom: 16px;
+  border: 1px solid #2d3748;
 }
 
 .squadra-select-box label {
-  font-size: 12px;
-  font-weight: bold;
-  color: #aaa;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: #a0aec0;
 }
 
 .admin-select {
-  background-color: #121214;
-  border: 1px solid #333;
-  padding: 10px;
-  border-radius: 4px;
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  padding: 14px 12px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  outline: none;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* SISTEMA DI TAB MOBILE (Nascosto su Desktop) */
+.mobile-tabs-nav {
+  display: flex;
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  padding: 4px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+}
+
+.tab-nav-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #718096;
+  padding: 12px 8px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-nav-btn.active {
+  background-color: #ff9100;
+  color: #11141a;
+}
+
+/* Gestione visibilità Mobile-First delle colonne */
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.workspace-column.hide-mobile {
+  display: none;
+}
+
+.workspace-column.show-mobile {
+  display: block;
+}
+
+/* MEDIA QUERY: Riorganizzazione per Schermi Grandi (Desktop) */
+@media (min-width: 950px) {
+  .admin-rose-container {
+    padding: 24px;
+  }
+  .admin-rose-header {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+  }
+  .admin-title-group h2 {
+    font-size: 24px;
+  }
+  .mobile-tabs-nav {
+    display: none; /* Rimuove la barra dei tab su Desktop */
+  }
+  .workspace-grid {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .workspace-column.hide-mobile,
+  .workspace-column.show-mobile {
+    display: block; /* Mostra entrambe le colonne contemporaneamente */
+  }
+}
+
+.workspace-column {
+  background-color: #1a202c;
+  border-radius: 12px;
+  border: 1px solid #2d3748;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #222936;
+  padding: 14px 16px;
+  border-bottom: 1px solid #2d3748;
+}
+
+.column-header h3 {
+  margin: 0;
+  font-size: 15px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.badge-count-liberi, .badge-count-rosa {
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background-color: #2d3748;
+  color: #cbd5e0;
+}
+
+.badge-count-rosa {
+  background-color: rgba(255, 145, 0, 0.15);
+  color: #ff9100;
+}
+
+/* Controlli di filtraggio fluidi e comodi al tocco */
+.filter-controls {
+  padding: 12px;
+  background-color: #1e2430;
+  border-bottom: 1px solid #2d3748;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-search-input {
+  width: 100%;
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  padding: 12px;
+  padding-right: 36px;
+  border-radius: 8px;
   color: white;
   font-size: 14px;
   outline: none;
 }
 
-/* Griglia Spazio di Lavoro */
-.workspace-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-@media (min-width: 768px) {
-  .workspace-grid {
-    flex-direction: row;
-    align-items: flex-start;
-  }
-  .workspace-column {
-    flex: 1;
-  }
-}
-
-.workspace-column {
-  background-color: #1e1e24;
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.workspace-column h3 {
-  margin: 0 0 15px 0;
-  font-size: 15px;
-  color: #fff;
-  border-bottom: 1px solid #2e2e38;
-  padding-bottom: 8px;
-}
-
-.empty-notice {
-  font-size: 12px;
-  color: #666;
-  text-align: center;
-  padding: 20px 0;
-}
-
-/* Controlli Filtro Listone */
-.filter-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-
-.admin-search-input {
-  background-color: #121214;
-  border: 1px solid #333;
-  padding: 8px 12px;
-  border-radius: 4px;
-  color: white;
-  font-size: 13px;
-  outline: none;
-}
-
-.role-btn-group {
-  display: flex;
-  gap: 5px;
-}
-
-.role-filter-btn {
-  flex: 1;
-  background-color: #121214;
-  border: 1px solid #333;
-  color: #aaa;
-  padding: 6px 0;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  font-size: 12px;
-}
-
-.role-filter-btn.active {
-  background-color: #ff9100;
-  color: #121214;
+.admin-search-input:focus {
   border-color: #ff9100;
 }
 
-/* Lista dei giocatori */
+.search-wrapper {
+  position: relative;
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #718096;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Pulsantiera Ruoli Mobile-First Stacked/Grid su schermi stretti */
+.role-btn-group {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.role-filter-btn {
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  color: #718096;
+  padding: 8px 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.role-letter {
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.role-fraction {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.role-filter-btn.P.active { background-color: #ffca28; color: #11141a; border-color: #ffca28; }
+.role-filter-btn.D.active { background-color: #00b0ff; color: #11141a; border-color: #00b0ff; }
+.role-filter-btn.C.active { background-color: #00e676; color: #11141a; border-color: #00e676; }
+.role-filter-btn.A.active { background-color: #ff5252; color: #11141a; border-color: #ff5252; }
+
+/* Liste ad altezza fissa tarate in Viewport Height */
 .admin-players-list {
   display: flex;
   flex-direction: column;
+  padding: 8px;
   gap: 8px;
 }
 
 .admin-players-list.scrollable {
-  max-height: 400px;
+  height: 55vh;
+  min-height: 350px;
   overflow-y: auto;
-  padding-right: 4px;
 }
 
+.admin-players-list.scrollable-rosa {
+  height: 55vh;
+  min-height: 350px;
+  overflow-y: auto;
+}
+
+/* Card Giocatori */
 .player-admin-card {
-  background-color: #121214;
-  padding: 10px 12px;
-  border-radius: 6px;
+  background-color: #11141a;
+  padding: 12px;
+  border-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
-  border: 1px solid #2e2e38;
+  border: 1px solid #2d3748;
 }
 
 .player-admin-card.disabled-item {
-  opacity: 0.35;
+  opacity: 0.3;
+  background-color: #0b0d12;
 }
 
-.player-name-txt {
-  color: #fff;
-  margin-right: 6px;
+.player-info-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.nation-txt {
-  color: #777;
+.player-meta {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Allineamento riga bandiera + nome */
+.player-name-row {
+  display: flex;
+  align-items: center;
+}
+
+.admin-flag {
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.player-name-txt, .player-name-txt-white {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.player-name-txt { color: #cbd5e0; }
+.player-name-txt-white { color: #ffffff; }
+
+/* Chips Riepilogo Rosa */
+.team-roles-summary {
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px;
+  background-color: #1e2430;
+  border-bottom: 1px solid #2d3748;
+}
+
+.summary-chip {
+  flex: 1;
+  text-align: center;
+  padding: 8px 4px;
+  border-radius: 6px;
   font-size: 11px;
+  color: #11141a;
+  font-weight: bold;
+  border: 1px solid transparent;
 }
 
-/* Badge di Ruolo per la rosa attuale */
+.summary-chip.P { background-color: rgba(255, 202, 40, 0.08); color: #ffca28; border-color: rgba(255, 202, 40, 0.15); }
+.summary-chip.D { background-color: rgba(0, 176, 255, 0.08); color: #00b0ff; border-color: rgba(0, 176, 255, 0.15); }
+.summary-chip.C { background-color: rgba(0, 230, 118, 0.08); color: #00e676; border-color: rgba(0, 230, 118, 0.15); }
+.summary-chip.A { background-color: rgba(255, 82, 82, 0.08); color: #ff5252; border-color: rgba(255, 82, 82, 0.15); }
+
+.summary-chip.P.full { background-color: #ffca28; color: #11141a; }
+.summary-chip.D.full { background-color: #00b0ff; color: #11141a; }
+.summary-chip.C.full { background-color: #00e676; color: #11141a; }
+.summary-chip.A.full { background-color: #ff5252; color: #11141a; }
+
+/* Badge Ruoli */
 .role-indicator {
   display: inline-block;
-  width: 18px;
-  height: 18px;
-  line-height: 18px;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
   text-align: center;
-  font-size: 10px;
-  font-weight: bold;
-  border-radius: 3px;
-  margin-right: 8px;
-  color: #121214;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 6px;
+  color: #11141a;
 }
-
 .role-indicator.P { background-color: #ffca28; }
 .role-indicator.D { background-color: #00b0ff; }
 .role-indicator.C { background-color: #00e676; }
-.role-indicator.A { background-color: #ff5252; }
+.role-indicator.A { background-color: #ff5252; color: #11141a; }
 
-/* Pulsanti Azione */
+/* Pulsanti Azione generosi per le dita */
 .btn-admin-action {
   border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-weight: bold;
-  font-size: 11px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
   cursor: pointer;
 }
 
 .btn-admin-action.add {
   background-color: #00e676;
-  color: #121214;
+  color: #11141a;
 }
 
 .btn-admin-action.delete {
-  background-color: #ff5252;
-  color: #fff;
+  background-color: rgba(255, 82, 82, 0.12);
+  color: #ff5252;
+  border: 1px solid rgba(255, 82, 82, 0.25);
 }
 
 .status-occupied {
+  font-size: 12px;
+  color: #4a5568;
+}
+
+.status-limit-reached {
   font-size: 11px;
-  color: #ff5252;
-  font-weight: bold;
+  color: #e53e3e;
+  background-color: rgba(229, 62, 62, 0.12);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+/* Stati segnaposto */
+.empty-notice {
+  font-size: 13px;
+  color: #718096;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.empty-notice-box {
+  padding: 30px 10px;
+  text-align: center;
+}
+
+.select-squadra-placeholder {
+  text-align: center;
+  padding: 40px 16px;
+  background-color: #1a202c;
+  border-radius: 12px;
+  border: 1px dashed #2d3748;
+  color: #718096;
+}
+
+.placeholder-icon {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.select-squadra-placeholder h3 {
+  color: #cbd5e0;
+  margin: 0 0 4px 0;
+  font-size: 16px;
 }
