@@ -1,173 +1,679 @@
-/* ==========================================================================
-   CSS DEDICATO E UNISOLATO PER IL PANNELLO AMMINISTRATORE (TEMA SCURO)
-   ========================================================================== */
-
 .admin-voti-page-wrapper {
-  padding: 12px;
-  max-width: 1200px;
+  padding: 16px;
+  max-width: 1300px;
   margin: 0 auto;
-  color: #f1f2f6;
   font-family: system-ui, -apple-system, sans-serif;
-  padding-bottom: 90px; /* Evita collisioni con il footer fisso mobile */
+  color: #e2e8f0;
+  padding-bottom: 90px; /* Spazio protettivo inferiore per evitare sovrapposizioni su mobile */
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* Header */
+/* Intestazione Unificata */
 .admin-voti-main-header {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-  border-bottom: 3px solid #20bf6b;
-  padding-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid #2d3748;
+  padding-bottom: 14px;
 }
 
 .admin-btn-back {
-  background-color: #2f3542;
-  color: #ffffff;
-  border: 1px solid #57606f;
-  padding: 6px 12px;
-  border-radius: 6px;
+  background-color: #1a202c;
+  color: #a0aec0;
+  border: 1px solid #2d3748;
+  padding: 10px 16px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 13px;
+  font-size: 0.85rem;
 }
-.admin-voti-main-header h2 { font-size: 18px; margin: 0; color: #ffffff; }
 
-/* Pannello Filtri */
+.admin-voti-main-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #20bf6b; /* Accentato in verde smeraldo Admin */
+  font-weight: 700;
+}
+
+/* Pannello dei Filtri */
 .admin-voti-filters-card {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  background: #2f3542;
-  padding: 12px;
-  border-radius: 8px;
-  margin-bottom: 15px;
+  background-color: #1a202c;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid #2d3748;
+  margin-bottom: 20px;
 }
 
-.admin-filter-select-group { flex: 1; display: flex; flex-direction: column; gap: 4px; }
-.admin-filter-select-group label { font-size: 12px; color: #a4b0be; font-weight: 600; }
-.admin-filter-select-group select {
-  width: 100%; padding: 8px; border-radius: 6px; background: #1e222b;
-  border: 1px solid #4f5664; color: white; font-size: 14px; outline: none;
+.admin-filter-select-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
-.admin-filter-select-group select:focus { border-color: #20bf6b; }
+
+.admin-filter-select-group label {
+  font-size: 12px;
+  color: #a0aec0;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.admin-filter-select-group select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+}
+
+.admin-filter-select-group select:focus {
+  border-color: #20bf6b;
+}
 
 /* Alert Assenza Dati */
 .admin-voti-empty-alert {
-  padding: 20px; background: #ffeaa7; border-radius: 8px;
-  color: #d35400; font-weight: bold; text-align: center; margin-top: 15px; font-size: 14px;
+  padding: 18px;
+  background-color: rgba(229, 62, 62, 0.1);
+  border: 1px solid rgba(229, 62, 62, 0.4);
+  border-radius: 10px;
+  color: #fc5c65;
+  font-weight: 600;
+  text-align: center;
+  margin-top: 15px;
+  font-size: 14px;
 }
 
-/* Layout Moduli */
-.admin-voti-split-layout { display: flex; flex-direction: column; gap: 15px; }
-.admin-voti-inputs-pane { width: 100%; }
-.admin-voti-section-box { background: #2f3542; border-radius: 12px; padding: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-.admin-voti-section-box h3 { margin: 0 0 10px 0; font-size: 15px; border-left: 3px solid #20bf6b; padding-left: 6px; color: white; }
-
-/* Struttura Calciatore Mobile-First (Incolonnata) */
-.admin-voti-player-row {
+/* Layout Split dei Moduli */
+.admin-voti-split-layout {
   display: flex;
   flex-direction: column;
-  padding: 10px 0;
-  border-bottom: 1px solid #3a4150;
+  gap: 20px;
+}
+
+/* Box di Sezione */
+.admin-voti-section-box {
+  background-color: #1a202c;
+  border-radius: 12px;
+  border: 1px solid #2d3748;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.admin-section-title-bar {
+  background-color: #222936;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #20bf6b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #2d3748;
+}
+
+.admin-section-title-bar.warning {
+  color: #00b0ff;
+}
+
+.admin-cards-stack {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Card Giocatore Unificata per Mobile */
+.admin-voti-player-card {
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-voti-player-card.riserva {
+  border-left: 4px solid #00b0ff;
+}
+
+.admin-voti-player-card.player-sv {
+  background-color: rgba(229, 62, 62, 0.05);
+  border-color: rgba(229, 62, 62, 0.3);
+}
+
+.admin-player-main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-player-meta-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-giocatore-nome {
+  font-size: 15px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.admin-panchina-order {
+  font-size: 11px;
+  background-color: #1a202c;
+  color: #a0aec0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #2d3748;
+}
+
+/* Badge del Totale Calcolato */
+.admin-tot-display-badge {
+  background-color: rgba(32, 191, 107, 0.15);
+  color: #20bf6b;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 8px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.admin-tot-display-badge.sv {
+  background-color: #2d3748;
+  color: #a0aec0;
+}
+
+/* Griglia dei Controlli Mobile-First */
+.admin-voti-controls-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr 1fr;
   gap: 8px;
+  align-items: center;
 }
-.admin-voti-player-row.riserva { border-left: 3px solid #ffa502; padding-left: 6px; }
-.admin-voti-player-row.player-sv { background: rgba(116, 125, 138, 0.15); opacity: 0.7; }
 
-.admin-col-player { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; color: white; }
-.admin-order-num { font-size: 11px; background: #57606f; color: #fff; padding: 1px 5px; border-radius: 4px; }
-
-/* Badge Ruoli Isolati */
-.admin-badge-ruolo { padding: 2px 5px; border-radius: 4px; font-size: 10px; color: white; font-weight: bold; text-align: center; }
-.admin-ruolo-P { background: #f1c40f; color: #2c3e50; }
-.admin-ruolo-D { background: #2980b9; }
-.admin-ruolo-C { background: #27ae60; }
-.admin-ruolo-A { background: #c0392b; }
-
-/* Controlli Input */
-.admin-voti-player-controls {
-  display: flex; background: #1e222b; padding: 6px; border-radius: 6px;
-  justify-content: space-between; align-items: center;
+/* Pulsante Toggle Senza Voto */
+.admin-btn-toggle-sv {
+  background-color: #1a202c;
+  border: 1px solid #2d3748;
+  color: #cbd5e0;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 10px 4px;
+  border-radius: 8px;
+  cursor: pointer;
 }
-.admin-input-cell { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 2px; }
-.admin-mobile-label { font-size: 9px; color: #747d8c; text-transform: uppercase; font-weight: bold; }
 
-.admin-voti-player-controls input[type="number"] {
-  width: 80%; max-width: 55px; padding: 4px; border: 1px solid #57606f;
-  background: #2f3542; color: white; text-align: center; font-weight: 600; border-radius: 4px;
+.admin-btn-toggle-sv.active {
+  background-color: #e53e3e;
+  border-color: #e53e3e;
+  color: white;
 }
-.admin-voti-player-controls input[type="number"]:disabled { background: #1e222b; color: #57606f; cursor: not-allowed; }
-.admin-voti-player-controls input[type="checkbox"] { width: 18px; height: 18px; accent-color: #20bf6b; cursor: pointer; }
-.admin-tot-val { font-weight: bold; color: #20bf6b; font-size: 13px; }
 
-/* BARRA DELLE AZIONI IN BASSO - MOBILE */
+/* Container Tendina Dropdown Voto */
+.admin-select-container-voto {
+  width: 100%;
+}
+
+.admin-voto-dropdown-select {
+  width: 100%;
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
+
+.admin-voto-dropdown-select:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Stepper Incrementale per Bonus/Malus */
+.admin-bonus-stepper-control {
+  display: flex;
+  background-color: #1a202c;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 38px;
+}
+
+.admin-step-btn {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  font-size: 16px;
+  font-weight: bold;
+  width: 28px;
+  cursor: pointer;
+}
+
+.admin-step-btn:active {
+  background-color: #2d3748;
+}
+
+.admin-bonus-current-value {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid #2d3748;
+  border-right: 1px solid #2d3748;
+  background-color: #11141a;
+}
+
+.admin-bonus-current-value small {
+  font-size: 8px;
+  color: #718096;
+  text-transform: uppercase;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.admin-bonus-current-value span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff9100;
+}
+
+/* Indicatori Ruoli Globali */
+.admin-role-indicator {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 5px;
+  color: #11141a;
+}
+.admin-role-indicator.P { background-color: #ffca28; }
+.admin-role-indicator.D { background-color: #00b0ff; }
+.admin-role-indicator.C { background-color: #00e676; }
+.admin-role-indicator.A { background-color: #ff5252; color: #fff; }
+
+/* BARRA DI AZIONE IN BASSO MOBILE */
 .admin-voti-mobile-fixed-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; height: 65px;
-  background: #1e222b; color: white; display: flex; align-items: center;
-  justify-content: space-between; padding: 0 14px; box-shadow: 0 -4px 15px rgba(0,0,0,0.35); z-index: 100;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 68px;
+  background-color: #1a202c;
+  border-top: 1px solid #2d3748;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
+  z-index: 100;
 }
-.admin-m-bar-info { display: flex; flex-direction: column; font-size: 11px; }
-.admin-m-bar-info strong { font-size: 20px; color: #20bf6b; }
-.admin-m-bar-actions { display: flex; gap: 8px; }
 
-.admin-btn-m-secondary, .admin-btn-m-primary { border: none; padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer; }
-.admin-btn-m-secondary { background: #34495e; color: white; }
-.admin-btn-m-primary { background: #20bf6b; color: white; }
+.admin-m-bar-info {
+  display: flex;
+  flex-direction: column;
+}
 
-/* STRUTTURA DRAWER - MOBILE */
-.admin-voti-summary-pane { position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index: 200; visibility: hidden; }
-.admin-voti-summary-pane.drawer-is-open { visibility: visible; }
-.admin-voti-backdrop { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.65); }
+.admin-m-bar-info span {
+  font-size: 11px;
+  color: #a0aec0;
+}
+
+.admin-m-bar-info strong {
+  font-size: 22px;
+  color: #20bf6b;
+  font-weight: 800;
+}
+
+.admin-m-bar-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-btn-m-secondary {
+  background-color: #2d3748;
+  color: #fff;
+  border: 1px solid #4a5568;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.admin-btn-m-primary {
+  background-color: #20bf6b;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* DRAWER MOBILE INTERFACCIA COMPATTA (Niente scrolling invasivo) */
+.admin-voti-summary-pane {
+  position: fixed;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  visibility: hidden;
+}
+
+.admin-voti-summary-pane.drawer-is-open {
+  visibility: visible;
+}
+
+.admin-voti-backdrop {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+}
 
 .admin-voti-sticky-card {
-  position: absolute; bottom: 0; left: 0; right: 0; background: #1e222b; color: white;
-  border-radius: 16px 16px 0 0; padding: 15px; max-height: 70vh; overflow-y: auto;
-  transform: translateY(100%); transition: transform 0.22s ease-out;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background-color: #1a202c;
+  color: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 16px;
+  border-top: 1px solid #2d3748;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.drawer-is-open .admin-voti-sticky-card { transform: translateY(0); }
 
-.admin-drawer-mobile-header { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #2f3542; padding-bottom: 5px; }
-.admin-drawer-mobile-header h3 { margin: 0; font-size: 15px; color: #20bf6b; }
-.admin-drawer-mobile-header button { background: none; border: none; color: white; font-size: 18px; cursor: pointer; }
+.drawer-is-open .admin-voti-sticky-card {
+  transform: translateY(0);
+}
 
-.admin-score-large-display { background: #2f3542; text-align: center; padding: 10px; border-radius: 8px; margin: 10px 0; }
-.admin-score-title { font-size: 9px; color: #a4b0be; display: block; font-weight: bold; }
-.admin-score-value { font-size: 26px; font-weight: bold; color: #20bf6b; }
-.admin-summary-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #2f3542; font-size: 12px; }
-.admin-badge-count { background: rgba(32, 191, 107, 0.15); color: #20bf6b; border: 1px solid #20bf6b; padding: 1px 6px; border-radius: 10px; font-weight: bold; }
+.admin-drawer-mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
 
-.admin-components-scroll-list { background: #11141a; border-radius: 6px; max-height: 140px; overflow-y: auto; margin-top: 8px; padding: 4px; }
-.admin-component-row-item { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #2f3542; font-size: 11px; }
-.admin-comp-points-val { color: #20bf6b; font-weight: bold; }
+.admin-drawer-mobile-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #20bf6b;
+  font-weight: 700;
+}
 
-.admin-btn-save-desktop { display: none; }
-.admin-mt-12 { margin-top: 12px; }
-.admin-voti-loading { text-align: center; padding: 50px; color: #20bf6b; font-weight: bold; font-size: 14px; }
+.admin-close-drawer-btn {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  font-size: 22px;
+  cursor: pointer;
+}
 
-/* ==========================================================================
-   INTERFACCIA MONITOR / DESKTOP (>= 850px)
-   ========================================================================== */
-@media (min-width: 850px) {
-  .admin-voti-page-wrapper { padding-bottom: 12px; }
-  .admin-voti-main-header h2 { font-size: 22px; }
-  .admin-voti-mobile-fixed-bar { display: none; }
-  
-  .admin-voti-split-layout { display: grid; grid-template-columns: 1fr 330px; gap: 20px; }
-  
-  /* Conversione riga in griglia orizzontale priva di micro-label */
-  .admin-voti-player-row { flex-direction: row; justify-content: space-between; align-items: center; padding: 6px 0; }
-  .admin-voti-player-controls { background: none; padding: 0; width: 240px; }
-  .admin-mobile-label { display: none; } /* Nasconde i testi d'aiuto mobile */
-  
-  /* Sidebar fissa al posto del drawer */
-  .admin-voti-summary-pane { position: static; visibility: visible; }
-  .admin-voti-backdrop, .admin-drawer-mobile-header { display: none; }
-  .admin-voti-sticky-card { position: sticky; top: 20px; border-radius: 12px; transform: none; max-height: none; box-shadow: 0 4px 15px rgba(0,0,0,0.25); }
-  
-  .admin-btn-save-desktop {
-    display: block; width: 100%; background: #20bf6b; color: white; border: none;
-    padding: 12px; border-radius: 6px; font-weight: bold; margin-top: 12px; cursor: pointer;
-    font-size: 14px; transition: background 0.15s;
+.admin-score-large-display {
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  text-align: center;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.admin-score-title {
+  font-size: 10px;
+  color: #718096;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.admin-score-value {
+  font-size: 32px;
+  font-weight: 900;
+  color: #20bf6b;
+}
+
+.admin-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #2d3748;
+  font-size: 13px;
+  color: #cbd5e0;
+}
+
+.admin-badge-count {
+  background-color: #2d3748;
+  color: #718096;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.admin-badge-count.active {
+  background-color: rgba(0, 176, 255, 0.2);
+  color: #00b0ff;
+}
+
+/* Elenco pulito riepilogo giocatori conteggiati */
+.admin-components-clean-list {
+  background-color: #11141a;
+  border-radius: 10px;
+  border: 1px solid #2d3748;
+  margin-top: 10px;
+  padding: 4px;
+  overflow-y: auto;
+  max-height: 280px; /* Perfetto per mantenere visibile l'intera scheda mobile */
+}
+
+.admin-component-row-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #1a202c;
+}
+
+.admin-component-row-item:last-child {
+  border-bottom: none;
+}
+
+/* Sostituzioni ed errori grafici cromatici nel riepilogo */
+.admin-component-row-item.is-substituted {
+  background-color: rgba(0, 176, 255, 0.05);
+  border-left: 3px solid #00b0ff;
+}
+
+.admin-component-row-item.is-empty-malus {
+  background-color: rgba(235, 64, 52, 0.05);
+  border-left: 3px solid #ff5252;
+}
+
+.admin-comp-left-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-mini-role {
+  font-size: 9px;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #11141a;
+}
+.admin-mini-role.P { background-color: #ffca28; }
+.admin-mini-role.D { background-color: #00b0ff; }
+.admin-mini-role.C { background-color: #00e676; }
+.admin-mini-role.A { background-color: #ff5252; color: white; }
+
+.admin-comp-name-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-comp-player-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.admin-comp-type-label {
+  font-size: 10px;
+  color: #718096;
+}
+
+.is-substituted .admin-comp-type-label {
+  color: #00b0ff;
+  font-weight: 600;
+}
+.is-empty-malus .admin-comp-type-label {
+  color: #ff5252;
+  font-weight: 600;
+}
+
+.admin-comp-right-points {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-comp-math-det {
+  font-size: 11px;
+  color: #a0aec0;
+  background-color: #1a202c;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.admin-comp-final-fanta {
+  font-size: 14px;
+  color: #20bf6b;
+  min-width: 32px;
+  text-align: right;
+}
+
+.is-empty-malus .admin-comp-final-fanta {
+  color: #ff5252;
+}
+
+.admin-btn-save-desktop {
+  display: none; /* Nascondiamo il bottone desktop su viste piccole */
+}
+
+.admin-voti-loading {
+  text-align: center;
+  padding-top: 45vh;
+  color: #a0aec0;
+  font-size: 16px;
+}
+
+
+/* --- MODALITÀ DESKTOP (>= 900px) --- */
+@media (min-width: 900px) {
+  .admin-voti-page-wrapper {
+    padding-bottom: 20px;
   }
-  .admin-btn-save-desktop:hover { filter: brightness(1.1); }
+
+  .admin-voti-mobile-fixed-bar {
+    display: none; /* Scompare la barra d'azione fissa */
+  }
+
+  /* I filtri passano da incolonnati a riga orizzontale fluida */
+  .admin-voti-filters-card {
+    flex-direction: row;
+  }
+
+  .admin-voti-split-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* La riga del giocatore diventa orizzontale e sottile */
+  .admin-voti-player-card {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+  }
+
+  .admin-voti-controls-grid {
+    grid-template-columns: 110px 75px 110px;
+    gap: 12px;
+    width: 320px;
+  }
+
+  /* Convertiamo il drawer mobile in Sidebar laterale fissa a destra */
+  .admin-voti-summary-pane {
+    position: static;
+    visibility: visible;
+    z-index: auto;
+  }
+
+  .admin-voti-backdrop, 
+  .admin-drawer-mobile-header {
+    display: none;
+  }
+
+  .admin-voti-sticky-card {
+    position: sticky;
+    top: 24px;
+    border-radius: 12px;
+    transform: none;
+    max-height: calc(100vh - 60px);
+    border: 1px solid #2d3748;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .admin-components-clean-list {
+    max-height: calc(100vh - 340px);
+  }
+
+  /* Bottone per il consolidamento finale della giornata su Desktop */
+  .admin-btn-save-desktop {
+    display: block;
+    width: 100%;
+    background-color: #20bf6b;
+    color: #fff;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-top: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .admin-btn-save-desktop:hover {
+    background-color: #1a9c56;
+  }
+
+  .admin-btn-save-desktop:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }

@@ -1,155 +1,618 @@
 .voti-page-container {
-  padding: 12px;
-  max-width: 1200px;
+  padding: 16px;
+  max-width: 1300px;
   margin: 0 auto;
-  color: #2c3e50;
   font-family: system-ui, -apple-system, sans-serif;
-  padding-bottom: 85px; /* Evita sovrapposizioni con la barra mobile */
+  color: #e2e8f0;
+  padding-bottom: 90px; /* Spazio protettivo inferiore per la barra mobile */
+  -webkit-tap-highlight-color: transparent;
 }
 
+/* Intestazione Coerente */
 .voti-header {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #f0f3f4;
-  padding-bottom: 10px;
+  gap: 16px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #2d3748;
+  padding-bottom: 14px;
 }
 
 .btn-back-voti {
-  background: white;
-  border: 1px solid #ccd1d9;
-  padding: 6px 12px;
-  border-radius: 6px;
+  background-color: #1a202c;
+  color: #a0aec0;
+  border: 1px solid #2d3748;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
   font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.voti-title-group h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #ff9100;
+  font-weight: 700;
+}
+
+/* Layout Principale */
+.voti-main-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Box Sezione */
+.voti-section-box {
+  background-color: #1a202c;
+  border-radius: 12px;
+  border: 1px solid #2d3748;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.section-title-bar {
+  background-color: #222936;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ff9100;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid #2d3748;
+}
+.section-title-bar.warning {
+  color: #00b0ff;
+}
+
+.cards-stack {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Card Giocatore Unificata per Mobile */
+.voti-player-card {
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  border-radius: 10px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.voti-player-card.riserva {
+  border-left: 4px solid #00b0ff;
+}
+
+.voti-player-card.player-sv {
+  background-color: rgba(229, 62, 62, 0.05);
+  border-color: rgba(229, 62, 62, 0.3);
+}
+
+.player-main-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.player-meta-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.voti-player-name {
+  font-size: 15px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.panchina-order {
+  font-size: 11px;
+  background-color: #1a202c;
+  color: #a0aec0;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #2d3748;
+}
+
+/* Badge del Totale Calcolato */
+.tot-display-badge {
+  background-color: rgba(0, 230, 118, 0.15);
+  color: #00e676;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 8px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.tot-display-badge.sv {
+  background-color: #2d3748;
+  color: #a0aec0;
+}
+
+/* Griglia dei Controlli Mobile-First */
+.voti-controls-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Pulsante Toggle Senza Voto */
+.btn-toggle-sv {
+  background-color: #1a202c;
+  border: 1px solid #2d3748;
+  color: #cbd5e0;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 10px 4px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
-.voti-header h2 { font-size: 18px; margin: 0; }
-.voti-section-card { background: white; border-radius: 12px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-.voti-section-card h3 { margin: 0 0 10px 0; font-size: 15px; border-left: 3px solid #3498db; padding-left: 6px; }
+.btn-toggle-sv.active {
+  background-color: #e53e3e;
+  border-color: #e53e3e;
+  color: white;
+}
 
-/* Riga giocatore ottimizzata flex-col per mobile */
-.voti-player-row {
+/* Container Tendina Dropdown del Voto */
+.select-container-voto {
+  width: 100%;
+}
+
+.voto-dropdown-select {
+  width: 100%;
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  color: #fff;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+}
+
+.voto-dropdown-select:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Stepper Incrementale per Bonus/Malus */
+.bonus-stepper-control {
+  display: flex;
+  background-color: #1a202c;
+  border: 1px solid #2d3748;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 38px;
+}
+
+.step-btn {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  font-size: 16px;
+  font-weight: bold;
+  width: 28px;
+  cursor: pointer;
+}
+
+.step-btn:active {
+  background-color: #2d3748;
+}
+
+.bonus-current-value {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 10px 0;
-  border-bottom: 1px solid #f1f2f6;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid #2d3748;
+  border-right: 1px solid #2d3748;
+  background-color: #11141a;
 }
 
-.voti-player-row.riserva { border-left: 3px solid #e67e22; padding-left: 6px; }
-.voti-player-row.player-sv { background: #fff5f5; }
-
-.col-player { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; }
-.order-num { color: #e67e22; font-size: 12px; }
-
-.badge-ruolo { padding: 2px 4px; border-radius: 4px; font-size: 9px; color: white; font-weight: bold; }
-.badge-ruolo.P { background: #f1c40f; color: #2c3e50; }
-.badge-ruolo.D { background: #2980b9; }
-.badge-ruolo.C { background: #27ae60; }
-.badge-ruolo.A { background: #c0392b; }
-
-/* Controlli input orizzontali e fluidi */
-.voti-player-row-controls {
-  display: flex;
-  background: #f8f9fa;
-  padding: 6px;
-  border-radius: 6px;
-  justify-content: space-between;
+.bonus-current-value small {
+  font-size: 8px;
+  color: #718096;
+  text-transform: uppercase;
+  font-weight: bold;
+  line-height: 1;
 }
 
-.input-cell { display: flex; flex-direction: column; align-items: center; flex: 1; gap: 2px; }
-.m-lbl { font-size: 9px; color: #95a5a6; text-transform: uppercase; font-weight: bold; }
+.bonus-current-value span {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ff9100;
+}
 
-.voti-player-row input[type="number"] {
-  width: 85%;
-  max-width: 60px;
-  padding: 4px;
-  border: 1px solid #ccd1d9;
-  border-radius: 4px;
+/* Ruoli Indicator */
+.role-indicator-voti {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
   text-align: center;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 5px;
+  color: #11141a;
 }
+.role-indicator-voti.P { background-color: #ffca28; }
+.role-indicator-voti.D { background-color: #00b0ff; }
+.role-indicator-voti.C { background-color: #00e676; }
+.role-indicator-voti.A { background-color: #ff5252; color: #fff; }
 
-.voti-player-row input[type="checkbox"] { width: 18px; height: 18px; }
-.tot-val { font-weight: bold; color: #27ae60; font-size: 13px; }
-
-/* BARRA D'AZIONE CONTROLLO MOBILE */
+/* BARRA DI CONTROLLO INFERIORE MOBILE */
 .mobile-action-bar {
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  height: 60px;
-  background: #2c3e50;
-  color: white;
+  height: 68px;
+  background-color: #1a202c;
+  border-top: 1px solid #2d3748;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 12px;
-  box-shadow: 0 -3px 10px rgba(0,0,0,0.15);
+  padding: 0 16px;
+  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
   z-index: 100;
 }
 
-.m-bar-info { display: flex; flex-direction: column; font-size: 11px; }
-.m-bar-info strong { font-size: 20px; color: #2ecc71; }
-.m-bar-buttons { display: flex; gap: 8px; }
-
-.btn-m-secondary, .btn-m-primary {
-  border: none; padding: 8px 12px; border-radius: 6px; font-weight: bold; font-size: 12px; cursor: pointer;
+.m-bar-info {
+  display: flex;
+  flex-direction: column;
 }
-.btn-m-secondary { background: #34495e; color: white; }
-.btn-m-primary { background: #2ecc71; color: white; }
 
-/* DRAWER MOBILE COMPATTO */
-.voti-summary-column { position: fixed; top: 0; bottom: 0; left: 0; right: 0; z-index: 200; visibility: hidden; }
-.voti-summary-column.drawer-open { visibility: visible; }
-.voti-drawer-backdrop { position: absolute; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+.m-bar-info span {
+  font-size: 11px;
+  color: #a0aec0;
+}
+
+.m-bar-info strong {
+  font-size: 22px;
+  color: #00e676;
+  font-weight: 800;
+}
+
+.m-bar-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-m-secondary {
+  background-color: #2d3748;
+  color: #fff;
+  border: 1px solid #4a5568;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.btn-m-primary {
+  background-color: #ff9100;
+  color: #11141a;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+/* DRAWER MOBILE OTTIMIZZATO (Niente Scrolling Aggressivo) */
+.voti-summary-column {
+  position: fixed;
+  top: 0; bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  visibility: hidden;
+}
+
+.voti-summary-column.drawer-open {
+  visibility: visible;
+}
+
+.voti-drawer-backdrop {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(2px);
+}
 
 .summary-sticky-card {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  background: #2c3e50; color: white;
-  border-radius: 16px 16px 0 0; padding: 15px;
-  max-height: 75vh; overflow-y: auto;
-  transform: translateY(100%); transition: transform 0.25s ease-out;
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background-color: #1a202c;
+  color: #fff;
+  border-radius: 20px 20px 0 0;
+  padding: 16px;
+  border-top: 1px solid #2d3748;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  transform: translateY(100%);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.drawer-open .summary-sticky-card { transform: translateY(0); }
 
-.drawer-header-mobile { display: flex; justify-content: space-between; margin-bottom: 10px; }
-.drawer-header-mobile h3 { margin: 0; font-size: 16px; }
-.drawer-header-mobile button { background: none; border: none; color: white; font-size: 18px; }
+.drawer-open .summary-sticky-card {
+  transform: translateY(0);
+}
 
-.score-main-display { background: #34495e; text-align: center; padding: 10px; border-radius: 8px; }
-.score-label { font-size: 9px; color: #bdc3c7; display: block; }
-.score-number-value { font-size: 26px; font-weight: bold; color: #2ecc71; }
-.sub-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #34495e; font-size: 12px; }
-.components-list { background: #1a252f; border-radius: 6px; max-height: 150px; overflow-y: auto; margin-top: 8px; padding: 4px; }
-.component-item-row { display: flex; justify-content: space-between; padding: 6px; border-bottom: 1px solid #2c3e50; font-size: 11px; }
-.comp-points { color: #2ecc71; font-weight: bold; }
-.btn-salva-desktop { display: none; }
+.drawer-header-mobile {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
 
-.margin-top-card { margin-top: 12px; }
-.voti-loading { text-align: center; padding: 40px; color: #2c3e50; font-weight: bold; }
+.drawer-header-mobile h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #ff9100;
+  font-weight: 700;
+}
 
-/* --- GRID LAYOUT DESKTOP (>= 850px) --- */
-@media (min-width: 850px) {
-  .voti-page-container { padding-bottom: 12px; }
-  .voti-header h2 { font-size: 22px; }
-  .mobile-action-bar { display: none; }
-  
-  .voti-main-layout { display: grid; grid-template-columns: 1fr 320px; gap: 20px; }
-  
-  /* Ripristino riga orizzontale compatta senza etichette */
-  .voti-player-row { flex-direction: row; justify-content: space-between; align-items: center; padding: 6px 0; }
-  .voti-player-row-controls { background: none; padding: 0; width: 240px; }
-  .m-lbl { display: none; } /* Nasconde etichette mobili su desktop */
-  
-  /* Reset Drawer -> Diventa Sidebar fissa */
-  .voti-summary-column { position: static; visibility: visible; }
-  .voti-drawer-backdrop, .drawer-header-mobile { display: none; }
-  .summary-sticky-card { position: sticky; top: 15px; border-radius: 12px; transform: none; max-height: none; }
-  
+.close-drawer-btn {
+  background: none;
+  border: none;
+  color: #a0aec0;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.score-main-display {
+  background-color: #11141a;
+  border: 1px solid #2d3748;
+  text-align: center;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.score-label {
+  font-size: 10px;
+  color: #718096;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.score-number-value {
+  font-size: 32px;
+  font-weight: 900;
+  color: #00e676;
+}
+
+.sub-row-summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #2d3748;
+  font-size: 13px;
+  color: #cbd5e0;
+}
+
+.sub-badge {
+  background-color: #2d3748;
+  color: #718096;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+}
+
+.sub-badge.active {
+  background-color: rgba(0, 176, 255, 0.2);
+  color: #00b0ff;
+}
+
+/* Lista Pulita dei Giocatori Conteggiati nel Riepilogo */
+.components-clean-list {
+  background-color: #11141a;
+  border-radius: 10px;
+  border: 1px solid #2d3748;
+  margin-top: 10px;
+  padding: 4px;
+  overflow-y: auto;
+  max-height: 280px; /* Perfetto per stare dentro lo schermo mobile senza tagliare la vista */
+}
+
+.component-item-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  border-bottom: 1px solid #1a202c;
+}
+
+.component-item-row:last-child {
+  border-bottom: none;
+}
+
+/* Segnalazione Sostituzioni ed Errori Cromatica */
+.component-item-row.is-substituted {
+  background-color: rgba(0, 176, 255, 0.05);
+  border-left: 3px solid #00b0ff;
+}
+
+.component-item-row.is-empty-malus {
+  background-color: rgba(235, 64, 52, 0.05);
+  border-left: 3px solid #ff5252;
+}
+
+.comp-left-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mini-role {
+  font-size: 9px;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #11141a;
+}
+.mini-role.P { background-color: #ffca28; }
+.mini-role.D { background-color: #00b0ff; }
+.mini-role.C { background-color: #00e676; }
+.mini-role.A { background-color: #ff5252; color: white; }
+
+.comp-name-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.comp-player-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.comp-type-label {
+  font-size: 10px;
+  color: #718096;
+}
+
+/* Modifiche per visualizzazione cambio */
+.is-substituted .comp-type-label {
+  color: #00b0ff;
+  font-weight: 600;
+}
+.is-empty-malus .comp-type-label {
+  color: #ff5252;
+  font-weight: 600;
+}
+
+.comp-right-points {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.comp-math-det {
+  font-size: 11px;
+  color: #a0aec0;
+  background-color: #1a202c;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.comp-final-fanta {
+  font-size: 14px;
+  color: #00e676;
+  min-width: 32px;
+  text-align: right;
+}
+
+.is-empty-malus .comp-final-fanta {
+  color: #ff5252;
+}
+
+.btn-salva-desktop {
+  display: none; /* Nascondiamo il bottone desktop su mobile */
+}
+
+.voti-loading {
+  text-align: center;
+  padding-top: 45vh;
+  color: #a0aec0;
+  font-size: 16px;
+}
+
+
+/* --- MODALITÀ DESKTOP (>= 900px) --- */
+@media (min-width: 900px) {
+  .voti-page-container {
+    padding-bottom: 20px;
+  }
+
+  .mobile-action-bar {
+    display: none; /* Scompare la barra mobile inferiore */
+  }
+
+  .voti-main-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* La riga del giocatore su desktop diventa orizzontale e sottile */
+  .voti-player-card {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+  }
+
+  .voti-controls-grid {
+    grid-template-columns: 110px 75px 110px;
+    gap: 12px;
+    width: 320px;
+  }
+
+  /* Reset del Drawer mobile -> diventa una Sidebar ancorata a destra */
+  .voti-summary-column {
+    position: static;
+    visibility: visible;
+    z-index: auto;
+  }
+
+  .voti-drawer-backdrop, 
+  .drawer-header-mobile {
+    display: none;
+  }
+
+  .summary-sticky-card {
+    position: sticky;
+    top: 24px;
+    border-radius: 12px;
+    transform: none;
+    max-height: calc(100vh - 60px);
+    border: 1px solid #2d3748;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .components-clean-list {
+    max-height: calc(100vh - 340px);
+  }
+
+  /* Bottone Salva per Desktop */
   .btn-salva-desktop {
-    display: block; width: 100%; background: #2ecc71; color: white; border: none;
-    padding: 10px; border-radius: 6px; font-weight: bold; margin-top: 12px; cursor: pointer;
+    display: block;
+    width: 100%;
+    background-color: #ff9100;
+    color: #11141a;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-top: 16px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .btn-salva-desktop:hover {
+    background-color: #e08000;
+  }
+
+  .btn-salva-desktop:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
