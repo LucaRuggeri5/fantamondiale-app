@@ -15,6 +15,15 @@
   letter-spacing: 0.5px;
 }
 
+/* Loader per la query asincrona del mercato */
+.market-mini-loader {
+  text-align: center;
+  font-size: 13px;
+  color: #ff9100;
+  padding: 24px 0;
+  font-style: italic;
+}
+
 /* Header ottimizzato per Mobile */
 .admin-rose-header {
   display: flex;
@@ -131,7 +140,7 @@
     font-size: 24px;
   }
   .mobile-tabs-nav {
-    display: none; /* Rimuove la barra dei tab su Desktop */
+    display: none; 
   }
   .workspace-grid {
     grid-template-columns: 1.15fr 0.85fr;
@@ -140,7 +149,7 @@
   }
   .workspace-column.hide-mobile,
   .workspace-column.show-mobile {
-    display: block; /* Mostra entrambe le colonne contemporaneamente */
+    display: block; 
   }
 }
 
@@ -168,14 +177,7 @@
   font-weight: 600;
 }
 
-.badge-count-liberi, .badge-count-rosa {
-  font-size: 12px;
-  font-weight: bold;
-  padding: 4px 10px;
-  border-radius: 8px;
-  background-color: #2d3748;
-  color: #cbd5e0;
-}
+
 
 .badge-count-rosa {
   background-color: rgba(255, 145, 0, 0.15);

@@ -17,6 +17,7 @@ const GestioneRose = () => {
   const { user } = useUser();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [loadingListone, setLoadingListone] = useState(false); // Loader specifico per il listone di mercato
   const [adminUser, setAdminUser] = useState(null);
   const [squadreLega, setSquadreLega] = useState([]);
   const [selectedSquadraId, setSelectedSquadraId] = useState('');
@@ -68,6 +69,7 @@ const GestioneRose = () => {
     }
 
     try {
+      // 1. Recupero la rosa attuale del club selezionato
       const { data: rosa, error: rErr } = await supabase
         .from('rose_squadre')
         .select('calciatore_id, calciatori_reali(*)')
@@ -79,6 +81,7 @@ const GestioneRose = () => {
       );
       setRosaAttuale(rosaOrdinata);
 
+      // 2. Recupero gli ID di tutti i giocatori già presi nella lega intera
       const { data: occupati, error: oErr } = await supabase
         .from('rose_squadre')
         .select('calciatore_id')
@@ -86,27 +89,60 @@ const GestioneRose = () => {
       if (oErr) throw oErr;
       setCalciatoriOccupatiIds(occupati?.map(o => o.calciatore_id) || []);
 
-      if (listoneCalciatori.length === 0) {
-        const { data: listone, error: lErr } = await supabase
-          .from('calciatori_reali')
-          .select('*')
-          .eq('stato', 'attivo')
-          .order('nome', { ascending: true });
-        if (lErr) throw lErr;
-        setListoneCalciatori(listone || []);
-      }
     } catch (err) {
-      console.error("Errore nel caricamento dei calciatori:", err);
+      console.error("Errore nel caricamento dei dati della rosa:", err);
     }
   };
 
+  // EFFETTO 1: Caricamento contesto Admin iniziale
   useEffect(() => {
     loadAdminContext();
   }, [user]);
 
+  // EFFETTO 2: Ricarica i dati della rosa quando cambia la squadra selezionata
   useEffect(() => {
     loadRosaESvincolati();
   }, [selectedSquadraId]);
+
+  // EFFETTO 3: Chiamata mirata a Supabase filtrando per Ruolo e Testo (Risolve il bug della lettera S e dei 1000 record)
+  useEffect(() => {
+    const fetchListoneFiltrato = async () => {
+      if (!selectedSquadraId || !adminUser?.lega_id) return;
+
+      try {
+        setLoadingListone(true);
+        
+        let query = supabase
+          .from('calciatori_reali')
+          .select('*')
+          .eq('stato', 'attivo')
+          .eq('ruolo', filtroRuolo)
+          .order('nome', { ascending: true })
+          .range(0, 200); // Carichiamo solo i primi 200 record pertinenti per alleggerire la memoria DOM
+
+        // Se l'utente scrive qualcosa nel campo di ricerca, applichiamo il filtro case-insensitive
+        if (searchQuery.trim() !== '') {
+          query = query.ilike('nome', `%${searchQuery}%`);
+        }
+
+        const { data: listone, error: lErr } = await query;
+        if (lErr) throw lErr;
+
+        setListoneCalciatori(listone || []);
+      } catch (err) {
+        console.error("Errore nel caricamento del listone filtrato:", err);
+      } finally {
+        setLoadingListone(false);
+      }
+    };
+
+    // Applichiamo un piccolo debounce nativo per non stressare il database ad ogni singola lettera digitata
+    const delayDebounceFn = setTimeout(() => {
+      fetchListoneFiltrato();
+    }, 250);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [filtroRuolo, searchQuery, selectedSquadraId, adminUser]);
 
   // Conteggi dinamici dei ruoli per la squadra selezionata
   const conteggioRuoli = useMemo(() => {
@@ -114,14 +150,6 @@ const GestioneRose = () => {
     rosaAttuale.forEach(p => { if (dei[p.ruolo] !== undefined) dei[p.ruolo]++; });
     return dei;
   }, [rosaAttuale]);
-
-  // Listone filtrato memorizzato per massimizzare le performance di scrolling
-  const calciatoriFiltrati = useMemo(() => {
-    return listoneCalciatori.filter(p => 
-      p.ruolo === filtroRuolo && 
-      p.nome.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [listoneCalciatori, filtroRuolo, searchQuery]);
 
   const handleAggiungiCalciatore = async (player) => {
     const ruoloPlayer = player.ruolo;
@@ -219,14 +247,13 @@ const GestioneRose = () => {
             <div className={`workspace-column market-pool-box ${activeTabMobile === 'market' ? 'show-mobile' : 'hide-mobile'}`}>
               <div className="column-header">
                 <h3>Acquista Calciatori</h3>
-                <span className="badge-count-liberi">{calciatoriFiltrati.length}</span>
               </div>
 
               <div className="filter-controls">
                 <div className="search-wrapper">
                   <input
                     type="text"
-                    placeholder="Cerca calciatore..."
+                    placeholder="Cerca calciatore (Tutti i cognomi)..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="admin-search-input"
@@ -251,10 +278,12 @@ const GestioneRose = () => {
               </div>
 
               <div className="admin-players-list scrollable">
-                {calciatoriFiltrati.length === 0 ? (
-                  <p className="empty-notice">Nessun calciatore trovato.</p>
+                {loadingListone ? (
+                  <p className="market-mini-loader">Aggiornamento elenco di mercato... ⏳</p>
+                ) : listoneCalciatori.length === 0 ? (
+                  <p className="empty-notice">Nessun calciatore trovato con questi criteri.</p>
                 ) : (
-                  calciatoriFiltrati.map(player => {
+                  listoneCalciatori.map(player => {
                     const isOccupato = calciatoriOccupatiIds.includes(player.id);
                     const limiteRaggiunto = conteggioRuoli[player.ruolo] >= LIMITI_RUOLI[player.ruolo];
                     
