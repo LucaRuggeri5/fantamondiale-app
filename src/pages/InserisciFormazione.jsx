@@ -14,7 +14,7 @@ const InserisciFormazione = () => {
   const [giornata, setGiornata] = useState(null);
   const [squadraId, setSquadraId] = useState(null);
   const [rosa, setRosa] = useState([]);
-  
+
   const [modulo, setModulo] = useState('4-4-2');
   const [titolari, setTitolari] = useState([]);
   const [panchina, setPanchina] = useState([]);
@@ -22,11 +22,13 @@ const InserisciFormazione = () => {
   const [overlay, setOverlay] = useState({ isOpen: false, ruolo: '', tipo: '' });
 
   const regoleModuli = {
-    '4-4-2': { P: 1, D: 4, C: 4, A: 2 },
     '3-4-3': { P: 1, D: 3, C: 4, A: 3 },
-    '4-3-3': { P: 1, D: 4, C: 3, A: 3 },
     '3-5-2': { P: 1, D: 3, C: 5, A: 2 },
-    '4-5-1': { P: 1, D: 4, C: 5, A: 1 }
+    '4-3-3': { P: 1, D: 4, C: 3, A: 3 },
+    '4-4-2': { P: 1, D: 4, C: 4, A: 2 },
+    '4-5-1': { P: 1, D: 4, C: 5, A: 1 },
+    '5-3-2': { P: 1, D: 5, C: 3, A: 2 },
+    '5-4-1': { P: 1, D: 5, C: 4, A: 1 }
   };
 
   const limitiPanchina = { P: 1, D: 2, C: 2, A: 2 };
@@ -43,7 +45,7 @@ const InserisciFormazione = () => {
         setSquadraId(uData.squadra_id);
 
         const { data: rosaData } = await supabase.from('rose_squadre').select('calciatore_id, calciatori_reali(id, nome, ruolo, nazionale)').eq('squadra_id', uData.squadra_id);
-        
+
         const listaCalciatori = rosaData.map(r => Array.isArray(r.calciatori_reali) ? r.calciatori_reali[0] : r.calciatori_reali).filter(Boolean);
         setRosa(listaCalciatori);
 
@@ -92,7 +94,7 @@ const InserisciFormazione = () => {
         alert(`Massimo ${limiteRuolo} giocatori per il ruolo ${calciatore.ruolo} con questo modulo.`);
         return;
       }
-      
+
       setPanchina(prev => prev.filter(p => p.id !== calciatore.id));
       setTitolari(prev => [...prev, calciatore]);
     }
@@ -212,10 +214,10 @@ const InserisciFormazione = () => {
 
       <div className="modulo-selector-card">
         <label htmlFor="modulo-select">Modulo Tattico:</label>
-        <select 
-          id="modulo-select" 
+        <select
+          id="modulo-select"
           className="select-modulo-dropdown"
-          value={modulo} 
+          value={modulo}
           onChange={(e) => handleCambioModulo(e.target.value)}
         >
           {Object.keys(regoleModuli).map(m => (
@@ -261,7 +263,7 @@ const InserisciFormazione = () => {
                       {riserveRuolo.length} / {limitiPanchina[r]} <b className="plus-indicator-flat">+</b>
                     </span>
                   </div>
-                  
+
                   <div className="panchina-items-vertical-stack">
                     {riserveRuolo.length === 0 ? (
                       <span className="empty-pan-text-flat">Nessun giocatore inserito</span>

@@ -26,11 +26,13 @@ const AdminModificaFormazioni = () => {
   const [overlay, setOverlay] = useState({ isOpen: false, ruolo: '', tipo: '' });
 
   const regoleModuli = {
-    '4-4-2': { P: 1, D: 4, C: 4, A: 2 },
     '3-4-3': { P: 1, D: 3, C: 4, A: 3 },
-    '4-3-3': { P: 1, D: 4, C: 3, A: 3 },
     '3-5-2': { P: 1, D: 3, C: 5, A: 2 },
-    '4-5-1': { P: 1, D: 4, C: 5, A: 1 }
+    '4-3-3': { P: 1, D: 4, C: 3, A: 3 },
+    '4-4-2': { P: 1, D: 4, C: 4, A: 2 },
+    '4-5-1': { P: 1, D: 4, C: 5, A: 1 },
+    '5-3-2': { P: 1, D: 5, C: 3, A: 2 },
+    '5-4-1': { P: 1, D: 5, C: 4, A: 1 }
   };
 
   const limitiPanchina = { P: 1, D: 2, C: 2, A: 2 };
