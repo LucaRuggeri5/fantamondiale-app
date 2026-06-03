@@ -33,7 +33,7 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
         <div className="sidebar-header">
           <div className="user-welcome">
             <div className="user-details">
-              <h4>Ciao, {nomeUtente}</h4>
+              <h4>Benvenuto, {nomeUtente}</h4>
               <span className={`badge-role ${userRole}`}>
                 {userRole === 'admin' ? '👑 Admin' : '🛡️ Player'}
               </span>
@@ -72,7 +72,7 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
                 Gestione Squadra
               </li>
               <li onClick={() => handleNav('regolamento')}>
-                Regolamento Mondiale
+                Regolamento FantaMondiale
               </li>
               <li onClick={() => handleNav('partecipanti')}>
                 Partecipanti Lega
@@ -88,26 +88,26 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
             <div className="menu-section admin-section">
               <p className="section-title admin-title">👑 Gestione Admin</p>
               <ul window-tether="true">
-                <li onClick={() => handleNav('admin-permessi')}>
-                  Assegna Permessi Admin
-                </li>
-                <li onClick={() => handleNav('admin-sposta-player')}>
-                  Sposta Player di Squadra
-                </li>
-                <li onClick={() => handleNav('admin-rose')}>
-                  Gestione Rose & Mercato
-                </li>
-                <li onClick={() => handleNav('admin-giornate')}>
-                  Configura e Gestisci Giornate
-                </li>
                 <li onClick={() => handleNav('admin-modifica-formazioni')}>
                   Modifica Formazioni
                 </li>
                 <li onClick={() => handleNav('admin-modifica-voti')}>
-                  Rettifica Voti e Bonus
+                  Rettifica Voti
                 </li>
                 <li onClick={() => handleNav('admin-penalita')}>
-                  Gestione Penalità Classifica
+                  Penalità
+                </li>
+                <li onClick={() => handleNav('admin-rose')}>
+                  Gestione Rose
+                </li>
+                <li onClick={() => handleNav('admin-giornate')}>
+                  Gestione Giornate
+                </li>
+                <li onClick={() => handleNav('admin-sposta-player')}>
+                  Sposta Giocatori di Squadra
+                </li>
+                <li onClick={() => handleNav('admin-permessi')}>
+                  Permessi di Admin
                 </li>
               </ul>
             </div>
