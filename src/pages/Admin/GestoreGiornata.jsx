@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importato per gestire il ritorno
-import { useUser } from '@clerk/clerk-react'; // Importiamo il controllo utente di Clerk
-import { supabase } from '../../supabaseClient'; // Connessione client Supabase
+import { useNavigate } from 'react-router-dom'; 
+import { useUser } from '@clerk/clerk-react'; 
+import { supabase } from '../../supabaseClient'; 
 import './GestoreGiornata.css';
 
 const GestoreGiornata = () => {
-  const { user } = useUser(); // Otteniamo l'utente Clerk corrente
-  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
-  const [giornate, setGiornate] = useState([]); // Elenco di tutte le giornate
-  const [loading, setLoading] = useState(true); // Stato di caricamento iniziale
-  const [editingId, setEditingId] = useState(null); // ID della giornata che stiamo modificando (se applicabile)
-  const [adminLegaId, setAdminLegaId] = useState(null); // ID della lega gestita da questo admin
+  const { user } = useUser(); 
+  const navigate = useNavigate(); 
+  const [giornate, setGiornate] = useState([]); 
+  const [loading, setLoading] = useState(true); 
+  const [editingId, setEditingId] = useState(null); 
+  const [adminLegaId, setAdminLegaId] = useState(null); 
   
+  // STATO PER L'ALERT PERSONALIZZATO
+  // Se è null, l'alert è chiuso. Se contiene un oggetto { id, numero }, l'alert si apre per quel turno.
+  const [deleteTarget, setDeleteTarget] = useState(null);
+
   // Campi del form per l'inserimento o la modifica di una giornata
   const [numeroGiornata, setNumeroGiornata] = useState('');
-  const [aperturaFormazioni, setAperturaFormazioni] = useState(''); // Gestisce l'inizio inserimento
+  const [aperturaFormazioni, setAperturaFormazioni] = useState(''); 
   const [scadenzaFormazione, setScadenzaFormazione] = useState('');
   const [scadenzaVoti, setScadenzaVoti] = useState('');
 
@@ -32,7 +36,7 @@ const GestoreGiornata = () => {
         if (error) throw error;
         if (data?.lega_id) {
           setAdminLegaId(data.lega_id);
-          fetchGiornate(data.lega_id); // Carichiamo le giornate associate a questa lega
+          fetchGiornate(data.lega_id); 
         } else {
           alert("Attenzione: non risulti associato a nessuna lega come amministratore.");
           setLoading(false);
@@ -69,7 +73,7 @@ const GestoreGiornata = () => {
     }
   };
 
-  // Funzione helper per calcolare lo stato temporale in tempo reale (per visualizzazione tabellare)
+  // Funzione helper per calcolare lo stato temporale in tempo reale
   const calcolaStatoInTempoReale = (g) => {
     const adesso = new Date();
     const inizioFormazioni = new Date(g.apertura_formazioni);
@@ -82,33 +86,66 @@ const GestoreGiornata = () => {
     return 'conclusa';
   };
 
-  // Funzione per convertire il formato ISO di Supabase nel formato richiesto dagli input datetime-local
+  // Converte il formato ISO di Supabase nel formato richiesto dagli input datetime-local
   const formatDataPerInput = (isoString) => {
     if (!isoString) return '';
     const d = new Date(isoString);
-    const tzOffset = d.getTimezoneOffset() * 60000; // Calcolo dell'offset del fuso orario locale
+    const tzOffset = d.getTimezoneOffset() * 60000; 
     return new Date(d.getTime() - tzOffset).toISOString().slice(0, 16);
   };
 
-  // Attiva la modalità di modifica caricando i dati esistenti nei rispettivi stati del form
+  // Attiva la modalità di modifica caricando i dati esistenti
   const handleEditClick = (g) => {
     setEditingId(g.id);
     setNumeroGiornata(g.numero_giornata);
-    setAperturaFormazioni(formatDataPerInput(g.apertura_formazioni)); // Impostiamo la nuova data nel form
+    setAperturaFormazioni(formatDataPerInput(g.apertura_formazioni)); 
     setScadenzaFormazione(formatDataPerInput(g.scadenza_formazione));
     setScadenzaVoti(formatDataPerInput(g.scadenza_voti));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Svuota tutti i campi del form ripristinando lo stato di creazione
+  // Questa funzione apre l'alert personalizzato salvando i dati del turno da eliminare
+  const apriConfermaElimina = (giornataId, numero) => {
+    setDeleteTarget({ id: giornataId, numero: numero });
+  };
+
+  // Funzione che esegue la cancellazione effettiva su Supabase
+  const handleEliminaEffettiva = async () => {
+    if (!deleteTarget) return;
+
+    try {
+      const { error } = await supabase
+        .from('giornate')
+        .delete()
+        .eq('id', deleteTarget.id);
+
+      if (error) throw error;
+
+      alert(`Giornata ${deleteTarget.numero} eliminata con successo.`);
+      
+      if (editingId === deleteTarget.id) {
+        resetForm();
+      }
+      
+      setDeleteTarget(null); // Chiude l'alert personalizzato ripristinando lo stato a null
+      fetchGiornate(adminLegaId); 
+    } catch (err) {
+      console.error("Errore durante l'eliminazione della giornata:", err);
+      alert("Impossibile eliminare la giornata. Verifica se ci sono dati collegati.");
+      setDeleteTarget(null);
+    }
+  };
+
+  // Svuota tutti i campi del form
   const resetForm = () => {
     setEditingId(null);
     setNumeroGiornata('');
-    setAperturaFormazioni(''); // Resettiamo il campo
+    setAperturaFormazioni(''); 
     setScadenzaFormazione('');
     setScadenzaVoti('');
   };
 
-  // Gestore del salvataggio dei dati (sia per insert che per update)
+  // Gestore del salvataggio dei dati (insert o update)
   const handleSalvaGiornata = async (e) => {
     e.preventDefault();
     
@@ -122,10 +159,9 @@ const GestoreGiornata = () => {
       return;
     }
 
-    // Costruiamo l'oggetto payload convertendo le date locali in stringhe ISO UTC globali
     const payload = {
       numero_giornata: parseInt(numeroGiornata, 10),
-      apertura_formazioni: new Date(aperturaFormazioni).toISOString(), // Inviamo la nuova colonna
+      apertura_formazioni: new Date(aperturaFormazioni).toISOString(), 
       scadenza_formazione: new Date(scadenzaFormazione).toISOString(),
       scadenza_voti: new Date(scadenzaVoti).toISOString(),
       lega_id: adminLegaId 
@@ -133,9 +169,7 @@ const GestoreGiornata = () => {
 
     try {
       if (editingId) {
-        // In fase di update escludiamo la lega_id per sicurezza
         const { lega_id, ...updatePayload } = payload;
-
         const { error } = await supabase
           .from('giornate')
           .update(updatePayload)
@@ -143,7 +177,6 @@ const GestoreGiornata = () => {
         if (error) throw error;
         alert("Giornata aggiornata con successo.");
       } else {
-        // Creazione di un nuovo record di giornata
         const { error } = await supabase
           .from('giornate')
           .insert([payload]);
@@ -151,11 +184,20 @@ const GestoreGiornata = () => {
         alert("Nuova giornata inserita nel calendario.");
       }
       resetForm();
-      fetchGiornate(adminLegaId); // Aggiorniamo la lista a schermo
+      fetchGiornate(adminLegaId); 
     } catch (err) {
       console.error(err);
       alert("Errore durante il salvataggio dei dati.");
     }
+  };
+
+  const formattaDataLeggibile = (isoString) => {
+    return new Date(isoString).toLocaleString('it-IT', { 
+      day: '2-digit', 
+      month: '2-digit', 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
   };
 
   if (loading) return <div className="admin-giornate-loading">Caricamento calendario di controllo... ⏳</div>;
@@ -184,6 +226,7 @@ const GestoreGiornata = () => {
               value={numeroGiornata} 
               onChange={(e) => setNumeroGiornata(e.target.value)}
               placeholder="Es. 1"
+              min="1"
             />
           </div>
 
@@ -226,44 +269,100 @@ const GestoreGiornata = () => {
           </div>
         </form>
 
-        {/* Tabella riassuntiva dei turni configurati */}
+        {/* Griglia delle Card dei Turni */}
         <div className="giornate-list-section">
           <h3>Turni Configurati</h3>
-          <div className="giornate-table-responsive">
-            <table className="giornate-admin-table">
-              <thead>
-                <tr>
-                  <th>Turno</th>
-                  <th>Apertura Formazioni</th>
-                  <th>Scadenza Formazione</th>
-                  <th>Stato Reale</th>
-                  <th>Azioni</th>
-                </tr>
-              </thead>
-              <tbody>
-                {giornate.map(g => {
-                  const statoReale = calcolaStatoInTempoReale(g);
-                  return (
-                    <tr key={g.id} className={`row-stato-${statoReale}`}>
-                      <td className="txt-bold">Giornata {g.numero_giornata}</td>
-                      <td>{new Date(g.apertura_formazioni).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
-                      <td>{new Date(g.scadenza_formazione).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
-                      <td>
-                        <span className={`badge-stato-turno ${statoReale.replace(' ', '-')}`}>
-                          {statoReale}
-                        </span>
-                      </td>
-                      <td>
-                        <button className="btn-table-edit" onClick={() => handleEditClick(g)}>✏️ Modifica</button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+          
+          {giornate.length === 0 ? (
+            <div className="no-giornate-box">
+              Nessuna giornata presente. Creane una usando il form laterale.
+            </div>
+          ) : (
+            <div className="giornate-cards-grid">
+              {giornate.map(g => {
+                const statoReale = calcolaStatoInTempoReale(g);
+                return (
+                  <div key={g.id} className={`giornata-status-card border-stato-${statoReale.replace(' ', '-')}`}>
+                    
+                    <div className="giornata-card-header">
+                      <span className="giornata-card-title">Giornata {g.numero_giornata}</span>
+                      <span className={`badge-stato-turno ${statoReale.replace(' ', '-')}`}>
+                        {statoReale}
+                      </span>
+                    </div>
+
+                    <div className="giornata-card-body">
+                      <div className="data-row">
+                        <span className="data-label">🟢 Apertura Formazioni:</span>
+                        <span className="data-value">{formattaDataLeggibile(g.apertura_formazioni)}</span>
+                      </div>
+                      <div className="data-row">
+                        <span className="data-label">🔴 Blocco Consegna:</span>
+                        <span className="data-value">{formattaDataLeggibile(g.scadenza_formazione)}</span>
+                      </div>
+                      <div className="data-row">
+                        <span className="data-label">👑 Scadenza Voti Admin:</span>
+                        <span className="data-value">{formattaDataLeggibile(g.scadenza_voti)}</span>
+                      </div>
+                    </div>
+
+                    <div className="giornata-card-actions">
+                      <button 
+                        type="button" 
+                        className="btn-card-edit" 
+                        onClick={() => handleEditClick(g)}
+                      >
+                        ✏️ Modifica
+                      </button>
+                      <button 
+                        type="button" 
+                        className="btn-card-delete" 
+                        onClick={() => apriConfermaElimina(g.id, g.numero_giornata)}
+                      >
+                        🗑️ Elimina
+                      </button>
+                    </div>
+
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* RENDER DELL'ALERT DI ELIMINAZIONE PERSONALIZZATO (MODAL) */}
+      {deleteTarget && (
+        <div className="custom-alert-overlay">
+          <div className="custom-alert-modal">
+            <div className="custom-alert-icon">⚠️</div>
+            <h4 className="custom-alert-title">Sei assolutamente sicuro?</h4>
+            <p className="custom-alert-text">
+              Stai per eliminare definitivamente la <strong>Giornata {deleteTarget.numero}</strong> dal calendario di gioco del FantaMondiale.
+            </p>
+            <p className="custom-alert-warning">
+              Questa azione è irreversibile e rimuoverà tutte le scadenze impostate per questo turno.
+            </p>
+            <div className="custom-alert-actions">
+              <button 
+                type="button" 
+                className="btn-alert-cancel" 
+                onClick={() => setDeleteTarget(null)}
+              >
+                No, Annulla
+              </button>
+              <button 
+                type="button" 
+                className="btn-alert-confirm" 
+                onClick={handleEliminaEffettiva}
+              >
+                Sì, Elimina Turno
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
