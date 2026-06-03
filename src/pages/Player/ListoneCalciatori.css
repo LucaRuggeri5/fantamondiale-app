@@ -20,7 +20,7 @@
 }
 
 .listone-back-btn:hover {
-  color: #20bf6b; /* Diventa verde admin/smeraldo all'hover */
+  color: #20bf6b; 
   transform: translateX(-2px);
 }
 
@@ -103,11 +103,11 @@
   font-weight: 500;
 }
 
-/* --- MODALITÀ INIZIALE: BLOCCHI PER SQUADRE (NAZIONALI) --- */
+/* --- MODALITÀ INIZIALE: BLOCCHI NAZIONALI (ACCORDION) --- */
 .nazioni-blocks-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
 }
 
 .nazione-block-card {
@@ -116,11 +116,22 @@
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: border-color 0.2s ease;
+}
+
+.nazione-block-header.clickable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease;
+}
+
+.nazione-block-header.clickable:hover {
+  background-color: #1c1c24;
 }
 
 .nazione-block-header {
   background-color: #15151a;
-  padding: 10px 14px;
+  padding: 12px 14px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -130,8 +141,22 @@
 .nazione-block-header h3 {
   margin: 0;
   font-size: 14px;
-  color: #00b0ff;
+  color: #04C869;
   letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-right-zone {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.accordion-arrow {
+  font-size: 10px;
+  color: #718096;
 }
 
 .nazione-count-badge {
@@ -146,6 +171,14 @@
 .nazione-block-players {
   display: flex;
   flex-direction: column;
+  background-color: #131317;
+}
+
+.loading-players-mini {
+  padding: 14px;
+  font-size: 12px;
+  color: #888;
+  text-align: center;
 }
 
 .listone-player-mini-row {
@@ -208,9 +241,9 @@
 }
 
 .listone-ruolo-badge.P { background-color: #ffca28; }
-.listone-ruolo-badge.D { background-color: #00b0ff; color: #fff; }
+.listone-ruolo-badge.D { background-color: #00b0ff; }
 .listone-ruolo-badge.C { background-color: #00e676; }
-.listone-ruolo-badge.A { background-color: #ff1744; color: #fff; }
+.listone-ruolo-badge.A { background-color: #ff1744; }
 
 .name-nat-block {
   display: flex;
@@ -227,6 +260,9 @@
   font-size: 10.5px;
   color: #8a8a93;
   margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .no-data-msg {
@@ -234,4 +270,14 @@
   color: #666;
   font-size: 13px;
   padding: 30px;
+}
+
+/* Semplice animazione di apertura */
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
