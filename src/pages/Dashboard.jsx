@@ -305,7 +305,7 @@ const Dashboard = () => {
 
           {existingTeams.length > 0 && (
             <div className="create-team-card spacing-bottom">
-              <h2>Scegli una Squadra esistente 🏢</h2>
+              <h2>Scegli una Squadra esistente</h2>
               <p>Seleziona il tuo team di appartenenza dalla lista per prenderne il controllo:</p>
               <form onSubmit={handleJoinTeam} className="dashboard-form">
                 <select
@@ -327,7 +327,7 @@ const Dashboard = () => {
           )}
 
           <div className="create-team-card">
-            <h2>Oppure, crea una nuova Squadra! 📝</h2>
+            <h2>Oppure, crea una nuova Squadra!</h2>
             <p>Se la tua squadra non è presente nell'elenco sopra, inserisci il nome qui sotto per fondarla.</p>
             <form onSubmit={handleCreateTeam} className="dashboard-form">
               <input
@@ -372,7 +372,7 @@ const Dashboard = () => {
             {/* Card Inserimento Formazione */}
             <div className={`action-status-card formation ${!targetDates.giornataFormazioneId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
-                <h3>{targetDates.giornataFormazioneId ? `Giornata ${targetDates.numeroGiornataFormazione} 🏟️` : "Schieramento Formazione"}</h3>
+                <h3>{targetDates.giornataFormazioneId ? `Giornata ${targetDates.numeroGiornataFormazione} ` : "Schieramento Formazione"}</h3>
                 <span className="time-countdown">⏳ {formationCountdown}</span>
               </div>
               <p className="action-card-description">
@@ -385,14 +385,14 @@ const Dashboard = () => {
                 disabled={!targetDates.giornataFormazioneId}
                 onClick={() => navigate(`/formazione/inserisci/${targetDates.giornataFormazioneId}`)}
               >
-                🏃‍♂️ Inserisci Formazione
+              Inserisci Formazione
               </button>
             </div>
 
             {/* Card Inserimento Voti Admin */}
             <div className={`action-status-card votes ${!targetDates.giornataVotiId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
-                <h3>{targetDates.giornataVotiId ? `Calcolo Giornata ${targetDates.numeroGiornataVoti} 📝` : "Inserimento Voti 📝"}</h3>
+                <h3>{targetDates.giornataVotiId ? `Calcolo Giornata ${targetDates.numeroGiornataVoti} ` : "Inserimento Voti"}</h3>
                 <span className="time-countdown client-timer">⏳ {votesCountdown}</span>
               </div>
               <p className="action-card-description">
@@ -405,7 +405,7 @@ const Dashboard = () => {
                 disabled={!targetDates.giornataVotiId}
                 onClick={() => navigate(`/voti/inserisci/${targetDates.giornataVotiId}`)}
               >
-                📊 Inserisci Voti
+              Inserisci Voti
               </button>
             </div>
           </div>
