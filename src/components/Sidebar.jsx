@@ -1,8 +1,17 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { UserButton } from '@clerk/clerk-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
+  // Riferimento al contenitore interno del menu per controllarne lo scroll
+  const menuContentRef = useRef(null);
+
+  // Reset dello scroll ogni volta che la sidebar viene aperta
+  useEffect(() => {
+    if (isOpen && menuContentRef.current) {
+      menuContentRef.current.scrollTop = 0;
+    }
+  }, [isOpen]);
 
   const handleNav = (targetPage) => {
     if (onNavigate) {
@@ -33,8 +42,8 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
           <button className="close-sidebar-btn" onClick={onClose}>&times;</button>
         </div>
 
-        {/* CONTENUTO MENU */}
-        <div className="sidebar-menu-content">
+        {/* CONTENUTO MENU (Aggiunto il ref qui per resettare lo scroll) */}
+        <div className="sidebar-menu-content" ref={menuContentRef}>
 
           {/* NUOVA SEZIONE PRINCIPALE (Integrazione BottomNavbar) */}
           <div className="menu-section">
