@@ -85,7 +85,7 @@ const AdminPenalita = () => {
     <div className="admin-penalita-container">
       {/* Intestazione */}
       <div className="admin-penalita-header">
-        <button className="admin-penalita-btn-back" onClick={() => navigate(-1)}>⬅️ Indietro</button>
+        <button className="admin-penalita-btn-back" onClick={() => navigate('/dashboard')}>⬅️ Indietro</button>
         <h2>Gestione Sanzioni & Penalità ⚖️</h2>
       </div>
 

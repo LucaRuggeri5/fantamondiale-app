@@ -76,7 +76,7 @@ const AssegnaPermessi = () => {
     <div className="permessi-page-container">
       <div className="permessi-header">
         <div className="permessi-header-title-container">
-          <button className="btn-back-permessi" onClick={() => navigate(-1)}>
+          <button className="btn-back-permessi" onClick={() => navigate('/dashboard')}>
             ⬅️ Indietro
           </button>
           <h2>Assegna Permessi Admin 👑</h2>

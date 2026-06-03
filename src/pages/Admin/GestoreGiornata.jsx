@@ -164,7 +164,7 @@ const GestoreGiornata = () => {
     <div className="gestore-giornate-page">
       <div className="admin-giornate-header">
         <div className="admin-giornate-header-title-container">
-          <button className="btn-back-giornate" onClick={() => navigate(-1)}>
+          <button className="btn-back-giornate" onClick={() => navigate('/dashboard')}>
             ⬅️ Indietro
           </button>
           <h2>👑 Configurazione Turni & Scadenze</h2>

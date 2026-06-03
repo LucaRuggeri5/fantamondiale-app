@@ -277,7 +277,7 @@ const AdminModificaVoti = () => {
     <div className="admin-voti-page-wrapper">
       {/* HEADER PRINCIPALE */}
       <div className="admin-voti-main-header">
-        <button className="admin-btn-back" onClick={() => navigate(-1)}>
+        <button className="admin-btn-back" onClick={() => navigate('/dashboard')}>
           ← Indietro
         </button>
         <h2>Rettifica Voti Autorità ⚡</h2>

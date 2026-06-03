@@ -255,7 +255,7 @@ const AdminModificaFormazioni = () => {
     <div className="inserisci-formazione-page admin-page-wrapper">
       <div className="formazione-header admin-border-header">
         <div className="admin-header-title-container">
-          <button className="btn-back-admin" onClick={() => navigate(-1)}>⬅️ Indietro</button>
+          <button className="btn-back-admin" onClick={() => navigate('/dashboard')}>⬅️ Indietro</button>
           <h2>👑 Pannello Admin: Modifica Forzosa Formazioni</h2>
         </div>
         <p className="admin-warning-text">⚠️ MODALITÀ APERTA - Qualsiasi vincolo temporale o di blocco turno è disattivato.</p>

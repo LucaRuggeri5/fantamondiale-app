@@ -79,7 +79,7 @@ const SpostaPlayer = () => {
     <div className="sposta-page-container">
       <div className="sposta-header">
         <div className="sposta-header-title-container">
-          <button className="btn-back-sposta" onClick={() => navigate(-1)}>
+          <button className="btn-back-sposta" onClick={() => navigate('/dashboard')}>
             ⬅️ Indietro
           </button>
           <h2>Sposta Player di Squadra ⚽</h2>

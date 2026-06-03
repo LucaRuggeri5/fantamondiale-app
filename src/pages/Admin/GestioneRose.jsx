@@ -170,7 +170,7 @@ const GestioneRose = () => {
     <div className="admin-rose-container">
       {/* Intestazione */}
       <div className="admin-rose-header">
-        <button className="btn-back-rose" onClick={() => navigate(-1)}>
+        <button className="btn-back-rose" onClick={() => navigate('/dashboard')}>
           ← Indietro
         </button>
         <div className="admin-title-group">

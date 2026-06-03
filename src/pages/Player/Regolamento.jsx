@@ -9,7 +9,7 @@ const Regolamento = () => {
     <div className="regolamento-container">
       <div className="regolamento-card">
         {/* Pulsante per tornare indietro */}
-        <button className="regolamento-back-btn" onClick={() => navigate(-1)}>
+        <button className="regolamento-back-btn" onClick={() => navigate('/dashboard')}>
           ← Torna Indietro
         </button>
 

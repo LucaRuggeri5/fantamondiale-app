@@ -75,7 +75,7 @@ const ListoneCalciatori = () => {
   return (
     <div className="player-page-container">
       {/* Pulsante per tornare indietro coerente */}
-      <button className="listone-back-btn" onClick={() => navigate(-1)}>
+      <button className="listone-back-btn" onClick={() => navigate('/dashboard')}>
         ← Torna Indietro
       </button>
 
