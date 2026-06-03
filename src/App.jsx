@@ -23,6 +23,7 @@ import AdminPenalita from './pages/Admin/AdminPenalita';
 import PartecipantiLega from './pages/Player/PartecipantiLega';
 import ListoneCalciatori from './pages/Player/ListoneCalciatori';
 import GestioneSquadra from './pages/Player/GestioneSquadra';
+import Regolamento from './pages/Player/Regolamento';
 
 import BottomNavbar from './components/BottomNavbar';
 import Sidebar from './components/Sidebar'; 
@@ -33,11 +34,13 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
   const navigate = useNavigate();
   const location = useLocation(); 
 
-  // Nasconde la navbar nelle rotte admin, inserimento formazioni e inserimento voti
+  // Nasconde la navbar nelle rotte admin, inserimento formazioni, inserimento voti, regolamento e listone
   const nascondiNavbar = 
     location.pathname.startsWith('/admin') || 
     location.pathname.startsWith('/formazione') || 
-    location.pathname.startsWith('/voti');
+    location.pathname.startsWith('/voti') ||
+    location.pathname.startsWith('/regolamento') ||
+    location.pathname.startsWith('/listone');
 
   return (
     <div className="app-container">
@@ -65,6 +68,9 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
             // Nuove Rotte Info (Consultazione Player)
             case 'gestione-squadra':
               navigate('/gestione-squadra');
+              break;
+            case 'regolamento':
+              navigate('/regolamento');
               break;
             case 'partecipanti':
               navigate('/partecipanti');
@@ -97,7 +103,7 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
               break;
             
             default:
-              alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fases!`);
+              alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fasi!`);
           }
         }}
       />
@@ -121,6 +127,7 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, handleJoinLe
           
           {/* Nuove Rotte Informative inserite all'interno del flusso */}
           <Route path="/gestione-squadra" element={<GestioneSquadra currentUser={currentUser} />} />
+          <Route path="/regolamento" element={<Regolamento />} />
           <Route path="/partecipanti" element={<PartecipantiLega currentUser={currentUser} />} />
           <Route path="/listone" element={<ListoneCalciatori />} />
           
@@ -236,6 +243,32 @@ const App = () => {
     if (currentUser) {
       setCurrentUser(prev => ({ ...prev, lega_id: id }));
     }
+  };
+
+  // Sovrascrittura nativa con HTML iniettato
+  window.alert = (message) => {
+    const overlay = document.createElement('div');
+    overlay.className = 'custom-alert-overlay';
+
+    const alertBox = document.createElement('div');
+    alertBox.className = 'custom-alert-box';
+
+    const text = document.createElement('p');
+    text.className = 'custom-alert-text';
+    text.innerText = message;
+
+    const btn = document.createElement('button');
+    btn.className = 'custom-alert-btn';
+    btn.innerText = 'OK';
+
+    btn.onclick = () => {
+      document.body.removeChild(overlay);
+    };
+
+    alertBox.appendChild(text);
+    alertBox.appendChild(btn);
+    overlay.appendChild(alertBox);
+    document.body.appendChild(overlay);
   };
 
   if (user && isSyncing) {

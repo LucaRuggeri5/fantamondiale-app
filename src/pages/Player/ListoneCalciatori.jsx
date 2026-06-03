@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale'; // Sistema il path in base alla tua cartella
 import './ListoneCalciatori.css';
 
 const ListoneCalciatori = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [calciatori, setCalciatori] = useState([]);
   const [cercaNome, setCercaNome] = useState('');
@@ -72,6 +74,11 @@ const ListoneCalciatori = () => {
 
   return (
     <div className="player-page-container">
+      {/* Pulsante per tornare indietro coerente */}
+      <button className="listone-back-btn" onClick={() => navigate(-1)}>
+        ← Torna Indietro
+      </button>
+
       <div className="player-page-header">
         <h2>Listone Calciatori</h2>
         <p className="player-page-subtitle">Tutti i protagonisti del mondiale.</p>

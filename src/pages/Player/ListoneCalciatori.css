@@ -4,6 +4,26 @@
   color: #fff;
 }
 
+/* Stile per il pulsante Torna Indietro */
+.listone-back-btn {
+  background: transparent;
+  border: none;
+  color: #a0aec0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px 0;
+  margin-bottom: 12px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.listone-back-btn:hover {
+  color: #20bf6b; /* Diventa verde admin/smeraldo all'hover */
+  transform: translateX(-2px);
+}
+
 .player-page-header {
   margin-bottom: 16px;
 }

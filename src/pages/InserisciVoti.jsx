@@ -47,7 +47,7 @@ const InserisciVoti = () => {
         const { data: form } = await supabase.from('formazioni').select('id').eq('giornata_id', giornataId).eq('squadra_id', utente.squadra_id).maybeSingle();
         if (!form) {
           alert("Nessuna formazione schierata.");
-          return navigate('/calendario');
+          return navigate('/dashboard');
         }
         setFormazioneId(form.id);
 
@@ -166,7 +166,7 @@ const InserisciVoti = () => {
       await supabase.from('formazioni').update({ punteggio_totale: calcoloRisultato.totaleSquadra }).eq('id', formazioneId);
 
       alert("Voti salvati con successo!"); 
-      navigate('/calendario');
+      navigate('/dashboard');
     } catch (err) {
       alert("Errore durante il salvataggio dei voti");
     } finally {
@@ -241,7 +241,7 @@ const InserisciVoti = () => {
     <div className="voti-page-container">
       {/* Intestazione */}
       <div className="voti-header">
-        <button className="btn-back-voti" onClick={() => navigate('/calendario')}>
+        <button className="btn-back-voti" onClick={() => navigate('/dashboard')}>
           ← Indietro
         </button>
         <div className="voti-title-group">
