@@ -1,3 +1,6 @@
+/* ==========================================
+   1. LAYOUT GENERALE & SCHERMATA CARICAMENTO
+   ========================================== */
 .calendario-page {
   padding: 14px;
   font-family: system-ui, -apple-system, sans-serif;
@@ -6,13 +9,6 @@
 
 .calendario-top-bar {
   margin-bottom: 16px;
-}
-
-.calendario-loading {
-  text-align: center;
-  padding-top: 45vh;
-  color: #888;
-  font-size: 14px;
 }
 
 .calendario-page h2 {
@@ -29,6 +25,16 @@
   line-height: 1.4;
 }
 
+.calendario-loading {
+  text-align: center;
+  padding-top: 45vh;
+  color: #888;
+  font-size: 14px;
+}
+
+/* ==========================================
+   2. LISTA GIORNATE (MATCHDAYS) & RIGHE
+   ========================================== */
 .matchdays-list {
   display: flex;
   flex-direction: column;
@@ -60,6 +66,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Stati bordo sinistro delle righe */
 .matchday-row.creata { border-left-color: #00b0ff; }
 .matchday-row.in_corso { border-left-color: #00e676; }
 .matchday-row.calcolo { border-left-color: #ffca28; }
@@ -98,6 +105,9 @@
   color: #f4f4f5;
 }
 
+/* ==========================================
+   3. STATUS BADGES
+   ========================================== */
 .matchday-actions-area {
   display: flex;
   align-items: center;
@@ -116,7 +126,9 @@
 .status-badge.calcolo { background-color: rgba(255, 202, 40, 0.12); color: #ffca28; }
 .status-badge.conclusa { background-color: #2e2e38; color: #a0a0ab; }
 
-/* SEZIONE TATTICA DROPDOWN COMPATTA MOBILE */
+/* ==========================================
+   4. DROPDOWN FORMAZIONI & SELEZIONE SQUADRE
+   ========================================== */
 .matchday-dropdown-formazioni {
   background-color: #141417;
   border-top: 1px solid #2e2e38;
@@ -132,7 +144,8 @@
   letter-spacing: 0.5px;
 }
 
-.dropdown-loading-txt, .dropdown-loading-txt-empty {
+.dropdown-loading-txt, 
+.dropdown-loading-txt-empty {
   font-size: 11px;
   color: #71717a;
   text-align: center;
@@ -181,13 +194,8 @@
   gap: 8px;
 }
 
-.emoji-club {
-  font-size: 12px;
-}
-
-.club-title {
-  font-weight: 600;
-}
+.emoji-club { font-size: 12px; }
+.club-title { font-weight: 600; }
 
 .modulo-tag-badge {
   background-color: #121214;
@@ -207,7 +215,9 @@
   color: #00e676;
 }
 
-/* RENDERING DEL CAMPO DIETRO LA SQUADRA */
+/* ==========================================
+   5. VISUALIZZATORE DETTAGLIO CAMPO (GIOCATORI)
+   ========================================== */
 .dropdown-formazione-visualizzatore {
   background-color: #111113;
   border: 1px solid #00e676;
@@ -258,15 +268,42 @@
   padding: 6px 10px;
   border-radius: 4px;
   font-size: 12px;
-  border-left: 3px solid #333; /* Bordo sinistro ereditato dai ruoli */
+  border-left: 3px solid #333;
+  transition: background-color 0.2s ease;
 }
 
-/* Bordi sinistri colorati per i ruoli nel calendario */
+/* Bordi per Ruoli */
 .riga-giocatore-campo.cal-border-P { border-left-color: #ffca28; }
 .riga-giocatore-campo.cal-border-D { border-left-color: #00b0ff; }
 .riga-giocatore-campo.cal-border-C { border-left-color: #00e676; }
 .riga-giocatore-campo.cal-border-A { border-left-color: #ff1744; }
 
+/* Gestione Sostituzioni (Entrati/Usciti) */
+.riga-giocatore-campo.giocatore-sostituito { background-color: #241a1a; }
+.riga-giocatore-campo.giocatore-subentrato { background-color: #17241b; }
+
+.badge-cambio {
+  font-size: 10px;
+  font-weight: bold;
+  padding: 1px 5px;
+  border-radius: 4px;
+  margin-left: 8px;
+  display: inline-block;
+}
+
+.badge-cambio.uscito {
+  background-color: rgba(255, 23, 68, 0.15);
+  color: #ff5252;
+  border: 1px solid rgba(255, 23, 68, 0.3);
+}
+
+.badge-cambio.entrato {
+  background-color: rgba(0, 230, 118, 0.15);
+  color: #00e676;
+  border: 1px solid rgba(0, 230, 118, 0.3);
+}
+
+/* Badge Ruoli (P-D-C-A) */
 .mini-ruolo-indicator {
   font-size: 9px;
   font-weight: 800;
@@ -289,6 +326,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
 }
 
 .voto-giocatore-campo-live {

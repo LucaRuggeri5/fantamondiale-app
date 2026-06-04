@@ -3,24 +3,18 @@ import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../supabaseClient';
 import './Calendario.css';
 
+const ORDINE_RUOLI = { 'P': 1, 'D': 2, 'C': 3, 'A': 4 };
+
 const Calendario = () => {
   const { user } = useUser();
-  
   const [loading, setLoading] = useState(true);
   const [giornate, setGiornate] = useState([]);
-  const [currentUserData, setCurrentUserData] = useState(null);
-
-  // Stati per la gestione dei dropdown interattivi
-  const [giornataSelezionata, setGiornataSelezionata] = useState(null);
-  const [squadreFormazioni, setSquadreFormazioni] = useState([]);
   const [loadingSquadre, setLoadingSquadre] = useState(false);
-  
+  const [squadreFormazioni, setSquadreFormazioni] = useState([]);
+  const [giornataSelezionata, setGiornataSelezionata] = useState(null);
   const [squadraSelezionata, setSquadraSelezionata] = useState(null);
   const [dettaglioFormazione, setDettaglioFormazione] = useState({ titolari: [], panchina: [] });
   const [loadingDettaglio, setLoadingDettaglio] = useState(false);
-
-  // Mappa di peso dei ruoli per garantire l'ordine fisso P -> D -> C -> A
-  const ordineRuoli = { 'P': 1, 'D': 2, 'C': 3, 'A': 4 };
 
   const fetchCalendarioData = async () => {
     try {
@@ -34,7 +28,6 @@ const Calendario = () => {
         .single();
 
       if (userErr) throw userErr;
-      setCurrentUserData(userData);
 
       if (userData?.lega_id) {
         const { data: giornateData, error: gioErr } = await supabase
@@ -54,20 +47,14 @@ const Calendario = () => {
   };
 
   useEffect(() => {
-    if (user) {
-      fetchCalendarioData();
-    }
+    if (user) fetchCalendarioData();
   }, [user]);
 
   const calcolaStatoInTempoReale = (day) => {
     const adesso = new Date();
-    const inizioFormazioni = new Date(day.apertura_formazioni);
-    const fineFormazioni = new Date(day.scadenza_formazione);
-    const fineVoti = new Date(day.scadenza_voti);
-
-    if (adesso < inizioFormazioni) return 'in programma';
-    if (adesso >= inizioFormazioni && adesso < fineFormazioni) return 'in corso';
-    if (adesso >= fineFormazioni && adesso < fineVoti) return 'fase calcolo';
+    if (adesso < new Date(day.apertura_formazioni)) return 'in programma';
+    if (adesso < new Date(day.scadenza_formazione)) return 'in corso';
+    if (adesso < new Date(day.scadenza_voti)) return 'fase calcolo';
     return 'conclusa';
   };
 
@@ -92,12 +79,7 @@ const Calendario = () => {
       setLoadingSquadre(true);
       const { data, error } = await supabase
         .from('formazioni')
-        .select(`
-          id,
-          modulo,
-          punteggio_totale,
-          squadre!squadra_id (id, nome) 
-        `)
+        .select(`id, modulo, punteggio_totale, squadre!squadra_id (id, nome)`)
         .eq('giornata_id', giornata.id);
 
       if (error) throw error;
@@ -120,12 +102,7 @@ const Calendario = () => {
       setLoadingDettaglio(true);
       const { data, error } = await supabase
         .from('formazioni_calciatori')
-        .select(`
-          posizione,
-          ruolo,
-          voto_fanta,
-          calciatori_reali!calciatore_id (id, nome)
-        `)
+        .select(`posizione, ruolo, voto_fanta, calciatori_reali!calciatore_id (id, nome)`)
         .eq('formazione_id', formazione.id)
         .order('posizione', { ascending: true });
 
@@ -133,29 +110,35 @@ const Calendario = () => {
 
       const mappati = data.map(fc => {
         const c = Array.isArray(fc.calciatori_reali) ? fc.calciatori_reali[0] : fc.calciatori_reali;
-        if (!c) return null;
-        return { 
-          ...c, 
-          posizione: fc.posizione,
-          ruolo: fc.ruolo,
-          voto_fanta: fc.voto_fanta
-        };
+        return c ? { ...c, posizione: fc.posizione, ruolo: fc.ruolo, voto_fanta: fc.voto_fanta } : null;
       }).filter(Boolean);
 
-      // Ordiniamo in modo deterministico i titolari per Ruolo (P -> D -> C -> A) e poi per Posizione
-      const listaTitolari = mappati
-        .filter(f => f.posizione <= 11)
-        .sort((a, b) => (ordineRuoli[a.ruolo] || 99) - (ordineRuoli[b.ruolo] || 99) || a.posizione - b.posizione);
+      const baseTitolari = mappati.filter(f => f.posizione <= 11);
+      const basePanchina = mappati.filter(f => f.posizione > 11);
 
-      // Ordiniamo in modo deterministico le riserve sempre per Ruolo (P -> D -> C -> A) e poi per Posizione
-      const listaPanchina = mappati
-        .filter(f => f.posizione > 11)
-        .sort((a, b) => (ordineRuoli[a.ruolo] || 99) - (ordineRuoli[b.ruolo] || 99) || a.posizione - b.posizione);
-
-      setDettaglioFormazione({
-        titolari: listaTitolari,
-        panchina: listaPanchina
+      const svPerRuolo = { P: 0, D: 0, C: 0, A: 0 };
+      baseTitolari.forEach(t => {
+        if (!t.voto_fanta) svPerRuolo[t.ruolo]++;
       });
+
+      const ordinaGiocatori = (a, b) => (ORDINE_RUOLI[a.ruolo] || 99) - (ORDINE_RUOLI[b.ruolo] || 99) || a.posizione - b.posizione;
+
+      const listaTitolari = baseTitolari.map(t => ({
+        ...t,
+        isSostituito: !t.voto_fanta && basePanchina.some(p => p.ruolo === t.ruolo && p.voto_fanta > 0)
+      })).sort(ordinaGiocatori);
+
+      const conteggioEntratiRuolo = { P: 0, D: 0, C: 0, A: 0 };
+      const listaPanchina = basePanchina.map(p => {
+        let isSubentrato = false;
+        if (p.voto_fanta > 0 && conteggioEntratiRuolo[p.ruolo] < svPerRuolo[p.ruolo]) {
+          isSubentrato = true;
+          conteggioEntratiRuolo[p.ruolo]++;
+        }
+        return { ...p, isSubentrato };
+      }).sort(ordinaGiocatori);
+
+      setDettaglioFormazione({ titolari: listaTitolari, panchina: listaPanchina });
     } catch (err) {
       console.error("Errore caricamento calciatori:", err);
     } finally {
@@ -165,19 +148,24 @@ const Calendario = () => {
 
   const formattaData = (isoString) => {
     if (!isoString) return 'Da definire';
-    const opzioni = { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' };
-    return new Date(isoString).toLocaleDateString('it-IT', opzioni);
+    return new Date(isoString).toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
   };
 
   if (loading) return <div className="calendario-loading">Caricamento calendario... ⏳</div>;
 
+  // Configurazione rapida badge e stili per evitare lunghi contesti if/else nel JSX
+  const configStati = {
+    'in corso': { testo: 'IN CORSO', classe: 'in_corso' },
+    'fase calcolo': { testo: 'CALCOLO', classe: 'calcolo' },
+    'conclusa': { testo: 'CONCLUSA', classe: 'conclusa' },
+    'in programma': { testo: 'IN PROGRAMMA', classe: 'creata' }
+  };
+
   return (
     <div className="calendario-page">
       <div className="calendario-top-bar">
-        <div>
-          <h2>Calendario 📅</h2>
-          <p className="subtitle">Tocca una giornata per vedere i dettagli e le formazioni schierate.</p>
-        </div>
+        <h2>Calendario 📅</h2>
+        <p className="subtitle">Tocca una giornata per vedere i dettagli e le formazioni schierate.</p>
       </div>
 
       <div className="matchdays-list">
@@ -186,21 +174,7 @@ const Calendario = () => {
         ) : (
           giornate.map((day) => {
             const statoReale = calcolaStatoInTempoReale(day);
-            
-            let statoTesto = 'IN PROGRAMMA';
-            let classeStato = 'creata'; 
-
-            if (statoReale === 'in corso') {
-              statoTesto = 'IN CORSO';
-              classeStato = 'in_corso';
-            } else if (statoReale === 'fase calcolo') {
-              statoTesto = 'CALCOLO';
-              classeStato = 'calcolo';
-            } else if (statoReale === 'conclusa') {
-              statoTesto = 'CONCLUSA';
-              classeStato = 'conclusa';
-            }
-
+            const { testo: statoTesto, classe: classeStato } = configStati[statoReale] || configStati['in programma'];
             const rigaAperta = giornataSelezionata?.id === day.id;
 
             return (
@@ -218,13 +192,10 @@ const Calendario = () => {
                   </div>
                   
                   <div className="matchday-actions-area">
-                    <span className={`status-badge ${classeStato}`}>
-                      {statoTesto}
-                    </span>
+                    <span className={`status-badge ${classeStato}`}>{statoTesto}</span>
                   </div>
                 </div>
 
-                {/* Dropdown delle formazioni */}
                 {rigaAperta && statoReale !== 'in programma' && (
                   <div className="matchday-dropdown-formazioni">
                     <h4>Schieramenti Lega</h4>
@@ -256,7 +227,6 @@ const Calendario = () => {
                                   )}
                                 </button>
 
-                                {/* Visualizzatore Formazione con Bordi Colorati */}
                                 {selezionata && (
                                   <div className="dropdown-formazione-visualizzatore">
                                     {loadingDettaglio ? (
@@ -266,11 +236,14 @@ const Calendario = () => {
                                         <h5>Titolari ({sf.modulo})</h5>
                                         <div className="lista-calciatori-campo">
                                           {dettaglioFormazione.titolari.map(t => (
-                                            <div key={t.id} className={`riga-giocatore-campo cal-border-${t.ruolo}`}>
+                                            <div key={t.id} className={`riga-giocatore-campo cal-border-${t.ruolo} ${t.isSostituito ? 'giocatore-sostituito' : ''}`}>
                                               <span className={`mini-ruolo-indicator ${t.ruolo}`}>{t.ruolo}</span>
-                                              <span className="nome-giocatore-campo">{t.nome}</span>
+                                              <span className="nome-giocatore-campo">
+                                                {t.nome} 
+                                                {t.isSostituito && <span className="badge-cambio uscito">🔄 Uscito</span>}
+                                              </span>
                                               <span className="voto-giocatore-campo-live">
-                                                {t.voto_fanta !== null ? `${t.voto_fanta}` : 'S.V.'}
+                                                {t.voto_fanta ? t.voto_fanta : 's.v.'}
                                               </span>
                                             </div>
                                           ))}
@@ -282,11 +255,14 @@ const Calendario = () => {
                                             <p className="no-panchina-text">Nessuna riserva inserita</p>
                                           ) : (
                                             dettaglioFormazione.panchina.map(p => (
-                                              <div key={p.id} className={`riga-giocatore-campo cal-border-${p.ruolo}`}>
+                                              <div key={p.id} className={`riga-giocatore-campo cal-border-${p.ruolo} ${p.isSubentrato ? 'giocatore-subentrato' : ''}`}>
                                                 <span className={`mini-ruolo-indicator ${p.ruolo}`}>{p.ruolo}</span>
-                                                <span className="nome-giocatore-campo">{p.nome}</span>
+                                                <span className="nome-giocatore-campo">
+                                                  {p.nome}
+                                                  {p.isSubentrato && <span className="badge-cambio entrato">🟢 Entrato</span>}
+                                                </span>
                                                 <span className="voto-giocatore-campo-live">
-                                                  {p.voto_fanta !== null ? `${p.voto_fanta}` : 'S.V.'}
+                                                  {p.voto_fanta ? p.voto_fanta : 's.v.'}
                                                 </span>
                                               </div>
                                             ))
