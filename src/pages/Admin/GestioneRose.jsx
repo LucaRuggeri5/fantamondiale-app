@@ -118,7 +118,7 @@ const GestioneRose = () => {
           .eq('stato', 'attivo')
           .eq('ruolo', filtroRuolo)
           .order('nome', { ascending: true })
-          .range(0, 200); // Carichiamo solo i primi 200 record pertinenti per alleggerire la memoria DOM
+          .range(0, 600);
 
         // Se l'utente scrive qualcosa nel campo di ricerca, applichiamo il filtro case-insensitive
         if (searchQuery.trim() !== '') {
