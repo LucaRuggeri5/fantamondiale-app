@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../supabaseClient';
+import LogoSquadra from '../components/LogoSquadra/LogoSquadra'; // Importa il componente
 import './Classifica.css';
 
 const Classifica = () => {
@@ -23,6 +24,7 @@ const Classifica = () => {
         if (userErr) throw userErr;
         if (!userData?.lega_id) return;
 
+        // Selezioniamo anche url_logo dalla tabella squadre
         const { data: squadre, error: sqErr } = await supabase
           .from('squadre')
           .select('id, nome, url_logo, penalita')
@@ -47,6 +49,7 @@ const Classifica = () => {
           return {
             id: squadra.id,
             name: squadra.nome,
+            url_logo: squadra.url_logo, // Manteniamo l'url per il componente
             penalita: squadra.penalita || 0,
             points: totaleFinale
           };
@@ -98,10 +101,17 @@ const Classifica = () => {
             ) : (
               leaderboard.map((row) => (
                 <tr key={row.id} className={`tactical-table-row row-pos-${row.position}`}>
-                  <td className="pos-cell">{row.position === 1 ? '🥇' : row.position === 2 ? '🥈' : row.position === 3 ? '🥉' : `#${row.position}`}</td>
+                  <td className="pos-cell">
+                    {row.position === 1 ? '🥇' : row.position === 2 ? '🥈' : row.position === 3 ? '🥉' : `#${row.position}`}
+                  </td>
                   <td className="team-cell">
-                    <div className="table-team-name">{row.name}</div>
-                    {row.penalita > 0 && <div className="table-penalty-label">Penalità: -{row.penalita}</div>}
+                    <div className="team-row-wrapper">
+                      <LogoSquadra url={row.url_logo} nomeSquadra={row.name} dimensione="small" />
+                      <div className="team-cell-info">
+                        <div className="table-team-name">{row.name}</div>
+                        {row.penalita > 0 && <div className="table-penalty-label">Penalità: -{row.penalita}</div>}
+                      </div>
+                    </div>
                   </td>
                   <td className="points-cell text-right">{row.points.toFixed(1)}</td>
                 </tr>

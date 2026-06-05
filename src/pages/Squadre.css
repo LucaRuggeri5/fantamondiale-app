@@ -73,18 +73,6 @@
 /* ==========================================
    3. ELEMENTI INTERNI DEL CLUB
    ========================================== */
-.avatar-placeholder {
-  background-color: var(--tactical-bg-main);
-  width: 44px;
-  height: 44px;
-  border-radius: 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 18px;
-  border: 1px solid var(--tactical-border-gold);
-  flex-shrink: 0;
-}
 
 .participant-details {
   flex-grow: 1;

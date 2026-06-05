@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
+import LogoSquadra from '../components/LogoSquadra/LogoSquadra'; // Importato
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -20,10 +21,9 @@ const Dashboard = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  // Riferimenti temporali precisi salvati nello stato
   const [targetDates, setTargetDates] = useState({
     formazioneTarget: null,
-    formazioneIsApertura: false, // true se stiamo aspettando l'apertura futura, false se scade
+    formazioneIsApertura: false,
     votiTarget: null,
     giornataFormazioneId: null,
     giornataVotiId: null,
@@ -31,11 +31,9 @@ const Dashboard = () => {
     numeroGiornataVoti: null
   });
 
-  // Stringhe visualizzate nei countdown live
   const [formationCountdown, setFormationCountdown] = useState("Nessun turno attivo");
   const [votesCountdown, setVotesCountdown] = useState("Nessun calcolo attivo");
 
-  // Funzione helper interna per calcolare la stringa del timer a ritroso
   const calcolaRimanente = (targetDate) => {
     if (!targetDate) return null;
     const diff = new Date(targetDate) - new Date();
@@ -57,7 +55,6 @@ const Dashboard = () => {
       setLoading(true);
       if (!user) return;
 
-      // 1. Info Utente
       const { data: utente, error: userError } = await supabase
         .from('utenti')
         .select('*')
@@ -68,7 +65,6 @@ const Dashboard = () => {
       setUserData(utente);
 
       if (utente.lega_id) {
-        // 2. Info Lega
         const { data: lega, error: leagueError } = await supabase
           .from('leghe')
           .select('*')
@@ -78,7 +74,6 @@ const Dashboard = () => {
         if (leagueError) throw leagueError;
         setLeagueData(lega);
 
-        // 3. Squadre e Classifica real-time
         const { data: squadre, error: teamsError } = await supabase
           .from('squadre')
           .select('*')
@@ -98,11 +93,7 @@ const Dashboard = () => {
               const puntiSulCampo = punteggi
                 .filter(p => p.squadra_id === squadra.id)
                 .reduce((acc, curr) => acc + (curr.punteggio_totale || 0), 0);
-
-              return {
-                id: squadra.id,
-                points: puntiSulCampo - (squadra.penalita || 0)
-              };
+              return { id: squadra.id, points: puntiSulCampo - (squadra.penalita || 0) };
             });
 
             classificaCalcolata.sort((a, b) => b.points - a.points);
@@ -119,7 +110,6 @@ const Dashboard = () => {
           }
         }
 
-        // 4. Analisi scadenze temporali giornate
         const { data: giornateReal, error: gError } = await supabase
           .from('giornate')
           .select('*')
@@ -136,17 +126,12 @@ const Dashboard = () => {
           let numGForm = null;
           let numGVoti = null;
 
-          // Trova turno attivo per schieramento
-          const gForm = giornateReal.find(g => {
-            return adesso >= new Date(g.apertura_formazioni) && adesso < new Date(g.scadenza_formazione);
-          });
-
+          const gForm = giornateReal.find(g => adesso >= new Date(g.apertura_formazioni) && adesso < new Date(g.scadenza_formazione));
           if (gForm) {
             fTarget = gForm.scadenza_formazione;
             gFormId = gForm.id;
             numGForm = gForm.numero_giornata;
           } else {
-            // Cerca eventuale turno futuro che deve ancora aprire
             const gFutura = giornateReal.find(g => adesso < new Date(g.apertura_formazioni));
             if (gFutura) {
               fTarget = gFutura.apertura_formazioni;
@@ -155,11 +140,7 @@ const Dashboard = () => {
             }
           }
 
-          // Trova turno in attesa di calcolo voti
-          const gVoti = giornateReal.find(g => {
-            return adesso >= new Date(g.scadenza_formazione) && adesso < new Date(g.scadenza_voti);
-          });
-
+          const gVoti = giornateReal.find(g => adesso >= new Date(g.scadenza_formazione) && adesso < new Date(g.scadenza_voti));
           if (gVoti) {
             vTarget = gVoti.scadenza_voti;
             gVotiId = gVoti.id;
@@ -184,40 +165,27 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    loadDashboardData();
-  }, [user]);
+  useEffect(() => { loadDashboardData(); }, [user]);
 
-  // ENGINE TIMER RITROSO LIVE
   useEffect(() => {
     if (loading) return;
-
     const aggiornaOgniSecondo = () => {
-      // Countdown Formazioni
       if (targetDates.formazioneTarget) {
         const tempoMancante = calcolaRimanente(targetDates.formazioneTarget);
-        if (tempoMancante === "Scaduto 🏁") {
-          setFormationCountdown("Finestra Chiusa 🔒");
-        } else {
+        if (tempoMancante === "Scaduto 🏁") setFormationCountdown("Finestra Chiusa 🔒");
+        else {
           const prefisso = targetDates.formazioneIsApertura ? `Apre G${targetDates.numeroGiornataFormazione}: ` : "";
           setFormationCountdown(`${prefisso}${tempoMancante}`);
         }
-      } else {
-        setFormationCountdown("Nessun turno attivo");
-      }
+      } else setFormationCountdown("Nessun turno attivo");
 
-      // Countdown Voti
       if (targetDates.votiTarget) {
         const tempoMancante = calcolaRimanente(targetDates.votiTarget);
         setVotesCountdown(tempoMancante === "Scaduto 🏁" ? "Tempo Scaduto 🔒" : tempoMancante);
-      } else {
-        setVotesCountdown("Nessun calcolo attivo");
-      }
+      } else setVotesCountdown("Nessun calcolo attivo");
     };
-
-    aggiornaOgniSecondo(); // Esecuzione istantanea al mount
+    aggiornaOgniSecondo();
     const intervallo = setInterval(aggiornaOgniSecondo, 1000);
-
     return () => clearInterval(intervallo);
   }, [targetDates, loading]);
 
@@ -229,29 +197,12 @@ const Dashboard = () => {
       setError('');
       const { data: newTeam, error: teamError } = await supabase
         .from('squadre')
-        .insert([{
-          nome: teamName.trim(),
-          lega_id: userData.lega_id,
-          url_logo: `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(teamName.trim())}`,
-          punti_totali: 0,
-          penalita: 0
-        }])
+        .insert([{ nome: teamName.trim(), lega_id: userData.lega_id, punti_totali: 0, penalita: 0 }])
         .select().single();
-
       if (teamError) throw teamError;
-
-      const { error: userUpdateError } = await supabase
-        .from('utenti')
-        .update({ squadra_id: newTeam.id })
-        .eq('id', user.id);
-
-      if (userUpdateError) throw userUpdateError;
+      await supabase.from('utenti').update({ squadra_id: newTeam.id }).eq('id', user.id);
       await loadDashboardData();
-    } catch (err) {
-      setError("Impossibile creare la squadra.");
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (err) { setError("Impossibile creare la squadra."); } finally { setSubmitting(false); }
   };
 
   const handleJoinTeam = async (e) => {
@@ -260,18 +211,9 @@ const Dashboard = () => {
     try {
       setSubmitting(true);
       setError('');
-      const { error: userUpdateError } = await supabase
-        .from('utenti')
-        .update({ squadra_id: selectedTeamId })
-        .eq('id', user.id);
-
-      if (userUpdateError) throw userUpdateError;
+      await supabase.from('utenti').update({ squadra_id: selectedTeamId }).eq('id', user.id);
       await loadDashboardData();
-    } catch (err) {
-      setError("Impossibile unire l'utente alla squadra.");
-    } finally {
-      setSubmitting(false);
-    }
+    } catch (err) { setError("Impossibile unire l'utente alla squadra."); } finally { setSubmitting(false); }
   };
 
   const renderRankBadge = (pos) => {
@@ -282,79 +224,51 @@ const Dashboard = () => {
     return `#${pos}`;
   };
 
-  if (loading) {
-    return (
-      <div className="dashboard-loading">
-        <p>Caricamento dati in corso... ⚽</p>
-      </div>
-    );
-  }
+  if (loading) return <div className="dashboard-loading"><p>Caricamento dati in corso... ⚽</p></div>;
 
   return (
     <div className="dashboard-container">
-      {/* Mappa Tattica e Titoli della Suite */}
       <div className="league-header-card hero-card tactical-card-header-map">
         <div className="hero-main-info">
           <h1 className="tactical-brand">{leagueData?.nome || "La tua Lega"}</h1>
-          {myTeamData && <h2 className="hero-team-title">🛡️ {myTeamData.nome}</h2>}
+          {myTeamData && (
+            <div className="hero-team-wrapper">
+              <LogoSquadra url={myTeamData.url_logo} nomeSquadra={myTeamData.nome} dimensione="medium" />
+              <h2 className="hero-team-title">{myTeamData.nome}</h2>
+            </div>
+          )}
         </div>
       </div>
 
       {!userData?.squadra_id ? (
         <div className="team-selection-wrapper">
           {error && <p className="error-text">{error}</p>}
-
           {existingTeams.length > 0 && (
             <div className="create-team-card spacing-bottom">
               <h2 className="tactical-card-title">Scegli una Squadra esistente</h2>
-              <p>Seleziona il tuo team di appartenenza dalla lista per prenderne il controllo:</p>
               <form onSubmit={handleJoinTeam} className="dashboard-form">
-                <select
-                  value={selectedTeamId}
-                  onChange={(e) => setSelectedTeamId(e.target.value)}
-                  disabled={submitting}
-                  className="dashboard-select"
-                >
+                <select value={selectedTeamId} onChange={(e) => setSelectedTeamId(e.target.value)} className="dashboard-select">
                   <option value="">-- Seleziona una Squadra --</option>
-                  {existingTeams.map((team) => (
-                    <option key={team.id} value={team.id}>{team.nome}</option>
-                  ))}
+                  {existingTeams.map((team) => <option key={team.id} value={team.id}>{team.nome}</option>)}
                 </select>
-                <button type="submit" className="tactical-btn tactical-btn-secondary" disabled={submitting || !selectedTeamId}>
-                  {submitting ? 'Associazione...' : 'Prendi il Controllo della Squadra'}
-                </button>
+                <button type="submit" className="tactical-btn tactical-btn-secondary" disabled={submitting || !selectedTeamId}>Prendi il Controllo</button>
               </form>
             </div>
           )}
-
           <div className="create-team-card">
             <h2 className="tactical-card-title">Oppure, crea una nuova Squadra!</h2>
-            <p>Se la tua squadra non è presente nell'elenco sopra, inserisci il nome qui sotto per fondarla.</p>
             <form onSubmit={handleCreateTeam} className="dashboard-form">
-              <input
-                type="text"
-                placeholder="Es. Real Madrink, FC Merengues..."
-                value={teamName}
-                onChange={(e) => setTeamName(e.target.value)}
-                maxLength={30}
-                disabled={submitting}
-                className="dashboard-input"
-              />
-              <button type="submit" className="tactical-btn tactical-btn-primary" disabled={submitting || !teamName.trim()}>
-                {submitting ? 'Creazione...' : 'Crea e Partecipa'}
-              </button>
+              <input type="text" placeholder="Es. Real Madrink..." value={teamName} onChange={(e) => setTeamName(e.target.value)} maxLength={30} className="dashboard-input" />
+              <button type="submit" className="tactical-btn tactical-btn-primary" disabled={submitting || !teamName.trim()}>Crea e Partecipa</button>
             </form>
           </div>
         </div>
       ) : (
         <>
-          {/* Struttura riepilogativa a tre colonne divisa da bordi sottili in ottone */}
           <div className="dashboard-recap-card tactical-stats-container">
             <div className="recap-item tactical-stat-box">
               <span className="recap-label tactical-stat-label">POSIZIONE</span>
-              <span className={`recap-value tactical-stats-value rank-position rank-${myRankPosition}`}>
-                {renderRankBadge(myRankPosition)}
-              </span>
+              <span className={`recap-value tactical-stats-value rank-position rank-${myRankPosition}`}>{renderRankBadge(myRankPosition)}</span>
             </div>
             <div className="recap-item tactical-stat-box">
               <span className="recap-label tactical-stat-label">PUNTI TOTALI</span>
@@ -362,51 +276,25 @@ const Dashboard = () => {
             </div>
             <div className="recap-item tactical-stat-box">
               <span className="recap-label tactical-stat-label">PENALITÀ</span>
-              <span className="recap-value tactical-stats-value penalty-points">
-                {myTeamData?.penalita > 0 ? `-${myTeamData.penalita}` : '0'}
-              </span>
+              <span className="recap-value tactical-stats-value penalty-points">{myTeamData?.penalita > 0 ? `-${myTeamData.penalita}` : '0'}</span>
             </div>
           </div>
 
           <div className="operative-cards-grid">
-            {/* Card Inserimento Formazione */}
             <div className={`action-status-card formation ${!targetDates.giornataFormazioneId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
                 <h3>{targetDates.giornataFormazioneId ? `Giornata ${targetDates.numeroGiornataFormazione} ` : "Schieramento Formazione"}</h3>
                 <span className="time-countdown tactical-timer-badge">⏳ {formationCountdown}</span>
               </div>
-              <p className="action-card-description">
-                {targetDates.giornataFormazioneId 
-                  ? "Tempo utile rimanente per schierare e congelare i tuoi 11 titolari."
-                  : "Finestra di inserimento momentaneamente chiusa o in attesa di apertura turno futuro."}
-              </p>
-              <button 
-                className="tactical-btn tactical-btn-primary"
-                disabled={!targetDates.giornataFormazioneId}
-                onClick={() => navigate(`/formazione/inserisci/${targetDates.giornataFormazioneId}`)}
-              >
-                Inserisci Formazione
-              </button>
+              <button className="tactical-btn tactical-btn-primary" disabled={!targetDates.giornataFormazioneId} onClick={() => navigate(`/formazione/inserisci/${targetDates.giornataFormazioneId}`)}>Inserisci Formazione</button>
             </div>
 
-            {/* Card Inserimento Voti Admin */}
             <div className={`action-status-card votes ${!targetDates.giornataVotiId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
                 <h3>{targetDates.giornataVotiId ? `Calcolo Giornata ${targetDates.numeroGiornataVoti} ` : "Inserimento Voti"}</h3>
                 <span className="time-countdown tactical-timer-badge client-timer">⏳ {votesCountdown}</span>
               </div>
-              <p className="action-card-description">
-                {targetDates.giornataVotiId 
-                  ? "Il turno di gioco è terminato ed è bloccato. L'amministratore può inserire i voti."
-                  : "Nessun calcolo voti pendente o finestre di rettifica aperte al momento."}
-              </p>
-              <button 
-                className="tactical-btn tactical-btn-secondary"
-                disabled={!targetDates.giornataVotiId}
-                onClick={() => navigate(`/voti/inserisci/${targetDates.giornataVotiId}`)}
-              >
-                Inserisci Voti
-              </button>
+              <button className="tactical-btn tactical-btn-secondary" disabled={!targetDates.giornataVotiId} onClick={() => navigate(`/voti/inserisci/${targetDates.giornataVotiId}`)}>Inserisci Voti</button>
             </div>
           </div>
         </>

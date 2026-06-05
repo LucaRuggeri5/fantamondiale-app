@@ -151,3 +151,35 @@
 .points-cell { font-weight: 700; color: var(--tactical-highlight-points); }
 
 .row-pos-1 { background-color: rgba(255, 215, 0, 0.05); }
+
+/* NUOVO: Wrapper per logo e nome nella tabella */
+.team-row-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Modifiche alle celle esistenti per adattarsi meglio */
+.team-cell { 
+  text-align: left; 
+  padding: 10px 12px !important;
+}
+
+.table-team-name { 
+  font-weight: 600; 
+  font-size: 14px; 
+  color: var(--tactical-text-primary); 
+}
+
+.table-penalty-label { 
+  font-size: 10px; 
+  color: var(--tactical-highlight-penalty); 
+  margin-top: 0px; 
+}
+
+/* Assicuriamoci che il logo sia ben allineato verticalmente */
+.logo-container.small {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--tactical-border-gold);
+}

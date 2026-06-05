@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import BandieraNazionale from '../components/BandieraNazionale/BandieraNazionale';
+import LogoSquadra from '../components/LogoSquadra/LogoSquadra'; // Importato
 import './DettaglioSquadra.css';
 
 const DettaglioSquadra = () => {
@@ -9,8 +10,6 @@ const DettaglioSquadra = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [squadraInfo, setSquadraInfo] = useState(null);
-  
-  // Organizziamo la rosa strutturata per macro-ruoli fisici
   const [rosaOrdinata, setRosaOrdinata] = useState({ P: [], D: [], C: [], A: [] });
 
   useEffect(() => {
@@ -18,7 +17,6 @@ const DettaglioSquadra = () => {
       try {
         setLoading(true);
 
-        // 1. Recuperiamo i metadati della squadra selezionata
         const { data: sqData, error: sqErr } = await supabase
           .from('squadre')
           .select('*')
@@ -27,7 +25,6 @@ const DettaglioSquadra = () => {
         if (sqErr) throw sqErr;
         setSquadraInfo(sqData);
 
-        // 2. Recuperiamo tutti i calciatori associati a questa squadra tramite la tabella pivot
         const { data: rsData, error: rsErr } = await supabase
           .from('rose_squadre')
           .select('calciatori_reali(*)')
@@ -36,7 +33,6 @@ const DettaglioSquadra = () => {
 
         const listaGiocatori = rsData?.map(item => item.calciatori_reali) || [];
 
-        // 3. Dividiamo i calciatori nei rispettivi ruoli per la visualizzazione ordinata
         const cartelleRuolo = { P: [], D: [], C: [], A: [] };
         listaGiocatori.forEach(player => {
           if (cartelleRuolo[player.ruolo]) {
@@ -44,13 +40,11 @@ const DettaglioSquadra = () => {
           }
         });
 
-        // Ordiniamo alfabeticamente i giocatori dentro ogni ruolo
         Object.keys(cartelleRuolo).forEach(r => {
           cartelleRuolo[r].sort((a, b) => a.nome.localeCompare(b.nome));
         });
 
         setRosaOrdinata(cartelleRuolo);
-
       } catch (err) {
         console.error("Errore nel recupero dei dettagli della rosa:", err);
       } finally {
@@ -70,96 +64,48 @@ const DettaglioSquadra = () => {
   return (
     <div className="dettaglio-page-container tactical-dashboard-gap">
       
-      {/* Intestazione della Pagina */}
       <div className="dettaglio-header">
         <button className="btn-back" onClick={() => navigate('/squadre')}>
           ⬅ Torna a Squadre
         </button>
+        
         <div className="club-title-card tactical-card">
-          <h2>🛡️ {squadraInfo?.nome || "Club"}</h2>
-          <span className="total-badge">Componenti: {totalPlayers}</span>
+          <div className="club-identity-wrapper">
+            {/* Logo integrato nell'intestazione */}
+            <LogoSquadra url={squadraInfo?.url_logo} nomeSquadra={squadraInfo?.nome} dimensione="medium" />
+            <h2>{squadraInfo?.nome || "Club"}</h2>
+          </div>
+          <span className="total-badge">Rosa: {totalPlayers}</span>
         </div>
       </div>
 
       {totalPlayers === 0 ? (
         <div className="empty-rosa-alert tactical-card">
-          <p>Nessun calciatore è stato ancora assegnato a questa squadra dall'amministratore.</p>
+          <p>Nessun calciatore è stato ancora assegnato a questa squadra.</p>
         </div>
       ) : (
         <div className="rose-sections-wrapper">
-          
-          {/* Sezione Portieri */}
-          {rosaOrdinata.P.length > 0 && (
-            <div className="ruolo-block-box tactical-card">
-              <h4 className="title-ruolo P">Portieri ({rosaOrdinata.P.length})</h4>
-              <div className="players-subgrid">
-                {rosaOrdinata.P.map(p => (
-                  <div key={p.id} className="player-detail-card">
-                    <div className="player-detail-left">
-                      <BandieraNazionale nazione={p.nazionale} />
-                      <strong>{p.nome}</strong>
+          {['P', 'D', 'C', 'A'].map(ruolo => (
+            rosaOrdinata[ruolo].length > 0 && (
+              <div key={ruolo} className="ruolo-block-box tactical-card">
+                <h4 className={`title-ruolo ${ruolo}`}>
+                  {ruolo === 'P' ? 'Portieri' : ruolo === 'D' ? 'Difensori' : ruolo === 'C' ? 'Centrocampisti' : 'Attaccanti'} 
+                  ({rosaOrdinata[ruolo].length})
+                </h4>
+                <div className="players-subgrid">
+                  {rosaOrdinata[ruolo].map(p => (
+                    <div key={p.id} className="player-detail-card">
+                      <div className="player-detail-left">
+                        <BandieraNazionale nazione={p.nazionale} />
+                        <strong>{p.nome}</strong>
+                      </div>
+                      <span className="player-nation">{p.nazionale || 'N/D'}</span>
                     </div>
-                    <span className="player-nation">{p.nazionale || 'N/D'}</span>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-
-          {/* Sezione Difensori */}
-          {rosaOrdinata.D.length > 0 && (
-            <div className="ruolo-block-box tactical-card">
-              <h4 className="title-ruolo D">Difensori ({rosaOrdinata.D.length})</h4>
-              <div className="players-subgrid">
-                {rosaOrdinata.D.map(p => (
-                  <div key={p.id} className="player-detail-card">
-                    <div className="player-detail-left">
-                      <BandieraNazionale nazione={p.nazionale} />
-                      <strong>{p.nome}</strong>
-                    </div>
-                    <span className="player-nation">{p.nazionale || 'N/D'}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Sezione Centrocampisti */}
-          {rosaOrdinata.C.length > 0 && (
-            <div className="ruolo-block-box tactical-card">
-              <h4 className="title-ruolo C">Centrocampisti ({rosaOrdinata.C.length})</h4>
-              <div className="players-subgrid">
-                {rosaOrdinata.C.map(p => (
-                  <div key={p.id} className="player-detail-card">
-                    <div className="player-detail-left">
-                      <BandieraNazionale nazione={p.nazionale} />
-                      <strong>{p.nome}</strong>
-                    </div>
-                    <span className="player-nation">{p.nazionale || 'N/D'}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Sezione Attaccanti */}
-          {rosaOrdinata.A.length > 0 && (
-            <div className="ruolo-block-box tactical-card">
-              <h4 className="title-ruolo A">Attaccanti ({rosaOrdinata.A.length})</h4>
-              <div className="players-subgrid">
-                {rosaOrdinata.A.map(p => (
-                  <div key={p.id} className="player-detail-card">
-                    <div className="player-detail-left">
-                      <BandieraNazionale nazione={p.nazionale} />
-                      <strong>{p.nome}</strong>
-                    </div>
-                    <span className="player-nation">{p.nazionale || 'N/D'}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
+            )
+          ))}
         </div>
       )}
     </div>

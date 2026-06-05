@@ -228,3 +228,64 @@
   color: var(--tactical-text-secondary);
   line-height: 1.6;
 }
+
+.tactical-logo-upload-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.tactical-logo-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tactical-logo-preview {
+  width: 80px;
+  height: 80px;
+  border: 2px solid var(--tactical-border-gold);
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--tactical-bg-main);
+}
+
+.tactical-logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.tactical-logo-preview .no-logo {
+  font-size: 10px;
+  color: var(--tactical-text-secondary);
+}
+
+.tactical-btn-upload {
+  padding: 8px 14px;
+  background: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-accent-gold);
+  color: var(--tactical-text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.tactical-btn-elimina {
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid #e74c3c;
+  color: #e74c3c;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
+// Importiamo il componente riutilizzabile
+import LogoSquadra from '../components/LogoSquadra/LogoSquadra';
 import './Squadre.css';
 
 const Squadre = () => {
@@ -23,13 +25,14 @@ const Squadre = () => {
       if (uErr) throw uErr;
 
       if (utente.lega_id) {
+        // Aggiungiamo 'url_logo' alla selezione della tabella squadre
         const { data: iscritti, error: pErr } = await supabase
           .from('utenti')
           .select(`
             nome_utente,
             ruolo,
             squadra_id,
-            squadre ( id, nome )
+            squadre ( id, nome, url_logo )
           `)
           .eq('lega_id', utente.lega_id);
         if (pErr) throw pErr;
@@ -38,12 +41,12 @@ const Squadre = () => {
         iscritti.forEach(iscritto => {
           const haSquadra = !!iscritto.squadra_id;
           const sqId = haSquadra ? iscritto.squadra_id : 'no-team-' + iscritto.nome_utente;
-          const sqNome = iscritto.squadre?.nome || "In attesa di creazione...";
-
+          
           if (!squadreMap[sqId]) {
             squadreMap[sqId] = {
               id: haSquadra ? iscritto.squadra_id : null,
-              nome: sqNome,
+              nome: iscritto.squadre?.nome || "In attesa di creazione...",
+              url_logo: iscritto.squadre?.url_logo || null, // Recuperiamo l'URL del logo
               allenatori: []
             };
           }
@@ -75,20 +78,14 @@ const Squadre = () => {
   };
 
   if (loading) {
-    return (
-      <div className="squadre-loading">
-        <p>Caricamento in corso... ⚽</p>
-      </div>
-    );
+    return <div className="squadre-loading"><p>Caricamento in corso... ⚽</p></div>;
   }
 
   return (
     <div className="squadre-page-container tactical-dashboard-gap">
       <div className="participants-section">
         <h3 className="tactical-page-title">Squadre nella Lega 🏆</h3>
-        <p className="section-subtitle">
-          Seleziona un club partecipante per visualizzarne la rosa completa di calciatori reali.
-        </p>
+        <p className="section-subtitle">Seleziona un club per visualizzarne la rosa.</p>
         
         <div className="participants-list">
           {groupedSquadre.map((squadra, idx) => (
@@ -97,12 +94,13 @@ const Squadre = () => {
               className={`participant-card tactical-card ${squadra.id ? 'clickable' : 'disabled'}`}
               onClick={() => handleSquadraClick(squadra.id)}
             >
-              <div className="avatar-placeholder">🛡️</div>
+              {/* Sostituiamo l'avatar-placeholder con il nostro componente */}
+              <LogoSquadra url={squadra.url_logo} nomeSquadra={squadra.nome} dimensione="small" />
+              
               <div className="participant-details">
                 <h4>{squadra.nome}</h4>
                 <p>
-                  Allenatori:{' '}
-                  {squadra.allenatori.map((all, aIdx) => (
+                  Allenatori: {squadra.allenatori.map((all, aIdx) => (
                     <span key={aIdx} className="trainer-name">
                       <strong>{all.nome}</strong>{all.isAdmin ? ' 👑' : ''}
                       {aIdx < squadra.allenatori.length - 1 ? ', ' : ''}

@@ -162,3 +162,35 @@
   font-weight: 500;
   text-transform: capitalize;
 }
+
+
+.club-title-card.tactical-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  border-bottom: 3px solid var(--tactical-text-gold);
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Nuova classe per allineare logo e nome */
+.club-identity-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.club-title-card h2 {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px; /* Leggermente più grande */
+  font-weight: 800;
+  color: var(--tactical-text-primary);
+}
+
+/* Regolazione per il logo medium dentro la card */
+.club-identity-wrapper .logo-container.medium {
+  border: 2px solid var(--tactical-border-gold);
+}
