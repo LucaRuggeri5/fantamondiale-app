@@ -1,13 +1,17 @@
+/* ==========================================
+   1. STRUTTURA GENERALE & CARICAMENTO
+   ========================================== */
 .dettaglio-page-container {
-  padding: 15px;
-  font-family: system-ui, -apple-system, sans-serif;
+  padding: 16px;
 }
 
 .dettaglio-loading {
   text-align: center;
   padding-top: 45vh;
-  color: #888;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
+  font-weight: 500;
 }
 
 .dettaglio-header {
@@ -17,83 +21,111 @@
   margin-bottom: 20px;
 }
 
+/* ==========================================
+   2. BOTTONE NAVIGAZIONE BACK
+   ========================================== */
 .btn-back {
   align-self: flex-start;
-  background-color: #1e1e24;
-  border: 1px solid #333;
-  color: #fff;
-  padding: 6px 12px;
-  border-radius: 4px;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  color: var(--tactical-text-primary);
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .btn-back:hover {
-  background-color: #25252d;
+  background-color: var(--tactical-bg-timer);
 }
 
-.club-title-card {
-  background-color: #1e1e24;
-  padding: 15px;
+/* ==========================================
+   3. INTESTAZIONE CLUB
+   ========================================== */
+.club-title-card.tactical-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  border-bottom: 3px solid var(--tactical-text-gold);
+  padding: 16px;
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 2px solid #00b0ff;
 }
 
 .club-title-card h2 {
   margin: 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 18px;
-  color: #fff;
+  font-weight: 800;
+  color: var(--tactical-text-primary);
 }
 
 .total-badge {
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
-  background-color: #121214;
-  padding: 4px 8px;
-  border-radius: 4px;
-  color: #aaa;
-  border: 1px solid #2e2e38;
+  font-weight: 600;
+  background-color: var(--tactical-bg-main);
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-border-gold);
 }
 
-.empty-rosa-alert {
-  background-color: #1e1e24;
-  padding: 20px;
+/* ==========================================
+   4. STATO REQUISITI VUOTO & GRIDS
+   ========================================== */
+.empty-rosa-alert.tactical-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px dashed var(--tactical-border-gold);
+  padding: 24px;
   border-radius: 8px;
   text-align: center;
-  color: #888;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
+  line-height: 1.5;
 }
 
 .rose-sections-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 16px;
 }
 
-.ruolo-block-box {
-  background-color: #1e1e24;
-  padding: 12px 15px;
+.ruolo-block-box.tactical-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 16px;
   border-radius: 8px;
 }
 
+/* ==========================================
+   5. TITOLI RUOLI E PALETTE DEDICATA
+   ========================================== */
 .title-ruolo {
-  margin: 0 0 10px 0;
-  font-size: 13px;
+  margin: 0 0 12px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding-bottom: 4px;
-  border-bottom: 1px solid #2e2e38;
+  letter-spacing: 0.8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--tactical-border-gold);
 }
 
-/* Colori distintivi per i ruoli */
 .title-ruolo.P { color: #ffca28; }
 .title-ruolo.D { color: #00b0ff; }
 .title-ruolo.C { color: #00e676; }
 .title-ruolo.A { color: #ff5252; }
 
+/* ==========================================
+   6. SCHEDA SINGOLO CALCIATORE
+   ========================================== */
 .players-subgrid {
   display: flex;
   flex-direction: column;
@@ -101,28 +133,32 @@
 }
 
 .player-detail-card {
-  background-color: #121214;
-  padding: 10px 12px;
-  border-radius: 4px;
+  background-color: var(--tactical-bg-main);
+  padding: 10px 14px;
+  border-radius: 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #222;
+  border: 1px solid var(--tactical-border-gold);
 }
 
-/* Allineamento orizzontale per la bandiera e il nome */
 .player-detail-left {
   display: flex;
   align-items: center;
+  gap: 10px; /* Separazione ottimale bandiera/nome */
 }
 
 .player-detail-card strong {
-  color: #fff;
+  color: var(--tactical-text-primary);
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
+  font-weight: 600;
 }
 
 .player-nation {
-  color: #666;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
+  font-weight: 500;
   text-transform: capitalize;
 }

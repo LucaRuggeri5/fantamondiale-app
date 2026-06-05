@@ -78,44 +78,48 @@ const AdminPenalita = () => {
   };
 
   if (loading) {
-    return <div className="admin-penalita-loading">Caricamento registro penalità... ⏳</div>;
+    return <div className="tactical-penalita-loading">Caricamento registro sanzioni... ⏳</div>;
   }
 
   return (
-    <div className="admin-penalita-container">
+    <div className="tactical-app-container tactical-penalita-page">
       {/* Intestazione */}
-      <div className="admin-penalita-header">
-        <button className="admin-penalita-btn-back" onClick={() => navigate('/dashboard')}>⬅️ Indietro</button>
-        <h2>Gestione Sanzioni & Penalità ⚖️</h2>
+      <div className="tactical-penalita-header">
+        <button className="tactical-btn-back" onClick={() => navigate('/dashboard')}>
+          ⬅️ Indietro
+        </button>
+        <h2 className="tactical-brand">Gestione Penalità</h2>
       </div>
 
-      <div className="admin-penalita-info-card">
+      <div className="tactical-penalita-info-card">
         <p>
-          ⚠️ <strong>Nota per l'Amministratore:</strong> I punti inseriti in questa sezione verranno detratti direttamente dal calcolo della classifica generale e della dashboard. Inserire <code>0</code> per azzerare la sanzione.
+          ⚠️ <strong className="tactical-text-alert">Nota per l'Amministratore:</strong> I punti inseriti in questa sezione verranno detratti direttamente dal calcolo della classifica generale e della dashboard. Inserire <code className="tactical-code-badge">0</code> per azzerare la sanzione d'autorità.
         </p>
       </div>
 
       {/* Lista delle squadre */}
-      <div className="admin-penalita-list">
+      <div className="tactical-penalita-list">
         {squadre.length === 0 ? (
-          <div className="admin-penalita-empty">Nessuna squadra trovata in questa lega.</div>
+          <div className="tactical-penalita-empty">Nessuna squadra trovata in questa lega.</div>
         ) : (
           squadre.map(squadra => (
-            <div key={squadra.id} className={`admin-penalita-card ${squadra.penalita > 0 ? 'has-penalty' : ''}`}>
-              <div className="admin-penalita-team-info">
+            <div key={squadra.id} className={`tactical-penalita-card ${squadra.penalita > 0 ? 'has-penalty' : ''}`}>
+              <div className="tactical-penalita-team-info">
                 {squadra.url_logo ? (
-                  <img src={squadra.url_logo} alt={squadra.nome} className="admin-penalita-logo" />
+                  <img src={squadra.url_logo} alt={squadra.nome} className="tactical-penalita-logo" />
                 ) : (
-                  <div className="admin-penalita-logo-placeholder">⚽</div>
+                  <div className="tactical-penalita-logo-placeholder">⚽</div>
                 )}
-                <div className="admin-penalita-team-meta">
-                  <span className="admin-penalita-team-name">{squadra.nome}</span>
-                  <span className="admin-penalita-team-points">Punti sul campo: <strong>{squadra.punti_totali || 0}</strong></span>
+                <div className="tactical-penalita-team-meta">
+                  <span className="tactical-penalita-team-name">{squadra.nome}</span>
+                  <span className="tactical-penalita-team-points">
+                    Punti sul campo: <strong className="tactical-highlight-value">{squadra.punti_totali || 0}</strong>
+                  </span>
                 </div>
               </div>
 
-              <div className="admin-penalita-controls">
-                <div className="admin-penalita-input-group">
+              <div className="tactical-penalita-controls">
+                <div className="tactical-penalita-input-group">
                   <label>Punti Malus:</label>
                   <input 
                     type="number" 
@@ -128,7 +132,7 @@ const AdminPenalita = () => {
                 </div>
                 
                 <button 
-                  className="admin-penalita-btn-save" 
+                  className="tactical-btn-save" 
                   disabled={savingId === squadra.id}
                   onClick={() => handleSalvaPenalita(squadra)}
                 >

@@ -25,88 +25,88 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
   return (
     <>
       {/* Sfondo oscurato che intercetta i click e chiude il menu */}
-      {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
+      {isOpen && <div className="sidebar-overlay tactical-sidebar-blur" onClick={onClose}></div>}
 
-      <div className={`sidebar-container ${isOpen ? 'open' : ''}`}>
+      <div className={`sidebar-container tactical-command-center ${isOpen ? 'open' : ''}`}>
 
         {/* HEADER: Benvenuto, Ruolo e Tasto Chiusura */}
-        <div className="sidebar-header">
+        <div className="sidebar-header tactical-sidebar-top">
           <div className="user-welcome">
             <div className="user-details">
-              <h4>Benvenuto, {nomeUtente}</h4>
-              <span className={`badge-role ${userRole}`}>
+              <h4 className="tactical-username">Benvenuto, {nomeUtente}</h4>
+              <span className={`badge-role tactical-badge-role ${userRole}`}>
                 {userRole === 'admin' ? '👑 Admin' : '🛡️ Player'}
               </span>
             </div>
           </div>
-          <button className="close-sidebar-btn" onClick={onClose}>&times;</button>
+          <button className="close-sidebar-btn tactical-close-trigger" onClick={onClose}>&times;</button>
         </div>
 
         {/* CONTENUTO MENU (Aggiunto il ref qui per resettare lo scroll) */}
-        <div className="sidebar-menu-content" ref={menuContentRef}>
+        <div className="sidebar-menu-content tactical-sidebar-scroll" ref={menuContentRef}>
 
           {/* NUOVA SEZIONE PRINCIPALE (Integrazione BottomNavbar) */}
-          <div className="menu-section">
-            <p className="section-title">Navigazione</p>
-            <ul>
-              <li onClick={() => handleNav('dashboard')}>
-                <span>🏠</span> Dashboard
+          <div className="menu-section tactical-menu-group">
+            <p className="section-title tactical-group-title">Navigazione</p>
+            <ul className="tactical-menu-list">
+              <li className="tactical-menu-item" onClick={() => handleNav('dashboard')}>
+                <span className="tactical-menu-icon">🏠</span> Dashboard
               </li>
-              <li onClick={() => handleNav('squadre')}>
-                <span>🛡️</span> Squadre
+              <li className="tactical-menu-item" onClick={() => handleNav('squadre')}>
+                <span className="tactical-menu-icon">🛡️</span> Squadre
               </li>
-              <li onClick={() => handleNav('calendario')}>
-                <span>📅</span> Calendario
+              <li className="tactical-menu-item" onClick={() => handleNav('calendario')}>
+                <span className="tactical-menu-icon">📅</span> Calendario
               </li>
-              <li onClick={() => handleNav('classifica')}>
-                <span>📊</span> Classifica
+              <li className="tactical-menu-item" onClick={() => handleNav('classifica')}>
+                <span className="tactical-menu-icon">📊</span> Classifica
               </li>
             </ul>
           </div>
 
           {/* SEZIONE PLAYER: Info e Funzioni di consultazione */}
-          <div className="menu-section">
-            <p className="section-title">Info</p>
-            <ul>
-              <li onClick={() => handleNav('gestione-squadra')}>
-                Gestione Squadra
+          <div className="menu-section tactical-menu-group">
+            <p className="section-title tactical-group-title">Info & Regolamenti</p>
+            <ul className="tactical-menu-list">
+              <li className="tactical-menu-item" onClick={() => handleNav('gestione-squadra')}>
+                <span className="tactical-menu-icon">⚙️</span> Gestione Squadra
               </li>
-              <li onClick={() => handleNav('regolamento')}>
-                Regolamento FantaMondiale
+              <li className="tactical-menu-item" onClick={() => handleNav('regolamento')}>
+                <span className="tactical-menu-icon">📖</span> Regolamento FantaMondiale
               </li>
-              <li onClick={() => handleNav('partecipanti')}>
-                Partecipanti Lega
+              <li className="tactical-menu-item" onClick={() => handleNav('partecipanti')}>
+                <span className="tactical-menu-icon">👥</span> Partecipanti Lega
               </li>
-              <li onClick={() => handleNav('listone')}>
-                Listone Calciatori
+              <li className="tactical-menu-item" onClick={() => handleNav('listone')}>
+                <span className="tactical-menu-icon">📋</span> Listone Calciatori
               </li>
             </ul>
           </div>
 
           {/* SEZIONE ADMIN: Pannello di Controllo Esclusivo */}
           {userRole === 'admin' && (
-            <div className="menu-section admin-section">
-              <p className="section-title admin-title">👑 Gestione Admin</p>
-              <ul window-tether="true">
-                <li onClick={() => handleNav('admin-modifica-formazioni')}>
+            <div className="menu-section admin-section tactical-menu-group tactical-admin-box">
+              <p className="section-title admin-title tactical-group-title-admin">👑 Gestione Admin</p>
+              <ul className="tactical-menu-list" window-tether="true">
+                <li className="tactical-menu-item admin-item" onClick={() => handleNav('admin-modifica-formazioni')}>
                   Modifica Formazioni
                 </li>
-                <li onClick={() => handleNav('admin-modifica-voti')}>
+                <li className="tactical-menu-item admin-item" onClick={() => handleNav('admin-modifica-voti')}>
                   Rettifica Voti
                 </li>
-                <li onClick={() => handleNav('admin-penalita')}>
-                  Penalità
+                <li className="tactical-menu-item admin-item" onClick={() => handleNav('admin-penalita')}>
+                  Penalità & Provvedimenti
                 </li>
-                <li onClick={() => handleNav('admin-rose')}>
+                <li className="tactical-menu-item admin-item" onClick={() => handleNav('admin-rose')}>
                   Gestione Rose
                 </li>
-                <li onClick={() => handleNav('admin-giornate')}>
+                <li className="tactical-menu-item admin-item" onClick={() => handleNav('admin-giornate')}>
                   Gestione Giornate
                 </li>
-                <li onClick={() => handleNav('admin-sposta-player')}>
-                  Sposta Giocatori di Squadra
+                <li className="tactical-menu-item admin-item" onClick={() => handleNav('admin-sposta-player')}>
+                  Sposta Giocatori
                 </li>
-                <li onClick={() => handleNav('admin-permessi')}>
+                <li className="tactical-menu-item admin-item" onClick={() => handleNav('admin-permessi')}>
                   Permessi di Admin
                 </li>
               </ul>
@@ -116,10 +116,10 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
         </div>
 
         {/* FOOTER: Integrazione Account Clerk */}
-        <div className="sidebar-footer">
+        <div className="sidebar-footer tactical-sidebar-bottom">
           <div className="clerk-account-wrapper">
             <UserButton afterSignOutUrl="/" />
-            <span className="clerk-label">Gestisci Account</span>
+            <span className="clerk-label tactical-clerk-text">Gestisci Account</span>
           </div>
         </div>
 

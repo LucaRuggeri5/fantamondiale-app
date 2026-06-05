@@ -1,202 +1,266 @@
-.admin-penalita-container {
-  padding: 12px;
-  max-width: 800px;
+/* Layout Principale del Modulo */
+.tactical-penalita-page {
+  padding: 24px 16px;
+  max-width: 850px;
   margin: 0 auto;
-  color: #f1f2f6;
-  font-family: system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
 }
 
-/* Header */
-.admin-penalita-header {
+/* Intestazione */
+.tactical-penalita-header {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-  border-bottom: 3px solid #c0392b;
-  padding-bottom: 12px;
+  gap: 16px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--tactical-border-gold);
+  padding-bottom: 16px;
+  flex-wrap: wrap;
 }
 
-.admin-penalita-btn-back {
-  background-color: #2f3542;
-  color: #ffffff;
-  border: 1px solid #57606f;
-  padding: 6px 12px;
+.tactical-penalita-header .tactical-brand {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
+  color: var(--tactical-text-primary);
+}
+
+/* Pulsante Indietro Ripreso dai Token Globali */
+.tactical-btn-back {
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
 }
 
-.admin-penalita-header h2 {
-  font-size: 18px;
-  margin: 0;
-  color: #ffffff;
+.tactical-btn-back:hover {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+  transform: translateX(-3px);
 }
 
-/* Box Informativo */
-.admin-penalita-info-card {
-  background: #2f3542;
-  border-left: 4px solid #f1c40f;
-  padding: 12px;
-  border-radius: 6px;
-  margin-bottom: 20px;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
-.admin-penalita-info-card code {
-  background: #1e222b;
-  padding: 2px 5px;
+/* Box Informativo / Nota Editoriale */
+.tactical-penalita-info-card {
+  background-color: var(--tactical-bg-card);
+  border-left: 4px solid var(--tactical-accent-gold);
+  padding: 14px 16px;
   border-radius: 4px;
-  color: #e74c3c;
+  margin-bottom: 24px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--tactical-text-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* Lista */
-.admin-penalita-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+.tactical-text-alert {
+  color: var(--tactical-text-gold);
 }
 
-/* Scheda Squadra */
-.admin-penalita-card {
-  background: #2f3542;
-  border-radius: 8px;
-  padding: 12px;
+.tactical-code-badge {
+  background-color: var(--tactical-bg-main);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  color: var(--tactical-highlight-penalty);
+  border: 1px solid var(--tactical-border-gold);
+  font-weight: 700;
+}
+
+/* Lista dei Club */
+.tactical-penalita-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  border: 1px solid #3a4150;
-  transition: border-color 0.2s;
 }
 
-.admin-penalita-card.has-penalty {
-  border-color: #c0392b;
-  background: linear-gradient(145deg, #2f3542 0%, rgba(192, 57, 43, 0.05) 100%);
+/* Card Club d'Elite */
+.tactical-penalita-card {
+  background-color: var(--tactical-bg-card);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid var(--tactical-border-gold);
+  transition: all 0.25s ease;
 }
 
-/* Logo e Testi */
-.admin-penalita-team-info {
+/* Evidenziazione Tattica del Club Sanzionato */
+.tactical-penalita-card.has-penalty {
+  border-color: var(--tactical-highlight-penalty);
+  background: linear-gradient(160deg, var(--tactical-bg-card) 0%, rgba(158, 42, 43, 0.04) 100%);
+}
+
+.tactical-penalita-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Metadati del Club */
+.tactical-penalita-team-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
-.admin-penalita-logo {
-  width: 40px;
-  height: 40px;
+.tactical-penalita-logo {
+  width: 44px;
+  height: 44px;
   object-fit: contain;
-  border-radius: 4px;
-  background: #1e222b;
-  padding: 2px;
+  border-radius: 6px;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 4px;
 }
 
-.admin-penalita-logo-placeholder {
-  width: 40px;
-  height: 40px;
+.tactical-penalita-logo-placeholder {
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #1e222b;
-  border-radius: 4px;
-  font-size: 18px;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  border-radius: 6px;
+  font-size: 20px;
 }
 
-.admin-penalita-team-meta {
+.tactical-penalita-team-meta {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
-.admin-penalita-team-name {
-  font-size: 15px;
-  font-weight: bold;
-  color: #ffffff;
+.tactical-penalita-team-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
 }
 
-.admin-penalita-team-points {
-  font-size: 12px;
-  color: #a4b0be;
+.tactical-penalita-team-points {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  color: var(--tactical-text-secondary);
 }
 
-/* Controlli Input */
-.admin-penalita-controls {
+.tactical-highlight-value {
+  color: var(--tactical-highlight-points);
+  font-weight: 700;
+}
+
+/* Blocco di Controllo d'Autorità */
+.tactical-penalita-controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #1e222b;
-  padding: 8px 12px;
+  background-color: var(--tactical-bg-main);
+  padding: 10px 14px;
   border-radius: 6px;
+  border: 1px solid var(--tactical-border-gold);
 }
 
-.admin-penalita-input-group {
+.tactical-penalita-input-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.admin-penalita-input-group label {
+.tactical-penalita-input-group label {
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: #a4b0be;
-  font-weight: 600;
+  color: var(--tactical-text-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.admin-penalita-input-group input {
-  width: 65px;
-  padding: 6px;
-  border: 1px solid #57606f;
-  background: #2f3542;
-  color: white;
+.tactical-penalita-input-group input {
+  width: 75px;
+  padding: 8px;
+  border: 1px solid var(--tactical-border-gold);
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-primary);
   text-align: center;
-  font-weight: bold;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   border-radius: 4px;
   font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
 }
 
-.admin-penalita-btn-save {
-  background: #c0392b;
-  color: white;
+.tactical-penalita-input-group input:focus {
+  border-color: var(--tactical-accent-gold);
+}
+
+/* Bottone di Applicazione Sanzione */
+.tactical-btn-save {
+  background-color: var(--tactical-highlight-penalty);
+  color: #ffffff;
   border: none;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 4px;
-  font-weight: bold;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: filter 0.2s;
 }
 
-.admin-penalita-btn-save:hover {
-  background: #e74c3c;
+.tactical-btn-save:hover:not(:disabled) {
+  filter: brightness(1.2);
 }
 
-.admin-penalita-btn-save:disabled {
-  background: #57606f;
+.tactical-btn-save:disabled {
+  background-color: var(--tactical-bg-timer);
+  color: var(--tactical-text-secondary);
+  border: 1px solid var(--tactical-border-gold);
   cursor: not-allowed;
 }
 
-.admin-penalita-loading, .admin-penalita-empty {
+/* Stati di Caricamento o Vuoti */
+.tactical-penalita-loading, 
+.tactical-penalita-empty {
   text-align: center;
-  padding: 40px;
-  color: #a4b0be;
+  padding: 50px 20px;
+  color: var(--tactical-text-secondary);
+  font-family: 'Montserrat', sans-serif;
   font-weight: 600;
+  font-size: 1rem;
 }
 
-/* Responsive Desktop */
-@media (min-width: 600px) {
-  .admin-penalita-header h2 {
-    font-size: 22px;
+/* Ottimizzazione Layout Desktop Lineare */
+@media (min-width: 650px) {
+  .tactical-penalita-header .tactical-brand {
+    font-size: 24px;
   }
   
-  .admin-penalita-card {
+  .tactical-penalita-card {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 14px;
+    padding: 16px 20px;
   }
 
-  .admin-penalita-controls {
-    background: transparent;
+  .tactical-penalita-controls {
+    background-color: transparent;
+    border: none;
     padding: 0;
-    gap: 15px;
+    gap: 20px;
   }
 }

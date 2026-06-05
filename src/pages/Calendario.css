@@ -2,24 +2,24 @@
    1. LAYOUT GENERALE & SCHERMATA CARICAMENTO
    ========================================== */
 .calendario-page {
-  padding: 14px;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #fff;
+  padding: 16px;
 }
 
 .calendario-top-bar {
   margin-bottom: 16px;
 }
 
-.calendario-page h2 {
+.tactical-page-title {
   margin: 0 0 4px 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 22px;
-  font-weight: 700;
-  color: #fff;
+  font-weight: 800;
+  color: var(--tactical-text-primary);
 }
 
 .calendario-page .subtitle {
-  color: #aaa;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
   margin: 0;
   line-height: 1.4;
@@ -28,7 +28,8 @@
 .calendario-loading {
   text-align: center;
   padding-top: 45vh;
-  color: #888;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
 }
 
@@ -38,40 +39,43 @@
 .matchdays-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .no-giornate-msg {
   text-align: center;
-  color: #666;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   padding: 40px 0;
 }
 
-.matchday-card-container {
-  background-color: #1e1e24;
+.matchday-card-container.tactical-card {
+  background-color: var(--tactical-bg-card);
   border-radius: 8px;
-  border: 1px solid #2e2e38;
+  border: 1px solid var(--tactical-border-gold);
   overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .matchday-row {
-  border-left: 4px solid #333;
-  padding: 12px;
+  border-left: 4px solid var(--tactical-text-secondary);
+  padding: 14px 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Stati bordo sinistro delle righe */
+/* Stati bordo sinistro delle righe legati alla Suite */
 .matchday-row.creata { border-left-color: #00b0ff; }
-.matchday-row.in_corso { border-left-color: #00e676; }
-.matchday-row.calcolo { border-left-color: #ffca28; }
-.matchday-row.conclusa { border-left-color: #555; }
-.matchday-row.aperta { background-color: #25252e; }
+.matchday-row.in_corso { border-left-color: var(--tactical-highlight-points); }
+.matchday-row.calcolo { border-left-color: var(--tactical-accent-gold); }
+.matchday-row.conclusa { border-left-color: var(--tactical-text-secondary); }
+.matchday-row.aperta { background-color: var(--tactical-bg-timer); }
 
 .matchday-details {
   display: flex;
@@ -80,29 +84,33 @@
 }
 
 .matchday-number {
-  font-size: 15px;
-  font-weight: bold;
-  color: #fff;
-  background-color: #121214;
-  padding: 5px 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--tactical-text-primary);
+  background-color: var(--tactical-bg-main);
+  padding: 6px 10px;
   border-radius: 6px;
   min-width: 28px;
   text-align: center;
+  border: 1px solid var(--tactical-border-gold);
 }
 
 .matchday-scadenze-block {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .scadenza-item {
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
-  color: #a0a0ab;
+  color: var(--tactical-text-secondary);
 }
 
 .scadenza-item b {
-  color: #f4f4f5;
+  color: var(--tactical-text-primary);
+  font-weight: 600;
 }
 
 /* ==========================================
@@ -114,42 +122,45 @@
 }
 
 .status-badge {
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: 700;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
 }
 
-.status-badge.creata { background-color: rgba(0, 176, 255, 0.12); color: #00b0ff; }
-.status-badge.in_corso { background-color: rgba(0, 230, 118, 0.12); color: #00e676; }
-.status-badge.calcolo { background-color: rgba(255, 202, 40, 0.12); color: #ffca28; }
-.status-badge.conclusa { background-color: #2e2e38; color: #a0a0ab; }
+.status-badge.creata { background-color: rgba(0, 176, 255, 0.1); color: #00b0ff; }
+.status-badge.in_corso { background-color: rgba(0, 230, 118, 0.1); color: var(--tactical-highlight-points); }
+.status-badge.calcolo { background-color: rgba(198, 156, 109, 0.1); color: var(--tactical-text-gold); }
+.status-badge.conclusa { background-color: var(--tactical-bg-timer); color: var(--tactical-text-secondary); border: 1px solid var(--tactical-border-gold); }
 
 /* ==========================================
    4. DROPDOWN FORMAZIONI & SELEZIONE SQUADRE
    ========================================== */
 .matchday-dropdown-formazioni {
-  background-color: #141417;
-  border-top: 1px solid #2e2e38;
-  padding: 12px;
+  background-color: var(--tactical-bg-main);
+  border-top: 1px solid var(--tactical-border-gold);
+  padding: 14px 12px;
 }
 
 .matchday-dropdown-formazioni h4 {
-  margin: 0 0 10px 0;
+  margin: 0 0 12px 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 12px;
-  color: #ff9100;
+  color: var(--tactical-text-gold);
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: 700;
   letter-spacing: 0.5px;
 }
 
 .dropdown-loading-txt, 
 .dropdown-loading-txt-empty {
-  font-size: 11px;
-  color: #71717a;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--tactical-text-secondary);
   text-align: center;
-  padding: 8px 0;
+  padding: 12px 0;
 }
 
 .dropdown-split-layout {
@@ -160,13 +171,13 @@
 .dropdown-squadre-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .btn-club-formazione-trigger {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
-  color: #e4e4e7;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  color: var(--tactical-text-primary);
   text-align: left;
   padding: 12px;
   border-radius: 6px;
@@ -175,14 +186,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }
 
 .btn-club-formazione-trigger.attivo {
-  border-color: #00e676;
-  color: #fff;
-  background-color: #18281f;
+  border-color: var(--tactical-highlight-points);
+  color: var(--tactical-text-primary);
+  background-color: rgba(0, 230, 118, 0.04);
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
   margin-bottom: 0;
@@ -195,64 +206,71 @@
 }
 
 .emoji-club { font-size: 12px; }
-.club-title { font-weight: 600; }
+.club-title { font-family: 'Inter', sans-serif; font-weight: 600; }
 
 .modulo-tag-badge {
-  background-color: #121214;
-  padding: 2px 5px;
+  background-color: var(--tactical-bg-main);
+  padding: 2px 6px;
   border-radius: 4px;
   font-size: 10px;
-  color: #ffca28;
-  font-weight: bold;
+  color: var(--tactical-text-gold);
+  font-weight: 700;
+  border: 1px solid var(--tactical-border-gold);
 }
 
 .punteggio-totale-badge {
-  background-color: #2e2e38;
-  padding: 3px 6px;
+  background-color: var(--tactical-bg-main);
+  padding: 4px 8px;
   border-radius: 4px;
+  font-family: 'Montserrat', sans-serif;
   font-size: 11px;
-  font-weight: bold;
-  color: #00e676;
+  font-weight: 700;
+  color: var(--tactical-highlight-points);
+  border: 1px solid rgba(0, 230, 118, 0.2);
 }
 
 /* ==========================================
    5. VISUALIZZATORE DETTAGLIO CAMPO (GIOCATORI)
    ========================================== */
 .dropdown-formazione-visualizzatore {
-  background-color: #111113;
-  border: 1px solid #00e676;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-highlight-points);
   border-top: none;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
-  padding: 10px;
-  margin-bottom: 6px;
-  animation: fadeIn 0.2s ease-out;
+  padding: 12px;
+  margin-bottom: 4px;
+  animation: fadeIn 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
+  from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .clean-msg {
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: #71717a;
+  color: var(--tactical-text-secondary);
   text-align: center;
   padding: 10px 0;
 }
 
 .campo-mini-render h5 {
-  margin: 0 0 6px 0;
+  margin: 0 0 8px 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 11px;
-  color: #00e676;
+  color: var(--tactical-highlight-points);
   text-transform: uppercase;
-  letter-spacing: 0.3px;
-  padding-bottom: 2px;
+  letter-spacing: 0.5px;
+  border-bottom: 1px dashed rgba(0, 230, 118, 0.15);
+  padding-bottom: 4px;
 }
 
 .campo-mini-render h5.margin-top-panchina {
-  margin-top: 12px;
-  color: #ffca28;
+  margin-top: 16px;
+  color: var(--tactical-text-gold);
+  border-bottom-color: rgba(198, 156, 109, 0.15);
 }
 
 .lista-calciatori-campo {
@@ -264,64 +282,65 @@
 .riga-giocatore-campo {
   display: flex;
   align-items: center;
-  background-color: #1a1a1f;
-  padding: 6px 10px;
+  background-color: var(--tactical-bg-main);
+  padding: 8px 10px;
   border-radius: 4px;
-  font-size: 12px;
-  border-left: 3px solid #333;
+  font-size: 12.5px;
+  border-left: 3px solid var(--tactical-text-secondary);
   transition: background-color 0.2s ease;
 }
 
-/* Bordi per Ruoli */
+/* Bordi per Ruoli legati alla Suite */
 .riga-giocatore-campo.cal-border-P { border-left-color: #ffca28; }
 .riga-giocatore-campo.cal-border-D { border-left-color: #00b0ff; }
 .riga-giocatore-campo.cal-border-C { border-left-color: #00e676; }
 .riga-giocatore-campo.cal-border-A { border-left-color: #ff1744; }
 
-/* Gestione Sostituzioni (Entrati/Usciti) */
-.riga-giocatore-campo.giocatore-sostituito { background-color: #241a1a; }
-.riga-giocatore-campo.giocatore-subentrato { background-color: #17241b; }
+/* Sostituzioni (Entrati Out / Usciti In) */
+.riga-giocatore-campo.giocatore-sostituito { background-color: rgba(255, 23, 68, 0.03); }
+.riga-giocatore-campo.giocatore-subentrato { background-color: rgba(0, 230, 118, 0.03); }
 
 .badge-cambio {
-  font-size: 10px;
-  font-weight: bold;
-  padding: 1px 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 4px;
   border-radius: 4px;
   margin-left: 8px;
-  display: inline-block;
 }
 
 .badge-cambio.uscito {
-  background-color: rgba(255, 23, 68, 0.15);
+  background-color: rgba(255, 23, 68, 0.1);
   color: #ff5252;
-  border: 1px solid rgba(255, 23, 68, 0.3);
 }
 
 .badge-cambio.entrato {
-  background-color: rgba(0, 230, 118, 0.15);
-  color: #00e676;
-  border: 1px solid rgba(0, 230, 118, 0.3);
+  background-color: rgba(0, 230, 118, 0.1);
+  color: var(--tactical-highlight-points);
 }
 
-/* Badge Ruoli (P-D-C-A) */
+/* Indicatori dei Ruoli Semplificati */
 .mini-ruolo-indicator {
+  font-family: 'Montserrat', sans-serif;
   font-size: 9px;
-  font-weight: 800;
+  font-weight: 900;
   padding: 1px 4px;
   border-radius: 3px;
-  min-width: 13px;
+  min-width: 14px;
   text-align: center;
   color: #121214;
   margin-right: 8px;
 }
 
-.mini-ruolo-indicator.P { background-color: #ffca28; }
-.mini-ruolo-indicator.D { background-color: #00b0ff; }
-.mini-ruolo-indicator.C { background-color: #00e676; }
+.mini-ruolo-indicator.P { background-color: #ffca28; color: #fff; }
+.mini-ruolo-indicator.D { background-color: #00b0ff; color: #fff; }
+.mini-ruolo-indicator.C { background-color: #00e676; color: #fff; }
 .mini-ruolo-indicator.A { background-color: #ff1744; color: #fff; }
 
 .nome-giocatore-campo {
+  font-family: 'Inter', sans-serif;
   font-weight: 500;
+  color: var(--tactical-text-primary);
   flex: 1;
   white-space: nowrap;
   overflow: hidden;
@@ -331,19 +350,22 @@
 }
 
 .voto-giocatore-campo-live {
+  font-family: 'Montserrat', sans-serif;
   font-weight: 700;
-  color: #fff;
-  background-color: #27272a;
+  color: var(--tactical-text-primary);
+  background-color: var(--tactical-bg-timer);
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 11px;
-  min-width: 20px;
+  min-width: 22px;
   text-align: center;
+  border: 1px solid var(--tactical-border-gold);
 }
 
 .no-panchina-text {
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
-  color: #52525b;
+  color: var(--tactical-text-secondary);
   font-style: italic;
   padding-left: 4px;
 }

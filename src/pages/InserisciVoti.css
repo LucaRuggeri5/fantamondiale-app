@@ -2,69 +2,74 @@
   padding: 16px;
   max-width: 1300px;
   margin: 0 auto;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #e2e8f0;
-  padding-bottom: 90px; /* Spazio protettivo inferiore per la barra mobile */
-  -webkit-tap-highlight-color: transparent;
+  color: var(--tactical-text-primary);
+  padding-bottom: 95px; /* Spazio protettivo inferiore per evitare sovrapposizioni su mobile */
 }
 
-/* Intestazione Coerente */
+/* Intestazione */
 .voti-header {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 20px;
-  border-bottom: 1px solid #2d3748;
+  border-bottom: 1px solid var(--tactical-border-gold);
   padding-bottom: 14px;
 }
 
 .btn-back-voti {
-  background-color: #1a202c;
-  color: #a0aec0;
-  border: 1px solid #2d3748;
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-secondary);
+  border: 1px solid var(--tactical-border-gold);
   padding: 10px 16px;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+}
+
+.btn-back-voti:hover {
+  border-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-gold);
 }
 
 .voti-title-group h2 {
   margin: 0;
-  font-size: 20px;
-  color: #ff9100;
-  font-weight: 700;
+  font-size: 22px;
+  color: var(--tactical-text-gold);
+  letter-spacing: 0.5px;
 }
 
-/* Layout Principale */
+/* Struttura del Layout */
 .voti-main-layout {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Box Sezione */
+/* Box Sezione Contenitori */
 .voti-section-box {
-  background-color: #1a202c;
-  border-radius: 12px;
-  border: 1px solid #2d3748;
+  background-color: var(--tactical-bg-card);
+  border-radius: 8px;
+  border: 1px solid var(--tactical-border-gold);
   overflow: hidden;
   margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .section-title-bar {
-  background-color: #222936;
+  background-color: rgba(0, 0, 0, 0.15);
   padding: 12px 16px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
-  color: #ff9100;
+  color: var(--tactical-text-gold);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid #2d3748;
+  letter-spacing: 1px;
+  border-bottom: 1px solid var(--tactical-border-gold);
 }
-.section-title-bar.warning {
-  color: #00b0ff;
+
+.section-title-bar.riserves-bar {
+  color: var(--tactical-text-secondary);
+  border-bottom-color: var(--tactical-border-gold);
 }
 
 .cards-stack {
@@ -74,11 +79,11 @@
   gap: 12px;
 }
 
-/* Card Giocatore Unificata per Mobile */
+/* Card del Giocatore */
 .voti-player-card {
-  background-color: #11141a;
-  border: 1px solid #2d3748;
-  border-radius: 10px;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  border-radius: 6px;
   padding: 12px;
   display: flex;
   flex-direction: column;
@@ -86,12 +91,12 @@
 }
 
 .voti-player-card.riserva {
-  border-left: 4px solid #00b0ff;
+  border-left: 4px solid var(--tactical-accent-gold);
 }
 
 .voti-player-card.player-sv {
-  background-color: rgba(229, 62, 62, 0.05);
-  border-color: rgba(229, 62, 62, 0.3);
+  background-color: rgba(128, 0, 0, 0.08);
+  border-color: var(--tactical-highlight-penalty);
 }
 
 .player-main-info {
@@ -108,37 +113,45 @@
 
 .voti-player-name {
   font-size: 15px;
-  color: #fff;
+  color: var(--tactical-text-primary);
   font-weight: 600;
 }
 
 .panchina-order {
-  font-size: 11px;
-  background-color: #1a202c;
-  color: #a0aec0;
+  font-size: 10px;
+  background-color: var(--tactical-bg-timer);
+  color: var(--tactical-text-secondary);
   padding: 2px 6px;
   border-radius: 4px;
-  border: 1px solid #2d3748;
+  font-weight: 700;
 }
 
-/* Badge del Totale Calcolato */
+/* Badge Voti Finali Calcolati */
 .tot-display-badge {
-  background-color: rgba(0, 230, 118, 0.15);
-  color: #00e676;
+  background-color: var(--tactical-bg-timer);
+  color: var(--tactical-text-primary);
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 700;
   padding: 6px 12px;
-  border-radius: 8px;
-  min-width: 50px;
+  border-radius: 4px;
+  min-width: 55px;
   text-align: center;
+  border: 1px solid var(--tactical-border-gold);
+}
+
+.tot-display-badge.high-score {
+  background-color: rgba(198, 156, 109, 0.15);
+  color: var(--tactical-highlight-points);
+  border-color: var(--tactical-accent-gold);
 }
 
 .tot-display-badge.sv {
-  background-color: #2d3748;
-  color: #a0aec0;
+  background-color: var(--tactical-bg-main);
+  color: var(--tactical-text-secondary);
+  border-color: var(--tactical-border-gold);
 }
 
-/* Griglia dei Controlli Mobile-First */
+/* Griglia Controlli Voti */
 .voti-controls-grid {
   display: grid;
   grid-template-columns: 1.1fr 0.9fr 1fr;
@@ -146,37 +159,34 @@
   align-items: center;
 }
 
-/* Pulsante Toggle Senza Voto */
+/* Pulsante Toggle Senza Voto (S.V.) */
 .btn-toggle-sv {
-  background-color: #1a202c;
-  border: 1px solid #2d3748;
-  color: #cbd5e0;
-  font-size: 12px;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  color: var(--tactical-text-primary);
+  font-size: 11px;
   font-weight: 600;
   padding: 10px 4px;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
+  text-transform: uppercase;
 }
 
 .btn-toggle-sv.active {
-  background-color: #e53e3e;
-  border-color: #e53e3e;
-  color: white;
+  background-color: var(--tactical-highlight-penalty);
+  border-color: var(--tactical-highlight-penalty);
+  color: #ffffff;
 }
 
-/* Container Tendina Dropdown del Voto */
-.select-container-voto {
-  width: 100%;
-}
-
+/* Selettori Dropdown Voto Base */
 .voto-dropdown-select {
   width: 100%;
-  background-color: #11141a;
-  border: 1px solid #2d3748;
-  color: #fff;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  color: var(--tactical-text-primary);
   padding: 10px;
-  border-radius: 8px;
-  font-size: 14px;
+  border-radius: 4px;
+  font-size: 13px;
   font-weight: 700;
   text-align: center;
   outline: none;
@@ -184,16 +194,16 @@
 }
 
 .voto-dropdown-select:disabled {
-  opacity: 0.3;
+  opacity: 0.25;
   cursor: not-allowed;
 }
 
-/* Stepper Incrementale per Bonus/Malus */
+/* Stepper Incrementale */
 .bonus-stepper-control {
   display: flex;
-  background-color: #1a202c;
-  border: 1px solid #2d3748;
-  border-radius: 8px;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  border-radius: 4px;
   overflow: hidden;
   height: 38px;
 }
@@ -201,7 +211,7 @@
 .step-btn {
   background: none;
   border: none;
-  color: #a0aec0;
+  color: var(--tactical-text-primary);
   font-size: 16px;
   font-weight: bold;
   width: 28px;
@@ -209,7 +219,7 @@
 }
 
 .step-btn:active {
-  background-color: #2d3748;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
 .bonus-current-value {
@@ -218,26 +228,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-left: 1px solid #2d3748;
-  border-right: 1px solid #2d3748;
-  background-color: #11141a;
+  border-left: 1px solid var(--tactical-border-gold);
+  border-right: 1px solid var(--tactical-border-gold);
+  background-color: var(--tactical-bg-main);
 }
 
 .bonus-current-value small {
   font-size: 8px;
-  color: #718096;
-  text-transform: uppercase;
+  color: var(--tactical-text-secondary);
   font-weight: bold;
   line-height: 1;
 }
 
 .bonus-current-value span {
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
-  color: #ff9100;
+  color: var(--tactical-text-gold);
 }
 
-/* Ruoli Indicator */
+/* Indicatori Ruolo Calciatori Sincronizzati con lo Stile Tattico */
 .role-indicator-voti {
   display: inline-block;
   width: 22px;
@@ -246,42 +255,37 @@
   text-align: center;
   font-size: 10px;
   font-weight: 800;
-  border-radius: 5px;
-  color: #11141a;
+  border-radius: 4px;
+  color: #ffffff;
 }
-.role-indicator-voti.P { background-color: #ffca28; }
-.role-indicator-voti.D { background-color: #00b0ff; }
-.role-indicator-voti.C { background-color: #00e676; }
-.role-indicator-voti.A { background-color: #ff5252; color: #fff; }
+.role-indicator-voti.role-P { background-color: #d9a74a; color: #1c1c1c; }
+.role-indicator-voti.role-D { background-color: #3b6e8c; }
+.role-indicator-voti.role-C { background-color: #3f8c63; }
+.role-indicator-voti.role-A { background-color: #a64444; }
 
-/* BARRA DI CONTROLLO INFERIORE MOBILE */
+/* Barra Azioni Mobile In Basso */
 .mobile-action-bar {
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  height: 68px;
-  background-color: #1a202c;
-  border-top: 1px solid #2d3748;
+  height: 70px;
+  background-color: var(--tactical-bg-card);
+  border-top: 1px solid var(--tactical-border-gold);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.4);
   z-index: 100;
-}
-
-.m-bar-info {
-  display: flex;
-  flex-direction: column;
 }
 
 .m-bar-info span {
   font-size: 11px;
-  color: #a0aec0;
+  color: var(--tactical-text-secondary);
+  display: block;
 }
 
 .m-bar-info strong {
   font-size: 22px;
-  color: #00e676;
+  color: var(--tactical-highlight-points);
   font-weight: 800;
 }
 
@@ -291,28 +295,28 @@
 }
 
 .btn-m-secondary {
-  background-color: #2d3748;
-  color: #fff;
-  border: 1px solid #4a5568;
+  background-color: var(--tactical-bg-timer);
+  color: var(--tactical-text-primary);
+  border: 1px solid var(--tactical-border-gold);
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
 }
 
 .btn-m-primary {
-  background-color: #ff9100;
-  color: #11141a;
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
   border: none;
   padding: 10px 18px;
-  border-radius: 8px;
+  border-radius: 4px;
   font-weight: 700;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
 }
 
-/* DRAWER MOBILE OTTIMIZZATO (Niente Scrolling Aggressivo) */
+/* Modulo Drawer Sostituzioni su Mobile */
 .voti-summary-column {
   position: fixed;
   top: 0; bottom: 0; left: 0; right: 0;
@@ -328,23 +332,23 @@
   position: absolute;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(2px);
 }
 
 .summary-sticky-card {
   position: absolute;
   bottom: 0; left: 0; right: 0;
-  background-color: #1a202c;
-  color: #fff;
-  border-radius: 20px 20px 0 0;
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-primary);
+  border-radius: 12px 12px 0 0;
   padding: 16px;
-  border-top: 1px solid #2d3748;
+  border-top: 1px solid var(--tactical-border-gold);
   max-height: 85vh;
   display: flex;
   flex-direction: column;
   transform: translateY(100%);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.2s ease-out;
 }
 
 .drawer-open .summary-sticky-card {
@@ -360,31 +364,31 @@
 
 .drawer-header-mobile h3 {
   margin: 0;
-  font-size: 16px;
-  color: #ff9100;
-  font-weight: 700;
+  font-size: 14px;
+  color: var(--tactical-text-gold);
+  letter-spacing: 0.5px;
 }
 
 .close-drawer-btn {
   background: none;
   border: none;
-  color: #a0aec0;
-  font-size: 22px;
+  color: var(--tactical-text-secondary);
+  font-size: 20px;
   cursor: pointer;
 }
 
 .score-main-display {
-  background-color: #11141a;
-  border: 1px solid #2d3748;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
   text-align: center;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 6px;
   margin-bottom: 12px;
 }
 
 .score-label {
   font-size: 10px;
-  color: #718096;
+  color: var(--tactical-text-secondary);
   letter-spacing: 0.5px;
   display: block;
   margin-bottom: 2px;
@@ -392,8 +396,8 @@
 
 .score-number-value {
   font-size: 32px;
-  font-weight: 900;
-  color: #00e676;
+  font-weight: 800;
+  color: var(--tactical-highlight-points);
 }
 
 .sub-row-summary {
@@ -401,33 +405,33 @@
   justify-content: space-between;
   align-items: center;
   padding-bottom: 10px;
-  border-bottom: 1px solid #2d3748;
+  border-bottom: 1px solid var(--tactical-border-gold);
   font-size: 13px;
-  color: #cbd5e0;
 }
 
 .sub-badge {
-  background-color: #2d3748;
-  color: #718096;
+  background-color: var(--tactical-bg-timer);
+  color: var(--tactical-text-secondary);
   padding: 3px 8px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-weight: bold;
 }
 
 .sub-badge.active {
-  background-color: rgba(0, 176, 255, 0.2);
-  color: #00b0ff;
+  background-color: rgba(198, 156, 109, 0.2);
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-border-gold);
 }
 
-/* Lista Pulita dei Giocatori Conteggiati nel Riepilogo */
+/* Lista Giocatori nel resoconto */
 .components-clean-list {
-  background-color: #11141a;
-  border-radius: 10px;
-  border: 1px solid #2d3748;
+  background-color: var(--tactical-bg-main);
+  border-radius: 6px;
+  border: 1px solid var(--tactical-border-gold);
   margin-top: 10px;
   padding: 4px;
   overflow-y: auto;
-  max-height: 280px; /* Perfetto per stare dentro lo schermo mobile senza tagliare la vista */
+  max-height: 280px;
 }
 
 .component-item-row {
@@ -435,22 +439,21 @@
   justify-content: space-between;
   align-items: center;
   padding: 8px;
-  border-bottom: 1px solid #1a202c;
+  border-bottom: 1px solid var(--tactical-border-gold);
 }
 
 .component-item-row:last-child {
   border-bottom: none;
 }
 
-/* Segnalazione Sostituzioni ed Errori Cromatica */
 .component-item-row.is-substituted {
-  background-color: rgba(0, 176, 255, 0.05);
-  border-left: 3px solid #00b0ff;
+  background-color: rgba(198, 156, 109, 0.05);
+  border-left: 3px solid var(--tactical-accent-gold);
 }
 
 .component-item-row.is-empty-malus {
-  background-color: rgba(235, 64, 52, 0.05);
-  border-left: 3px solid #ff5252;
+  background-color: rgba(128, 0, 0, 0.05);
+  border-left: 3px solid var(--tactical-highlight-penalty);
 }
 
 .comp-left-info {
@@ -463,13 +466,13 @@
   font-size: 9px;
   font-weight: bold;
   padding: 2px 4px;
-  border-radius: 4px;
-  color: #11141a;
+  border-radius: 3px;
+  color: white;
 }
-.mini-role.P { background-color: #ffca28; }
-.mini-role.D { background-color: #00b0ff; }
-.mini-role.C { background-color: #00e676; }
-.mini-role.A { background-color: #ff5252; color: white; }
+.mini-role.role-P { background-color: #d9a74a; color: #1c1c1c; }
+.mini-role.role-D { background-color: #3b6e8c; }
+.mini-role.role-C { background-color: #3f8c63; }
+.mini-role.role-A { background-color: #a64444; }
 
 .comp-name-details {
   display: flex;
@@ -479,22 +482,20 @@
 .comp-player-name {
   font-size: 13px;
   font-weight: 600;
-  color: #fff;
+  color: var(--tactical-text-primary);
 }
 
 .comp-type-label {
   font-size: 10px;
-  color: #718096;
+  color: var(--tactical-text-secondary);
 }
 
-/* Modifiche per visualizzazione cambio */
 .is-substituted .comp-type-label {
-  color: #00b0ff;
-  font-weight: 600;
+  color: var(--tactical-text-gold);
 }
+
 .is-empty-malus .comp-type-label {
-  color: #ff5252;
-  font-weight: 600;
+  color: var(--tactical-highlight-penalty);
 }
 
 .comp-right-points {
@@ -505,58 +506,57 @@
 
 .comp-math-det {
   font-size: 11px;
-  color: #a0aec0;
-  background-color: #1a202c;
+  color: var(--tactical-text-secondary);
+  background-color: var(--tactical-bg-timer);
   padding: 2px 6px;
   border-radius: 4px;
 }
 
 .comp-final-fanta {
   font-size: 14px;
-  color: #00e676;
+  color: var(--tactical-text-primary);
   min-width: 32px;
   text-align: right;
 }
 
 .is-empty-malus .comp-final-fanta {
-  color: #ff5252;
+  color: var(--tactical-highlight-penalty);
 }
 
 .btn-salva-desktop {
-  display: none; /* Nascondiamo il bottone desktop su mobile */
+  display: none;
 }
 
 .voti-loading {
   text-align: center;
   padding-top: 45vh;
-  color: #a0aec0;
-  font-size: 16px;
+  color: var(--tactical-text-secondary);
+  font-size: 14px;
+  letter-spacing: 1px;
 }
 
-
-/* --- MODALITÀ DESKTOP (>= 900px) --- */
+/* --- SUPPORTO MEDIA QUERIES DESKTOP --- */
 @media (min-width: 900px) {
   .voti-page-container {
     padding-bottom: 20px;
   }
 
   .mobile-action-bar {
-    display: none; /* Scompare la barra mobile inferiore */
+    display: none;
   }
 
   .voti-main-layout {
     display: grid;
-    grid-template-columns: 1fr 360px;
+    grid-template-columns: 1fr 380px;
     gap: 24px;
     align-items: start;
   }
 
-  /* La riga del giocatore su desktop diventa orizzontale e sottile */
   .voti-player-card {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 8px 16px;
+    padding: 10px 16px;
   }
 
   .voti-controls-grid {
@@ -565,11 +565,9 @@
     width: 320px;
   }
 
-  /* Reset del Drawer mobile -> diventa una Sidebar ancorata a destra */
   .voti-summary-column {
     position: static;
     visibility: visible;
-    z-index: auto;
   }
 
   .voti-drawer-backdrop, 
@@ -580,39 +578,38 @@
   .summary-sticky-card {
     position: sticky;
     top: 24px;
-    border-radius: 12px;
+    border-radius: 8px;
     transform: none;
     max-height: calc(100vh - 60px);
-    border: 1px solid #2d3748;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--tactical-border-gold);
   }
 
   .components-clean-list {
-    max-height: calc(100vh - 340px);
+    max-height: calc(100vh - 350px);
   }
 
-  /* Bottone Salva per Desktop */
   .btn-salva-desktop {
     display: block;
     width: 100%;
-    background-color: #ff9100;
-    color: #11141a;
+    background-color: var(--tactical-accent-gold);
+    color: var(--tactical-text-on-button);
     border: none;
     padding: 14px;
-    border-radius: 8px;
+    border-radius: 4px;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13px;
     margin-top: 16px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    letter-spacing: 0.5px;
+    transition: opacity 0.2s ease;
   }
 
   .btn-salva-desktop:hover {
-    background-color: #e08000;
+    opacity: 0.9;
   }
 
   .btn-salva-desktop:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
   }
 }

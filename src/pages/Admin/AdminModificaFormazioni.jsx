@@ -6,25 +6,28 @@ import './AdminModificaFormazioni.css';
 
 const AdminModificaFormazioni = () => {
   const navigate = useNavigate();
+  
+  // Stati di caricamento asincrono e blocco interazioni
   const [loadingSetup, setLoadingSetup] = useState(true);
   const [loadingDati, setLoadingDati] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // Filtri Globali Admin
+  // Filtri di selezione per il controllo amministrativo
   const [giornate, setGiornate] = useState([]);
   const [squadre, setSquadre] = useState([]);
   const [giornataId, setGiornataId] = useState('');
   const [squadraId, setSquadraId] = useState('');
 
-  // Dati Formazione e Rosa
+  // Stato dei dati estratti per il binomio Giornata / Squadra
   const [rosa, setRosa] = useState([]);
   const [modulo, setModulo] = useState('4-4-2');
   const [titolari, setTitolari] = useState([]);
   const [panchina, setPanchina] = useState([]);
 
-  // Stato Finestra Modale di Selezione
+  // Stato di controllo del pannello modale (overlay)
   const [overlay, setOverlay] = useState({ isOpen: false, ruolo: '', tipo: '' });
 
+  // Mappatura dei moduli tattici configurabili d'autorità
   const regoleModuli = {
     '3-4-3': { P: 1, D: 3, C: 4, A: 3 },
     '3-5-2': { P: 1, D: 3, C: 5, A: 2 },
@@ -35,9 +38,10 @@ const AdminModificaFormazioni = () => {
     '5-4-1': { P: 1, D: 5, C: 4, A: 1 }
   };
 
-  const limitiPanchina = { P: 1, D: 2, C: 2, A: 2 };
+  // Limiti strutturali del reparto riserve
+  const limitsPanchina = { P: 1, D: 2, C: 2, A: 2 };
 
-  // 1. Caricamento Iniziale Filtri
+  // 1. Effetto di aggancio iniziale: estrazione di tutte le giornate e club disponibili
   useEffect(() => {
     const fetchSetupAdmin = async () => {
       try {
@@ -48,6 +52,7 @@ const AdminModificaFormazioni = () => {
         setGiornate(gData || []);
         setSquadre(sData || []);
 
+        // Pre-seleziona automaticamente i primi elementi estratti per evitare stati indefiniti
         if (gData?.length > 0) setGiornataId(gData[0].id);
         if (sData?.length > 0) setSquadraId(sData[0].id);
       } catch (err) {
@@ -59,7 +64,7 @@ const AdminModificaFormazioni = () => {
     fetchSetupAdmin();
   }, []);
 
-  // 2. Caricamento Rosa e Formazione al cambio filtri
+  // 2. Effetto reattivo: ricarica l'intera griglia quando cambiano i filtri in alto
   useEffect(() => {
     if (!giornataId || !squadraId) return;
 
@@ -69,7 +74,7 @@ const AdminModificaFormazioni = () => {
         setTitolari([]);
         setPanchina([]);
 
-        // Recupero rosa del club
+        // Recupera i calciatori reali associati al club selezionato nella barra admin
         const { data: rosaData, error: rErr } = await supabase
           .from('rose_squadre')
           .select(`
@@ -86,7 +91,7 @@ const AdminModificaFormazioni = () => {
 
         setRosa(listaCalciatori);
 
-        // Recupero formazione esistente
+        // Estrae la configurazione tattica salvata (se presente) per quel blocco specifico
         const { data: formEsistente } = await supabase
           .from('formazioni')
           .select('*')
@@ -120,7 +125,7 @@ const AdminModificaFormazioni = () => {
             setPanchina(vecchiaPanchina);
           }
         } else {
-          setModulo('4-4-2');
+          setModulo('4-4-2'); // Fallback standard in caso di assenza totale di record precedente
         }
       } catch (err) {
         console.error("Errore caricamento dati:", err);
@@ -132,7 +137,7 @@ const AdminModificaFormazioni = () => {
     caricaDatiAdmin();
   }, [giornataId, squadraId]);
 
-  // Gestione click slot Titolari
+  // Gestione dell'inserimento o rimozione di un titolare dalla scacchiera verde
   const gestisciTitolare = (calciatore) => {
     if (titolari.some(t => t.id === calciatore.id)) {
       setTitolari(prev => prev.filter(t => t.id !== calciatore.id));
@@ -150,10 +155,10 @@ const AdminModificaFormazioni = () => {
     setOverlay({ isOpen: false, ruolo: '', tipo: '' });
   };
 
-  // Gestione click slot Panchina
+  // Gestione dell'inserimento di un calciatore nella lista delle riserve verticali
   const gestisciPanchina = (calciatore) => {
     const attualiInPanchina = panchina.filter(p => p.ruolo === calciatore.ruolo).length;
-    const limiteConsentito = limitiPanchina[calciatore.ruolo];
+    const limiteConsentito = limitsPanchina[calciatore.ruolo];
 
     if (attualiInPanchina >= limiteConsentito) {
       alert(`In panchina puoi mettere al massimo ${limiteConsentito} per il ruolo: ${calciatore.ruolo}`);
@@ -163,13 +168,14 @@ const AdminModificaFormazioni = () => {
     setOverlay({ isOpen: false, ruolo: '', tipo: '' });
   };
 
+  // Resetta i campi di gioco locali al cambio di modulo operato dall'admin
   const handleCambioModulo = (nuovoModulo) => {
     setModulo(nuovoModulo);
     setTitolari([]);
     setPanchina([]);
   };
 
-  // Salvataggio coatto Admin
+  // Sovrascrittura e salvataggio forzoso sul database Supabase
   const handleSalvaFormazioneCoattiva = async () => {
     if (titolari.length === 0 && panchina.length === 0) {
       alert("Inserisci almeno un giocatore prima di salvare!");
@@ -178,6 +184,8 @@ const AdminModificaFormazioni = () => {
 
     try {
       setSaving(true);
+      
+      // Esegue l'upsert sulla tabella master bypassando i controlli temporali standard
       const { data: formSalvata, error: fErr } = await supabase
         .from('formazioni')
         .upsert({ squadra_id: squadraId, giornata_id: giornataId, modulo: modulo, confermata: true }, { onConflict: 'squadra_id,giornata_id' })
@@ -185,9 +193,12 @@ const AdminModificaFormazioni = () => {
 
       if (fErr) throw fErr;
 
+      // Pulisce in modo atomico le relazioni precedenti della tabella ponte
       await supabase.from('formazioni_calciatori').delete().eq('formazione_id', formSalvata.id);
 
       const recordCalciatori = [];
+      
+      // Generazione array per inserimento multiplo titolari (1-11)
       titolari.forEach((giocatore, index) => {
         recordCalciatori.push({
           formazione_id: formSalvata.id,
@@ -197,6 +208,7 @@ const AdminModificaFormazioni = () => {
         });
       });
 
+      // Generazione array per inserimento multiplo riserve (12+)
       panchina.forEach((giocatore, index) => {
         recordCalciatori.push({
           formazione_id: formSalvata.id,
@@ -206,6 +218,7 @@ const AdminModificaFormazioni = () => {
         });
       });
 
+      // Inserimento batch dei record nella tabella accoppiamenti
       await supabase.from('formazioni_calciatori').insert(recordCalciatori);
       alert("Formazione salvata d'autorità con successo!");
     } catch (err) {
@@ -216,7 +229,7 @@ const AdminModificaFormazioni = () => {
     }
   };
 
-  // Render Linee Campo (Allineato a InserisciFormazione con classi colore bordo)
+  // Rendering dinamico dei nodi di gioco del rettangolo erboso
   const renderLineaSquadra = (ruoloKey) => {
     const postiMassimi = regoleModuli[modulo][ruoloKey];
     const schieratiQuestoRuolo = titolari.filter(t => t.ruolo === ruoloKey);
@@ -244,6 +257,7 @@ const AdminModificaFormazioni = () => {
     return nodi;
   };
 
+  // Filtraggio dinamico della lista di scelta modale per evitare conflitti o doppie assegnazioni
   const giocatoriSelezionabili = rosa.filter(g => {
     if (g.ruolo !== overlay.ruolo) return false;
     if (titolari.some(t => t.id === g.id)) return false;
@@ -254,7 +268,8 @@ const AdminModificaFormazioni = () => {
   if (loadingSetup) return <div className="formazione-loading">Inizializzazione Pannello di Controllo... 👑</div>;
 
   return (
-    <div className="inserisci-formazione-page admin-page-wrapper">
+    <div className="inserisci-formazione-page admin-page-wrapper tactical-dashboard-gap">
+      {/* Intestazione Amministrativa Forzata */}
       <div className="formazione-header admin-border-header">
         <div className="admin-header-title-container">
           <button className="btn-back-admin" onClick={() => navigate('/dashboard')}>⬅️ Indietro</button>
@@ -263,7 +278,7 @@ const AdminModificaFormazioni = () => {
         <p className="admin-warning-text">⚠️ MODALITÀ APERTA - Qualsiasi vincolo temporale o di blocco turno è disattivato.</p>
       </div>
 
-      {/* SELETTORE AMMINISTRATIVO */}
+      {/* Pannello Superiore di Selezione Filtri */}
       <div className="admin-filter-bar">
         <div className="filter-group">
           <label>Seleziona Turno/Giornata:</label>
@@ -287,7 +302,8 @@ const AdminModificaFormazioni = () => {
         <div className="formazione-loading">Aggiornamento campo di gioco in corso... ⏳</div>
       ) : (
         <>
-          <div className="modulo-selector-card">
+          {/* Selettore Moduli Tattici Orizzontali Admin */}
+          <div className="modulo-selector-card tactical-card">
             <label>Modulo:</label>
             <div className="moduli-buttons">
               {Object.keys(regoleModuli).map(m => (
@@ -296,12 +312,13 @@ const AdminModificaFormazioni = () => {
             </div>
           </div>
 
-          <div className="recap-schieramento">
+          {/* Tabella Riassuntiva dei Contatori Locali */}
+          <div className="recap-schieramento tactical-card">
             <div>Titolari: <b>{titolari.length} / 11</b></div>
             <div>Panchina: <b>{panchina.length} / 7</b></div>
           </div>
 
-          {/* LAYOUT CAMPO + PANCHINA ALLINEATO */}
+          {/* Griglia Campo Verde + Gestione Panchina Riserve */}
           <div className="campo-visual-section">
             <div className="campo-container">
               <div className="campo-erba">
@@ -316,8 +333,8 @@ const AdminModificaFormazioni = () => {
               </div>
             </div>
 
-            {/* PANCHINA STRUTTURATA IN VERTICALE MONOCOLONNA */}
-            <div className="panchina-container">
+            {/* Configurazione Panchina Monocolonna Verticale */}
+            <div className="panchina-container tactical-card">
               <h3>Panchina</h3>
               <div className="panchina-vertical-list">
                 {['P', 'D', 'C', 'A'].map(r => {
@@ -332,7 +349,7 @@ const AdminModificaFormazioni = () => {
                           </span>
                         </div>
                         <span className="counter-flat-riserve">
-                          {riserveRuolo.length} / {limitiPanchina[r]} <b className="plus-indicator-flat">+</b>
+                          {riserveRuolo.length} / {limitsPanchina[r]} <b className="plus-indicator-flat">+</b>
                         </span>
                       </div>
                       
@@ -355,10 +372,10 @@ const AdminModificaFormazioni = () => {
             </div>
           </div>
 
-          {/* OVERLAY POPUP SELEZIONE COMPATIBILE */}
+          {/* Finestra Modale overlay di Selezione Calciatori */}
           {overlay.isOpen && (
             <div className="overlay-scelta-giocatore">
-              <div className="overlay-content-card">
+              <div className="overlay-content-card tactical-card">
                 <div className="overlay-header">
                   <h4>Seleziona Ruolo {overlay.ruolo}</h4>
                   <button className="btn-close-overlay" onClick={() => setOverlay({ isOpen: false, ruolo: '', tipo: '' })}>&times;</button>
@@ -377,6 +394,7 @@ const AdminModificaFormazioni = () => {
             </div>
           )}
 
+          {/* Azione di Override Amministrativo Finale */}
           <div className="formazione-footer-actions">
             <button className="btn-save-formazione-def admin-btn-override" onClick={handleSalvaFormazioneCoattiva} disabled={saving}>
               {saving ? 'Forzatura in corso...' : '⚡ Salva e Sovrascrivi Formazione'}

@@ -1,153 +1,226 @@
-.permessi-page-container {
-  padding: 15px;
-  font-family: system-ui, -apple-system, sans-serif;
+/* Layout Principale della Pagina Permessi */
+.tactical-permessi-page {
+  padding: 24px 16px;
+  max-width: 850px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
-.permessi-loading {
+/* Loader di Caricamento */
+.tactical-permessi-loading {
   text-align: center;
   padding-top: 45vh;
-  color: #888;
+  color: var(--tactical-text-secondary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   font-size: 14px;
 }
 
-/* Allineamento Tasto Indietro e Titolo Principale */
-.permessi-header-title-container {
+/* Intestazione e Contenitori Titolo */
+.tactical-permessi-header {
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--tactical-border-gold);
+  padding-bottom: 16px;
+}
+
+.tactical-permessi-title-wrapper {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 4px;
+  gap: 16px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
-/* Bottone Torna Indietro customizzato */
-.btn-back-permessi {
-  background-color: #1e1e24;
-  color: #ffffff;
-  border: 1px solid #333;
+/* Titolo Brandizzato */
+.tactical-permessi-title-wrapper .tactical-brand {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
+  color: var(--tactical-text-primary);
+}
+
+/* Bottone Indietro Integrato */
+.tactical-btn-back {
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-border-gold);
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
 }
 
-.btn-back-permessi:hover {
-  background-color: #2e2e38;
-  border-color: #ff9100;
-  transform: translateX(-2px);
+.tactical-btn-back:hover {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+  transform: translateX(-3px);
 }
 
-.permessi-header h2 {
+/* Sottotitolo Descrittivo */
+.tactical-permessi-subtitle {
+  font-family: 'Inter', sans-serif;
+  color: var(--tactical-text-secondary);
+  font-size: 13px;
   margin: 0;
-  font-size: 20px;
-  color: #ff9100;
+  line-height: 1.5;
 }
 
-.permessi-subtitle {
-  color: #aaa;
-  font-size: 12px;
-  margin: 0 0 20px 0;
-  line-height: 1.4;
-}
-
-.permessi-list {
+/* Contenitore della Lista */
+.tactical-permessi-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.utente-permessi-card {
-  background-color: #1e1e24;
-  border-radius: 8px;
-  padding: 12px 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #2e2e38;
-}
-
-.ut-info {
-  display: flex;
-  align-items: center;
   gap: 12px;
 }
 
-.ut-avatar {
-  background-color: #121214;
-  width: 38px;
-  height: 38px;
+/* Card Utente Tattica */
+.tactical-permessi-card {
+  background-color: var(--tactical-bg-card);
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid var(--tactical-border-gold);
+  transition: all 0.2s ease;
+}
+
+.tactical-permessi-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Area Informazioni Utente (Avatar + Testi) */
+.tactical-ut-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tactical-ut-avatar {
+  background-color: var(--tactical-bg-main);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 16px;
-  border: 1px solid #333;
+  font-size: 18px;
+  border: 1px solid var(--tactical-border-gold);
 }
 
-.ut-meta h4 {
+.tactical-ut-meta h4 {
   margin: 0 0 2px 0;
-  font-size: 14px;
-  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
 }
 
-.ut-meta p {
+.tactical-ut-meta p {
   margin: 0;
-  color: #777;
-  font-size: 11px;
+  font-family: 'Inter', sans-serif;
+  color: var(--tactical-text-secondary);
+  font-size: 12px;
 }
 
-.ut-action {
+/* Controlli di Azione Laterali */
+.tactical-ut-action {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  width: 100%;
+  background-color: var(--tactical-bg-main);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--tactical-border-gold);
 }
 
-.badge-status {
-  font-size: 10px;
-  font-weight: bold;
-  padding: 3px 6px;
+/* Badge di Stato Ruolo */
+.tactical-badge-status {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 8px;
   border-radius: 4px;
   text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
-.badge-status.admin {
-  background-color: rgba(255, 202, 40, 0.1);
-  color: #ffca28;
+.tactical-badge-status.admin {
+  background-color: rgba(212, 175, 55, 0.1);
+  color: var(--tactical-text-gold);
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
-.badge-status.player {
-  background-color: rgba(0, 176, 255, 0.1);
-  color: #00b0ff;
+.tactical-badge-status.player {
+  background-color: rgba(164, 176, 190, 0.1);
+  color: var(--tactical-text-secondary);
+  border: 1px solid rgba(164, 176, 190, 0.2);
 }
 
-.btn-toggle-role {
+/* Pulsante Interruttore di Ruolo */
+.tactical-btn-toggle-role {
   border: none;
-  padding: 6px 12px;
+  padding: 8px 14px;
   border-radius: 4px;
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 700;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: opacity 0.2s;
+  transition: all 0.15s ease;
 }
 
-.btn-toggle-role:disabled {
-  opacity: 0.3;
+.tactical-btn-toggle-role.promote {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+}
+
+.tactical-btn-toggle-role.demote {
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-primary);
+  border: 1px solid var(--tactical-border-gold);
+}
+
+.tactical-btn-toggle-role:not(:disabled):hover {
+  filter: brightness(1.15);
+}
+
+.tactical-btn-toggle-role:disabled {
+  background-color: var(--tactical-bg-timer);
+  color: var(--tactical-text-secondary);
+  border: 1px solid var(--tactical-border-gold);
   cursor: not-allowed;
+  opacity: 0.4;
 }
 
-.btn-toggle-role.promote {
-  background-color: #ff9100;
-  color: #121214;
-}
+/* Ottimizzazione Desktop Responsiva */
+@media (min-width: 650px) {
+  .tactical-permessi-title-wrapper .tactical-brand {
+    font-size: 24px;
+  }
 
-.btn-toggle-role.demote {
-  background-color: #333;
-  color: #eee;
-}
+  .tactical-permessi-card {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+  }
 
-.btn-toggle-role:not(:disabled):hover {
-  opacity: 0.85;
+  .tactical-ut-action {
+    width: auto;
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    gap: 16px;
+  }
 }

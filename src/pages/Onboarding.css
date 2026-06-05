@@ -1,85 +1,193 @@
-.onboarding-container {
+/* Layout di Posizionamento Centrato per l'Onboarding */
+.tactical-onboarding-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 40px);
   padding: 20px;
-  min-height: 100vh;
 }
 
-.onboarding-subtitle {
-  color: #aaa;
+.tactical-onboarding-center {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* Intestazione Onboarding */
+.tactical-onboarding-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.tactical-onboarding-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.tactical-onboarding-subtitle {
+  color: var(--tactical-text-secondary);
   font-size: 13px;
-  margin-bottom: 20px;
+  line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-.onboarding-card {
-  background-color: #1e1e24;
-  padding: 15px;
+/* Card Strutturali */
+.tactical-onboarding-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 20px;
   border-radius: 8px;
 }
 
-.onboarding-card h3 {
-  margin: 0 0 10px 0;
+.tactical-onboarding-card h3 {
+  margin: 0 0 4px 0;
   font-size: 16px;
-  color: #00e676;
+  font-weight: 700;
+  color: var(--tactical-text-gold);
 }
 
-.onboarding-input {
+.tactical-card-desc {
+  font-size: 12px;
+  color: var(--tactical-text-secondary);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+
+/* Input di Testo */
+.tactical-onboarding-input {
   width: 100%;
-  padding: 10px;
-  background-color: #121214;
-  border: 1px solid #333;
-  border-radius: 4px;
-  color: #fff;
+  padding: 12px;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  border-radius: 6px;
+  color: var(--tactical-text-primary);
   font-size: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   box-sizing: border-box;
   outline: none;
+  font-weight: 500;
+  transition: border-color 0.2s ease;
 }
 
-.onboarding-input:focus {
-  border-color: #00e676;
+.tactical-onboarding-input:focus {
+  border-color: var(--tactical-accent-gold);
 }
 
-.divider {
+/* Separatore Tattico Orizzontale/Verticale */
+.tactical-onboarding-divider {
+  display: flex;
+  align-items: center;
   text-align: center;
-  color: #555;
-  margin: 15px 0;
+  color: var(--tactical-text-secondary);
+  margin: 20px 0;
   text-transform: uppercase;
   font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
-.onboarding-btn {
+.tactical-onboarding-divider::before,
+.tactical-onboarding-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px dashed var(--tactical-border-gold);
+}
+
+.tactical-onboarding-divider span {
+  padding: 0 10px;
+}
+
+/* Pulsanti Di Manovra Onboarding */
+.tactical-btn-onboarding {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.onboarding-btn.primary {
-  background-color: #00e676;
-  color: #000;
-}
-
-.onboarding-btn.secondary {
-  background-color: #2a2a35;
-  color: #fff;
-  border: 1px solid #333;
-}
-
-.error-banner {
-  background-color: #ff5252;
-  color: white;
-  padding: 10px;
-  border-radius: 4px;
-  margin-bottom: 15px;
+  border-radius: 6px;
   font-size: 13px;
-  font-weight: bold;
-  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
 }
 
-.card-desc {
-  font-size: 12px;
-  color: #aaa;
-  margin-bottom: 12px;
+.tactical-btn-onboarding.primary {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+}
+
+.tactical-btn-onboarding.primary:hover {
+  filter: brightness(1.1);
+}
+
+.tactical-btn-onboarding.secondary {
+  background-color: transparent;
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-accent-gold);
+}
+
+.tactical-btn-onboarding.secondary:hover {
+  background-color: rgba(198, 156, 109, 0.08);
+}
+
+.tactical-btn-onboarding:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Banner Errori Registro */
+.tactical-error-banner {
+  background-color: rgba(128, 0, 0, 0.15);
+  color: var(--tactical-highlight-penalty);
+  border: 1px solid var(--tactical-highlight-penalty);
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* --- ADATTAMENTO DESKTOP (Viste larghe) --- */
+@media (min-width: 768px) {
+  .tactical-onboarding-center {
+    max-width: 800px;
+  }
+  
+  .tactical-onboarding-split-cards {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .tactical-onboarding-divider {
+    flex-direction: column;
+    margin: 0 10px;
+    padding: 10px 0;
+  }
+
+  .tactical-onboarding-divider::before,
+  .tactical-onboarding-divider::after {
+    border-bottom: none;
+    border-left: 1px dashed var(--tactical-border-gold);
+    height: 100%;
+  }
+
+  .tactical-onboarding-divider span {
+    padding: 10px 0;
+  }
+  
+  .tactical-onboarding-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .tactical-onboarding-card form {
+    margin-top: auto;
+  }
 }

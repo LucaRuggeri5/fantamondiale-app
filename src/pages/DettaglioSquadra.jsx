@@ -68,21 +68,21 @@ const DettaglioSquadra = () => {
   const totalPlayers = rosaOrdinata.P.length + rosaOrdinata.D.length + rosaOrdinata.C.length + rosaOrdinata.A.length;
 
   return (
-    <div className="dettaglio-page-container">
+    <div className="dettaglio-page-container tactical-dashboard-gap">
       
       {/* Intestazione della Pagina */}
       <div className="dettaglio-header">
         <button className="btn-back" onClick={() => navigate('/squadre')}>
           ⬅ Torna a Squadre
         </button>
-        <div className="club-title-card">
+        <div className="club-title-card tactical-card">
           <h2>🛡️ {squadraInfo?.nome || "Club"}</h2>
           <span className="total-badge">Componenti: {totalPlayers}</span>
         </div>
       </div>
 
       {totalPlayers === 0 ? (
-        <div className="empty-rosa-alert">
+        <div className="empty-rosa-alert tactical-card">
           <p>Nessun calciatore è stato ancora assegnato a questa squadra dall'amministratore.</p>
         </div>
       ) : (
@@ -90,7 +90,7 @@ const DettaglioSquadra = () => {
           
           {/* Sezione Portieri */}
           {rosaOrdinata.P.length > 0 && (
-            <div className="ruolo-block-box">
+            <div className="ruolo-block-box tactical-card">
               <h4 className="title-ruolo P">Portieri ({rosaOrdinata.P.length})</h4>
               <div className="players-subgrid">
                 {rosaOrdinata.P.map(p => (
@@ -108,7 +108,7 @@ const DettaglioSquadra = () => {
 
           {/* Sezione Difensori */}
           {rosaOrdinata.D.length > 0 && (
-            <div className="ruolo-block-box">
+            <div className="ruolo-block-box tactical-card">
               <h4 className="title-ruolo D">Difensori ({rosaOrdinata.D.length})</h4>
               <div className="players-subgrid">
                 {rosaOrdinata.D.map(p => (
@@ -126,7 +126,7 @@ const DettaglioSquadra = () => {
 
           {/* Sezione Centrocampisti */}
           {rosaOrdinata.C.length > 0 && (
-            <div className="ruolo-block-box">
+            <div className="ruolo-block-box tactical-card">
               <h4 className="title-ruolo C">Centrocampisti ({rosaOrdinata.C.length})</h4>
               <div className="players-subgrid">
                 {rosaOrdinata.C.map(p => (
@@ -144,7 +144,7 @@ const DettaglioSquadra = () => {
 
           {/* Sezione Attaccanti */}
           {rosaOrdinata.A.length > 0 && (
-            <div className="ruolo-block-box">
+            <div className="ruolo-block-box tactical-card">
               <h4 className="title-ruolo A">Attaccanti ({rosaOrdinata.A.length})</h4>
               <div className="players-subgrid">
                 {rosaOrdinata.A.map(p => (

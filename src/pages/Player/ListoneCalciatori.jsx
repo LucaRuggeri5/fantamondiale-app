@@ -41,7 +41,7 @@ const ListoneCalciatori = () => {
           if (data && data.length > 0) {
             listaCompleta = [...listaCompleta, ...data];
             
-            // Se i record restituiti sono inferiori a 1000, significa che siamo arrivati alla fine della tabella
+            // Se i record restituiti sono inferiori a 1000, siamo arrivati alla fine della tabella
             if (data.length < 1000) {
               continuaScaricamento = false;
             } else {
@@ -65,7 +65,7 @@ const ListoneCalciatori = () => {
     fetchTuttiICalciatori();
   }, []);
 
-  // 2. ESTRAZIONE DINAMICA DELLE 48 NAZIONALI (Ordinate alfabeticamente)
+  // 2. ESTRAZIONE DINAMICA DELLE NAZIONALI (Ordinate alfabeticamente)
   const nazioni = useMemo(() => {
     const listaNazioni = tuttiICalciatori
       .map(c => c.nazionale)
@@ -77,12 +77,10 @@ const ListoneCalciatori = () => {
   const calciatoriPerNazione = useMemo(() => {
     const mappa = {};
     
-    // Inizializza la mappa per ogni nazione trovata
     nazioni.forEach(nazione => {
       mappa[nazione] = [];
     });
 
-    // Raggruppa i calciatori nella propria nazione di appartenenza
     tuttiICalciatori.forEach(c => {
       if (mappa[c.nazionale]) {
         mappa[c.nazionale].push(c);
@@ -111,7 +109,6 @@ const ListoneCalciatori = () => {
       const matchNome = cercaNome.trim() === '' || c.nome.toLowerCase().includes(cercaNome.toLowerCase());
       return matchRuolo && matchNome;
     }).sort((a, b) => {
-      // Ordina i risultati filtrati prima per Nazionale, poi per Ruolo e Nome
       if (a.nazionale !== b.nazionale) return a.nazionale.localeCompare(b.nazionale);
       const pesoA = ordineRuoli[a.ruolo] || 99;
       const pesoB = ordineRuoli[b.ruolo] || 99;
@@ -120,41 +117,44 @@ const ListoneCalciatori = () => {
     });
   }, [tuttiICalciatori, cercaNome, ruoloSelezionato, isFiltrato]);
 
-  // Gestore apertura/chiusura dei blocchi nazionali (Istantaneo perché i dati sono già in memoria)
   const toggleNazione = (nazione) => {
     setNazioneEspansa(nazioneEspansa === nazione ? null : nazione);
   };
 
   if (loading) {
-    return <div className="player-loading">Sincronizzazione Database Mondiale in corso... ⏳</div>;
+    return <div className="tactical-listone-loading">Sincronizzazione Database Mondiale in corso... ⏳</div>;
   }
 
   return (
-    <div className="player-page-container">
-      <button className="listone-back-btn" onClick={() => navigate('/dashboard')}>
-        ← Torna Indietro
-      </button>
-
-      <div className="player-page-header">
-        <h2>Listone Calciatori</h2>
-        <p className="player-page-subtitle">Tocca una Nazionale per scoprire la lista completa dei suoi 26 convocati.</p>
+    <div className="tactical-app-container tactical-listone-page">
+      {/* Intestazione e Pulsante di Ritorno */}
+      <div className="tactical-listone-header-section">
+        <button className="tactical-listone-back-btn" onClick={() => navigate('/dashboard')}>
+          ⬅️ indietro
+        </button>
+        <div className="tactical-listone-header">
+          <h2 className="tactical-brand">Listone Calciatori</h2>
+          <p className="tactical-listone-subtitle">Esplora i convocati di ciascuna Nazionale o filtra i profili per ruolo e nome.</p>
+        </div>
       </div>
 
-      {/* FILTRI DI RICERCA */}
-      <div className="listone-filtri-box">
-        <input 
-          type="text" 
-          placeholder="Cerca calciatore per nome in tutto il database..." 
-          className="search-calciatore-input"
-          value={cercaNome}
-          onChange={(e) => setCercaNome(e.target.value)}
-        />
+      {/* FILTRI DI RICERCA SINTETIZZATI */}
+      <div className="tactical-listone-filtri-box">
+        <div className="tactical-input-search-wrapper">
+          <input 
+            type="text" 
+            placeholder="Cerca calciatore per nome..." 
+            className="tactical-search-calciatore-input"
+            value={cercaNome}
+            onChange={(e) => setCercaNome(e.target.value)}
+          />
+        </div>
         
-        <div className="ruolo-filter-row">
+        <div className="tactical-ruolo-filter-row">
           {['TUTTI', 'P', 'D', 'C', 'A'].map(r => (
             <button
               key={r}
-              className={`filter-role-btn ${ruoloSelezionato === r ? 'active' : ''} ${r}`}
+              className={`tactical-filter-role-btn ${ruoloSelezionato === r ? 'is-active' : ''} tactical-role-${r}`}
               onClick={() => setRuoloSelezionato(r)}
             >
               {r}
@@ -163,52 +163,52 @@ const ListoneCalciatori = () => {
         </div>
       </div>
 
-      {/* CONTEGGIO RISULTATI */}
-      <p className="risultati-count">
+      {/* CONTEGGIO METADATI RISULTATI */}
+      <p className="tactical-risultati-count">
         {isFiltrato 
           ? `Risultati ricerca: ${calciatoriFiltrati.length} calciatori trovati` 
           : `Competizione Mondiale: ${nazioni.length} Nazionali caricate (${tuttiICalciatori.length} calciatori totali)`
         }
       </p>
 
-      {/* CONTENUTO DINAMICO */}
-      <div className="listone-main-wrapper">
+      {/* CONTENUTO DINAMICO AD ALTE PRESTAZIONI */}
+      <div className="tactical-listone-main-wrapper">
         {!isFiltrato ? (
-          /* 1. SE NON CI SONO FILTRI: MOSTRA I BLOCCHI DELLE NAZIONALI (ACCORDION ISTANTANEO) */
-          <div className="nazioni-blocks-container">
+          /* 1. MODALITÀ STANDARD: ACCORDION NAZIONALI */
+          <div className="tactical-nazioni-blocks-container">
             {nazioni.map(nazione => {
               const isOpen = nazioneEspansa === nazione;
               const listaGiocatori = calciatoriPerNazione[nazione] || [];
 
               return (
-                <div key={nazione} className={`nazione-block-card ${isOpen ? 'is-open' : ''}`}>
+                <div key={nazione} className={`tactical-nazione-block-card ${isOpen ? 'is-open' : ''}`}>
                   <div 
-                    className="nazione-block-header clickable" 
+                    className="tactical-nazione-block-header tactical-clickable" 
                     onClick={() => toggleNazione(nazione)}
                   >
                     <h3>
                       <BandieraNazionale nazione={nazione} />
-                      {nazione.toUpperCase()}
+                      <span className="tactical-nazione-title-text">{nazione.toUpperCase()}</span>
                     </h3>
-                    <div className="header-right-zone">
-                      <span className="nazione-count-badge">
+                    <div className="tactical-header-right-zone">
+                      <span className="tactical-nazione-count-badge">
                         {listaGiocatori.length} convocati
                       </span>
-                      <span className="accordion-arrow">{isOpen ? '▲' : '▼'}</span>
+                      <span className="tactical-accordion-arrow">{isOpen ? '▲' : '▼'}</span>
                     </div>
                   </div>
                   
-                  {/* Contenuto interno ad apertura immediata */}
+                  {/* Lista interna espandibile istantaneamente */}
                   {isOpen && (
-                    <div className="nazione-block-players animate-fade-in">
+                    <div className="tactical-nazione-block-players tactical-animate-fade-in">
                       {listaGiocatori.length === 0 ? (
-                        <div className="loading-players-mini">Nessun calciatore presente per questa nazione.</div>
+                        <div className="tactical-loading-players-mini">Nessun calciatore presente per questa nazione.</div>
                       ) : (
                         listaGiocatori.map(c => (
-                          <div key={c.id} className={`listone-player-mini-row border-${c.ruolo}`}>
-                            <div className="mini-row-left">
-                              <span className={`listone-ruolo-badge ${c.ruolo}`}>{c.ruolo}</span>
-                              <span className="calc-name">{c.nome}</span>
+                          <div key={c.id} className={`tactical-listone-player-mini-row tactical-border-${c.ruolo}`}>
+                            <div className="tactical-mini-row-left">
+                              <span className={`tactical-listone-ruolo-badge tactical-role-${c.ruolo}`}>{c.ruolo}</span>
+                              <span className="tactical-calc-name">{c.nome}</span>
                             </div>
                           </div>
                         ))
@@ -220,18 +220,18 @@ const ListoneCalciatori = () => {
             })}
           </div>
         ) : (
-          /* 2. SE CI SONO FILTRI ATTIVI: MOSTRA LA LISTA FILTRATA IN TEMPO REALE */
-          <div className="listone-linear-list">
+          /* 2. MODALITÀ FILTRATA: LISTA LINEARE DIRETTALE */
+          <div className="tactical-listone-linear-list">
             {calciatoriFiltrati.length === 0 ? (
-              <p className="no-data-msg">Nessun calciatore corrisponde ai criteri impostati.</p>
+              <p className="tactical-no-data-msg">Nessun calciatore corrisponde ai criteri impostati.</p>
             ) : (
               calciatoriFiltrati.map(c => (
-                <div key={c.id} className={`calciatore-listone-row border-${c.ruolo}`}>
-                  <div className="left-calc-info">
-                    <span className={`listone-ruolo-badge ${c.ruolo}`}>{c.ruolo}</span>
-                    <div className="name-nat-block">
-                      <span className="calc-name">{c.nome}</span>
-                      <span className="calc-nat">
+                <div key={c.id} className={`tactical-calciatore-listone-row tactical-border-${c.ruolo}`}>
+                  <div className="tactical-left-calc-info">
+                    <span className={`tactical-listone-ruolo-badge tactical-role-${c.ruolo}`}>{c.ruolo}</span>
+                    <div className="tactical-name-nat-block">
+                      <span className="tactical-calc-name">{c.nome}</span>
+                      <span className="tactical-calc-nat">
                         <BandieraNazionale nazione={c.nazionale} />
                         {c.nazionale || 'N/D'}
                       </span>

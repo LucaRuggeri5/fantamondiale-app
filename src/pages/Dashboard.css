@@ -1,6 +1,11 @@
+/* ========================================== */
+/* LAYOUT BASE ED ELEMENTI DI CARICAMENTO    */
+/* ========================================== */
 .dashboard-container {
-  padding: 15px;
-  font-family: system-ui, -apple-system, sans-serif;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .dashboard-loading {
@@ -8,245 +13,282 @@
   justify-content: center;
   align-items: center;
   height: 60vh;
-  color: #888;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
 }
 
-/* Hero Section Card */
-.league-header-card.hero-card {
-  background-color: #1e1e24;
-  padding: 20px;
+/* ========================================== */
+/* HERO CARD MAPPA TATTICA (Lega Calcio)      */
+/* ========================================== */
+.tactical-card-header-map {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   border-radius: 8px;
-  border-left: 4px solid #00b0ff;
-  margin-bottom: 15px;
+  padding: 22px 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.hero-main-info h1 {
+/* Generatore filigrana linee del campo in overlay discreto */
+.tactical-card-header-map::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(var(--tactical-accent-gold) 1px, transparent 1px);
+  background-size: 16px 16px;
+  opacity: var(--tactical-map-opacity);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.tactical-brand {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--tactical-text-primary);
   margin: 0;
-  font-size: 22px;
-  color: #fff;
 }
 
 .hero-team-title {
   margin: 6px 0 0 0;
-  font-size: 15px;
-  color: #aaa;
-  font-weight: 500;
+  font-size: 14px;
+  color: var(--tactical-text-gold);
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.2px;
 }
 
-/* Recap Row Card */
-.dashboard-recap-card {
-  background-color: #1e1e24;
+/* ========================================== */
+/* RECAP CARD STATISTICHE A COLONNE           */
+/* ========================================== */
+.tactical-stats-container {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   border-radius: 8px;
-  padding: 15px;
   display: flex;
-  align-items: center;
   justify-content: space-around;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #2e2e38;
+  padding: 16px 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.recap-item {
+.tactical-stat-box {
+  text-align: center;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
-  flex: 1;
+  justify-content: center;
 }
 
-.recap-label {
+.tactical-stat-box:not(:last-child) {
+  border-right: 1px solid var(--tactical-border-gold);
+}
+
+.tactical-stat-label {
+  color: var(--tactical-text-secondary);
   font-size: 10px;
-  font-weight: bold;
-  color: #888;
-  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.6px;
   margin-bottom: 6px;
 }
 
-.recap-value {
+.tactical-stats-value {
+  font-family: 'Montserrat', sans-serif;
   font-size: 18px;
-  font-weight: bold;
+  font-weight: 700;
 }
 
-/* Posizioni speciali in classifica */
-.recap-value.rank-position {
-  color: #00b0ff;
+/* Gestione dei colori dei dati numerici chiave */
+.tactical-stats-value.rank-position {
+  color: var(--tactical-text-primary);
 }
-.recap-value.rank-1 {
-  color: #ffd700;
-}
-.recap-value.rank-2 {
-  color: #c0c0c0;
-}
-.recap-value.rank-3 {
-  color: #cd7f32;
+.tactical-stats-value.rank-1 { color: #ffd700; }
+.tactical-stats-value.rank-2 { color: #b0b0b0; }
+.tactical-stats-value.rank-3 { color: #cd7f32; }
+
+.tactical-stats-value.total-points {
+  color: var(--tactical-highlight-points);
 }
 
-.recap-value.total-points {
-  color: #00e676;
+.tactical-stats-value.penalty-points {
+  color: var(--tactical-highlight-penalty);
 }
 
-.recap-value.penalty-points {
-  color: #ff5252;
-}
-
-.recap-divider {
-  width: 1px;
-  height: 30px;
-  background-color: #2e2e38;
-}
-
-/* Operative Action Cards Grid */
+/* ========================================== */
+/* GRIGLIA OPERATIVA E PANNELLI TURNI         */
+/* ========================================== */
 .operative-cards-grid {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
 .action-status-card {
-  background-color: #1e1e24;
-  padding: 15px;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 16px;
   border-radius: 8px;
   display: flex;
   flex-direction: column;
-  transition: opacity 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, opacity 0.3s ease, filter 0.3s ease;
 }
 
-/* Pannello opaco se non ci sono azioni disponibili */
+/* Trattamento elegante per pannelli disattivati */
 .action-status-card.inactive-panel {
-  opacity: 0.6;
+  opacity: 0.55;
+  filter: grayscale(40%);
 }
 
 .action-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
-  gap: 10px;
+  margin-bottom: 8px;
+  gap: 8px;
 }
 
 .action-status-card h3 {
   margin: 0;
   font-size: 15px;
-  font-weight: 600;
-  color: #fff;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
+  font-family: 'Montserrat', sans-serif;
 }
 
-/* Countdown dinamico */
-.time-countdown {
-  font-size: 12px;
-  font-weight: bold;
-  color: #ffca28;
+/* Badge Timer Tattico */
+.tactical-timer-badge {
+  background-color: var(--tactical-bg-timer);
+  color: var(--tactical-text-primary);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
   white-space: nowrap;
-  background: #2a2a35;
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid #3e3e4f;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: background-color 0.3s ease;
 }
 
 .action-card-description {
-  margin: 0 0 15px 0;
-  color: #aaa;
+  margin: 0 0 16px 0;
+  color: var(--tactical-text-secondary);
   font-size: 12px;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
-.btn-action-trigger {
-  border: none;
-  padding: 11px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: bold;
+/* ========================================== */
+/* BOTTONI STRUTTURATI TACTICAL SUITE         */
+/* ========================================== */
+.tactical-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  padding: 12px 16px;
+  border-radius: 6px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+  display: block;
   text-align: center;
-  transition: background-color 0.2s, opacity 0.2s;
 }
 
-.btn-action-trigger.btn-formation {
-  background-color: #00e676;
-  color: #121214;
+.tactical-btn-primary {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
-.btn-action-trigger.btn-votes {
-  background-color: #00b0ff;
-  color: #121214;
-}
-
-.btn-action-trigger:hover:not(:disabled) {
+.tactical-btn-primary:hover:not(:disabled) {
   filter: brightness(1.1);
 }
 
-.btn-action-trigger:disabled {
-  background-color: #2e2e38 !important;
-  color: #666 !important;
-  border: 1px solid #3a3a45 !important;
-  cursor: not-allowed;
+.tactical-btn-secondary {
+  background-color: transparent;
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-accent-gold);
 }
 
-/* Form e Creazione Club */
+.tactical-btn-secondary:hover:not(:disabled) {
+  background-color: rgba(198, 156, 109, 0.08);
+}
+
+.tactical-btn:disabled {
+  background-color: var(--tactical-bg-timer) !important;
+  color: var(--tactical-text-secondary) !important;
+  border: 1px solid var(--tactical-border-gold) !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ========================================== */
+/* STRUTTURA DELLE SELEZIONI E CREAZIONE CLUB */
+/* ========================================== */
 .create-team-card {
-  background-color: #1e1e24;
-  padding: 15px;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 16px;
   border-radius: 8px;
 }
 
 .spacing-bottom {
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
-.create-team-card h2 {
-  margin: 0 0 4px 0;
+.tactical-card-title {
+  margin: 0 0 6px 0;
   font-size: 15px;
-  color: #00e676;
+  font-weight: 700;
+  color: var(--tactical-text-gold);
 }
 
 .create-team-card p {
-  color: #aaa;
+  color: var(--tactical-text-secondary);
   font-size: 12px;
   line-height: 1.4;
-  margin: 0 0 12px 0;
+  margin: 0 0 14px 0;
 }
 
 .dashboard-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .dashboard-input,
 .dashboard-select {
-  background-color: #121214;
-  border: 1px solid #333;
-  padding: 10px;
-  border-radius: 4px;
-  color: white;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 11px;
+  border-radius: 6px;
+  color: var(--tactical-text-primary);
   font-size: 13px;
+  font-family: 'Inter', sans-serif;
   outline: none;
+  transition: border-color 0.2s ease;
 }
 
-.btn-create {
-  background-color: #00e676;
-  color: #121214;
-  border: none;
-  padding: 10px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.btn-join {
-  background-color: #00b0ff;
-  color: #fff;
-  border: none;
-  padding: 10px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
+.dashboard-input:focus,
+.dashboard-select:focus {
+  border-color: var(--tactical-accent-gold);
 }
 
 .error-text {
-  color: #ff5252;
+  color: var(--tactical-highlight-penalty);
   font-size: 12px;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }

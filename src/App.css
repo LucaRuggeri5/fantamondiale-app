@@ -1,25 +1,82 @@
-/* Schermata di caricamento sincro e box di Clerk */
+/* ========================================== */
+/* SCHERMATE DI CARICAMENTO E STRUTTURE AUTH  */
+/* ========================================== */
 .app-syncing-container, 
 .app-auth-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-color: #121214;
-  color: #fff;
+  /* Utilizziamo i colori della palette Tactical di base */
+  background-color: var(--tactical-bg-main);
+  color: var(--tactical-text-primary);
+  font-weight: 500;
 }
 
-/* Contenitore principale dell'applicazione */
+/* ========================================== */
+/* CONTENITORE PRINCIPALE (Mobile-First)      */
+/* ========================================== */
 .app-container {
   position: relative;
   min-height: 100vh;
-  background-color: #121214;
-  /* Aggiunto padding top per compensare l'altezza dell'header fisso */
-  padding-top: 55px; 
+  background-color: var(--tactical-bg-main);
+  color: var(--tactical-text-primary);
+  padding-top: 55px; /* Spazio di sicurezza per non finire sotto l'header fisso */
   box-sizing: border-box;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Header dell'applicazione fisso in alto */
+/* Aggiunta di una texture filigranata di fondo che evoca una mappa o griglia tattica */
+.app-container::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(var(--tactical-border-gold) 1px, transparent 1px), 
+    linear-gradient(to right, var(--tactical-border-gold) 1px, transparent 1px);
+  background-size: 24px 24px, 100px 100px;
+  opacity: var(--tactical-map-opacity);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ========================================== */
+/* OVERLAY AD ESPANSIONE CIRCOLARE (RIPPLE)   */
+/* ========================================== */
+.theme-ripple-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--tactical-bg-main);
+  /* Posizionato sopra lo sfondo con texture, ma rigorosamente sotto i testi e i pulsanti */
+  z-index: 0; 
+  pointer-events: none; 
+  clip-path: circle(150% at var(--ripple-x) var(--ripple-y));
+}
+
+.theme-changing .theme-ripple-overlay {
+  animation: rippleEffect 0.9s cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: clip-path;
+  transform: translateZ(0); /* Ottimizzazione hardware per smartphone fluidi */
+}
+
+@keyframes rippleEffect {
+  from {
+    clip-path: circle(0% at var(--ripple-x) var(--ripple-y));
+  }
+  to {
+    clip-path: circle(150% at var(--ripple-x) var(--ripple-y));
+  }
+}
+
+/* ========================================== */
+/* APP HEADER (Stile Editoriale d'Élite)     */
+/* ========================================== */
 .app-header {
   position: fixed;
   top: 0;
@@ -29,48 +86,111 @@
   padding: 0 20px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  background-color: #1e1e24;
-  border-bottom: 1px solid #25252d;
-  z-index: 999; /* Mantiene l'header sopra al contenuto delle pagine */
+  justify-content: space-between;
+  background-color: var(--tactical-bg-card);
+  /* Sottile linea di demarcazione in ottone/oro brunito */
+  border-bottom: 1px solid var(--tactical-border-gold);
+  z-index: 999; /* Garantisce l'immutabilità visiva sopra i cambi dell'overlay */
   box-sizing: border-box;
+  transition: background-color 0.4s ease, border-color 0.4s ease;
 }
 
-/* Bottone Hamburger Menu */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
 .btn-hamburger {
   background: none;
   border: none;
-  color: #fff;
-  font-size: 22px;
+  color: var(--tactical-text-primary);
+  font-size: 24px;
   cursor: pointer;
   padding: 0 5px;
+  display: flex;
+  align-items: center;
 }
 
-/* Titolo dell'applicazione - Modificato per feedback al passaggio del mouse */
 .app-title {
-  color: #00e676;
-  font-weight: bold; 
-  font-size: 18px;
+  color: var(--tactical-accent-gold);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800; 
+  font-size: 17px;
+  letter-spacing: -0.3px;
+  text-transform: uppercase;
   cursor: pointer;
   user-select: none;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, color 0.4s ease;
 }
 
 .app-title:hover {
   opacity: 0.85;
 }
 
-/* Area di contenuto dove cambiano le pagine */
-.main-content {
-  padding-bottom: 80px; /* Spazio in fondo per non sovrapporsi alla BottomNavbar */
+/* ========================================== */
+/* BOTTONE CAMBIO TEMA (TOGGLE SWITCH)        */
+/* ========================================== */
+.btn-theme-toggle {
+  background: none;
+  border: none;
+  width: 38px;
+  height: 38px;
+  cursor: pointer;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  user-select: none;
+  z-index: 1000;
 }
 
-/* Stili per il finto alert globale */
+.btn-theme-toggle:hover {
+  background-color: var(--toggle-bg-hover);
+  transform: scale(1.05);
+}
+
+.btn-theme-toggle:active {
+  transform: scale(0.95);
+}
+
+.icon-theme {
+  width: 20px;
+  height: 20px;
+  color: var(--toggle-icon-color);
+  stroke-width: 2.3;
+  animation: iconSpin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes iconSpin {
+  from {
+    transform: rotate(-90deg);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+}
+
+/* ========================================== */
+/* MAIN CONTENT E SICUREZZA LAYOUT            */
+/* ========================================== */
+.main-content {
+  position: relative;
+  z-index: 1; /* Forza i componenti figli a stare sopra la griglia e l'overlay */
+  padding-bottom: 80px; /* Spazio di rispetto per non sovrapporsi alla BottomNavbar */
+}
+
+/* ========================================== */
+/* FINESTRE ALERT PERSONALIZZATE E POPUP       */
+/* ========================================== */
 .custom-alert-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  backdrop-filter: blur(3px);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,19 +198,19 @@
 }
 
 .custom-alert-box {
-  background: #1a202c;
-  border: 1px solid #2d3748;
+  background: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   padding: 24px;
   border-radius: 12px;
   max-width: 400px;
   width: 90%;
   text-align: center;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-  animation: alertIn 0.2s ease-out;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  animation: alertIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .custom-alert-text {
-  color: #e2e8f0;
+  color: var(--tactical-text-primary);
   font-size: 15px;
   font-weight: 600;
   margin-bottom: 20px;
@@ -98,20 +218,24 @@
 }
 
 .custom-alert-btn {
-  background-color: #20bf6b;
-  color: white;
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
   border: none;
-  padding: 10px 24px;
-  border-radius: 8px;
+  padding: 12px 28px;
+  border-radius: 6px;
   font-weight: 700;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  font-size: 14px;
-  transition: background 0.2s;
+  transition: opacity 0.2s;
 }
 
-.custom-alert-btn:hover { background-color: #1a9c56; }
+.custom-alert-btn:hover { 
+  opacity: 0.9; 
+}
 
 @keyframes alertIn {
-  from { transform: scale(0.9); opacity: 0; }
+  from { transform: scale(0.92); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }

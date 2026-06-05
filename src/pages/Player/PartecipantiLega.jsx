@@ -52,52 +52,59 @@ const PartecipantiLega = ({ currentUser }) => {
     if (!codiceAccesso) return;
     navigator.clipboard.writeText(codiceAccesso);
     setCopiato(true);
-    setTimeout(() => setCopiato(false), 2000); // Reset del feedback dopo 2 secondi
+    setTimeout(() => setCopiato(false), 2000); // Feedback temporaneo di 2 secondi
   };
 
-  if (loading) return <div className="player-loading">Caricamento partecipanti... ⏳</div>;
+  if (loading) return <div className="tactical-partecipanti-loading">Caricamento partecipanti... ⏳</div>;
 
   return (
-    <div className="player-page-container">
-      <div className="player-page-header">
-        <h2>Partecipanti Lega 👥</h2>
-        <p className="player-page-subtitle">Lista di tutti gli allenatori iscritti a questa lega.</p>
+    <div className="tactical-app-container tactical-partecipanti-page">
+      {/* Intestazione */}
+      <div className="tactical-partecipanti-page-header">
+        <h2 className="tactical-brand">Partecipanti Lega</h2>
+        <p className="tactical-partecipanti-page-subtitle">Lista ufficiale di tutti gli allenatori iscritti.</p>
       </div>
 
-      {/* Box Copia/Incolla Codice di Accesso */}
+      {/* Box Condizionale Invito / Condivisione Codice Accesso */}
       {codiceAccesso && (
-        <div className="codice-invito-container">
-          <span className="codice-label">Codice Accesso Lega:</span>
-          <div className="codice-row">
-            <span className="codice-valore">{codiceAccesso}</span>
+        <div className="tactical-codice-invito-container">
+          <span className="tactical-codice-label">Codice Accesso della Lega</span>
+          <div className="tactical-codice-row">
+            <span className="tactical-codice-valore">{codiceAccesso}</span>
             <button 
-              className={`btn-copia-codice ${copiato ? 'success' : ''}`} 
+              className={`tactical-btn-copia-codice ${copiato ? 'is-success' : ''}`} 
               onClick={handleCopiaCodice}
             >
-              {copiato ? 'Copiato! ✓' : 'Copia 📋'}
+              {copiato ? 'Copiato! ✓' : 'Copia Codice'}
             </button>
           </div>
         </div>
       )}
 
-      <div className="partecipanti-list">
+      {/* Lista Membri Iscritti */}
+      <div className="tactical-partecipanti-list">
         {partecipanti.length === 0 ? (
-          <p className="no-data-msg">Nessun partecipante trovato.</p>
+          <p className="tactical-no-data-msg">Nessun allenatore registrato in questa lega.</p>
         ) : (
           partecipanti.map((p) => (
-            <div key={p.id} className="partecipante-card">
-              <div className="partecipante-avatar-group">
-                <div className="avatar-placeholder">
+            <div key={p.id} className="tactical-partecipante-card">
+              
+              <div className="tactical-partecipante-avatar-group">
+                {/* Monogramma Iniziali */}
+                <div className="tactical-avatar-placeholder">
                   {p.nome_utente.substring(0, 2).toUpperCase()}
                 </div>
-                <div className="partecipante-info">
-                  <span className="part-name">{p.nome_utente}</span>
-                  <span className="part-email">{p.email}</span>
+                <div className="tactical-partecipante-info">
+                  <span className="tactical-part-name">{p.nome_utente}</span>
+                  <span className="tactical-part-email">{p.email}</span>
                 </div>
               </div>
-              <span className={`badge-role-view ${p.ruolo}`}>
+              
+              {/* Badge del Ruolo Federale */}
+              <span className={`tactical-badge-role-view ${p.ruolo}`}>
                 {p.ruolo === 'admin' ? '👑 Admin' : '🛡️ Player'}
               </span>
+              
             </div>
           ))
         )}

@@ -3,6 +3,10 @@ import { supabase } from '../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import './Onboarding.css';
 
+/**
+ * Gate d'ingresso iniziale alla Tactical Suite.
+ * Consente l'aggancio a una chiamata di lega esistente o la fondazione di un nuovo torneo.
+ */
 const Onboarding = ({ onJoinLeague }) => {
   const [code, setCode] = useState('');
   const [leagueName, setLeagueName] = useState('');
@@ -11,6 +15,7 @@ const Onboarding = ({ onJoinLeague }) => {
   
   const { user } = useUser();
 
+  // Esegue l'innesto del giocatore in una lega esistente tramite codice unico
   const handleJoin = async (e) => {
     e.preventDefault();
     if (!code.trim()) return;
@@ -26,7 +31,7 @@ const Onboarding = ({ onJoinLeague }) => {
         .maybeSingle();
 
       if (leagueError || !league) {
-        setError('Codice lega errato o inesistente. Riprova!');
+        setError('Codice lega errato o inesistente. Verifica le credenziali!');
         setLoading(false);
         return;
       }
@@ -45,15 +50,16 @@ const Onboarding = ({ onJoinLeague }) => {
 
     } catch (err) {
       console.error("Errore join league:", err);
-      setError('Errore durante l\'accesso alla lega. Riprova.');
+      setError('Innestamento fallito. Riprova la connessione al database.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Crea una nuova lega d'autorità sul database assegnando il ruolo di admin
   const handleCreate = async () => {
     if (!leagueName.trim()) {
-      setError('Inserisci un nome valido per la tua lega!');
+      setError('Inserisci una denominazione valida per la tua lega!');
       return;
     }
 
@@ -86,59 +92,78 @@ const Onboarding = ({ onJoinLeague }) => {
 
       if (updateError) throw updateError;
 
-      alert(`Lega "${newLeague.nome}" creata! Codice: ${generatoCodice}`);
+      alert(`Lega "${newLeague.nome}" fondata con successo! Condividi il Codice: ${generatoCodice}`);
       onJoinLeague(newLeague.id);
 
     } catch (err) {
       console.error("Errore creazione lega:", err);
-      setError('Errore durante la creazione della lega. Riprova.');
+      setError('Fondazione della lega fallita. Riprova l\'operazione.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="onboarding-container">
-      <h2>Benvenuto nel FantaMondiale! 👋</h2>
-      <p className="onboarding-subtitle">Entra in una lega o creane una nuova per iniziare.</p>
-
-      {error && <div className="error-banner">{error}</div>}
-
-      <div className="onboarding-card">
-        <h3>Unisciti a una Lega</h3>
-        <form onSubmit={handleJoin}>
-          <input 
-            type="text" 
-            placeholder="Codice lega (es. MONDIALE26)" 
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            className="onboarding-input"
-            disabled={loading}
-          />
-          <button type="submit" className="onboarding-btn secondary" disabled={loading}>
-            {loading ? 'Verifica...' : 'Entra nella Lega'}
-          </button>
-        </form>
-      </div>
-
-      <div className="divider">oppure</div>
-
-      <div className="onboarding-card">
-        <h3>Crea la tua Lega</h3>
-        <p className="card-desc">Diventa Admin del torneo e invita i tuoi amici.</p>
+    <div className="tactical-app-container tactical-onboarding-wrapper">
+      <div className="tactical-onboarding-center">
         
-        <input 
-          type="text" 
-          placeholder="Nome della tua lega" 
-          value={leagueName}
-          onChange={(e) => setLeagueName(e.target.value)}
-          className="onboarding-input"
-          disabled={loading}
-        />
-        
-        <button onClick={handleCreate} className="onboarding-btn primary" disabled={loading}>
-          {loading ? 'Creazione...' : 'Crea Nuova Lega'}
-        </button>
+        {/* INTESTAZIONE */}
+        <div className="tactical-onboarding-header">
+          <h2 className="tactical-brand">Benvenuto nel FantaMondiale</h2>
+          <p className="tactical-onboarding-subtitle"> Inizializza il tuo profilo inserendoti in un torneo o fondandone uno nuovo.</p>
+        </div>
+
+        {/* MESSAGGI DI ERRORE */}
+        {error && <div className="tactical-error-banner">{error}</div>}
+
+        <div className="tactical-onboarding-split-cards">
+          
+          {/* BLOCCO UNISCITI A LEGA */}
+          <div className="tactical-onboarding-card">
+            <h3>Unisciti a una Lega</h3>
+            <p className="tactical-card-desc">Inserisci le credenziali di accesso fornite dal tuo Admin.</p>
+            
+            <form onSubmit={handleJoin}>
+              <input 
+                type="text" 
+                placeholder="Codice lega (es. 13CM9U)" 
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                className="tactical-onboarding-input"
+                disabled={loading}
+              />
+              <button type="submit" className="tactical-btn-onboarding secondary" disabled={loading}>
+                {loading ? 'Verifica credenziali...' : 'Innestati nel Torneo'}
+              </button>
+            </form>
+          </div>
+
+          {/* DIVIDER STRUTTURALE */}
+          <div className="tactical-onboarding-divider">
+            <span>oppure</span>
+          </div>
+
+          {/* BLOCCO CREA LEGA */}
+          <div className="tactical-onboarding-card">
+            <h3>Fonda la tua Lega</h3>
+            <p className="tactical-card-desc">Diventa Commissario del torneo e genera il codice di invito.</p>
+            
+            <input 
+              type="text" 
+              placeholder="Nome del nuovo torneo" 
+              value={leagueName}
+              onChange={(e) => setLeagueName(e.target.value)}
+              className="tactical-onboarding-input"
+              disabled={loading}
+            />
+            
+            <button onClick={handleCreate} className="tactical-btn-onboarding primary" disabled={loading}>
+              {loading ? 'Fondazione registro...' : 'Inizializza Nuova Lega'}
+            </button>
+          </div>
+
+        </div>
+
       </div>
     </div>
   );

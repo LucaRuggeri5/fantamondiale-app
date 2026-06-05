@@ -292,9 +292,10 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <div className="league-header-card hero-card">
+      {/* Mappa Tattica e Titoli della Suite */}
+      <div className="league-header-card hero-card tactical-card-header-map">
         <div className="hero-main-info">
-          <h1>{leagueData?.nome || "La tua Lega"}</h1>
+          <h1 className="tactical-brand">{leagueData?.nome || "La tua Lega"}</h1>
           {myTeamData && <h2 className="hero-team-title">🛡️ {myTeamData.nome}</h2>}
         </div>
       </div>
@@ -305,7 +306,7 @@ const Dashboard = () => {
 
           {existingTeams.length > 0 && (
             <div className="create-team-card spacing-bottom">
-              <h2>Scegli una Squadra esistente</h2>
+              <h2 className="tactical-card-title">Scegli una Squadra esistente</h2>
               <p>Seleziona il tuo team di appartenenza dalla lista per prenderne il controllo:</p>
               <form onSubmit={handleJoinTeam} className="dashboard-form">
                 <select
@@ -319,7 +320,7 @@ const Dashboard = () => {
                     <option key={team.id} value={team.id}>{team.nome}</option>
                   ))}
                 </select>
-                <button type="submit" className="btn-join" disabled={submitting || !selectedTeamId}>
+                <button type="submit" className="tactical-btn tactical-btn-secondary" disabled={submitting || !selectedTeamId}>
                   {submitting ? 'Associazione...' : 'Prendi il Controllo della Squadra'}
                 </button>
               </form>
@@ -327,7 +328,7 @@ const Dashboard = () => {
           )}
 
           <div className="create-team-card">
-            <h2>Oppure, crea una nuova Squadra!</h2>
+            <h2 className="tactical-card-title">Oppure, crea una nuova Squadra!</h2>
             <p>Se la tua squadra non è presente nell'elenco sopra, inserisci il nome qui sotto per fondarla.</p>
             <form onSubmit={handleCreateTeam} className="dashboard-form">
               <input
@@ -339,7 +340,7 @@ const Dashboard = () => {
                 disabled={submitting}
                 className="dashboard-input"
               />
-              <button type="submit" className="btn-create" disabled={submitting || !teamName.trim()}>
+              <button type="submit" className="tactical-btn tactical-btn-primary" disabled={submitting || !teamName.trim()}>
                 {submitting ? 'Creazione...' : 'Crea e Partecipa'}
               </button>
             </form>
@@ -347,22 +348,21 @@ const Dashboard = () => {
         </div>
       ) : (
         <>
-          <div className="dashboard-recap-card">
-            <div className="recap-item">
-              <span className="recap-label">POSIZIONE</span>
-              <span className={`recap-value rank-position rank-${myRankPosition}`}>
+          {/* Struttura riepilogativa a tre colonne divisa da bordi sottili in ottone */}
+          <div className="dashboard-recap-card tactical-stats-container">
+            <div className="recap-item tactical-stat-box">
+              <span className="recap-label tactical-stat-label">POSIZIONE</span>
+              <span className={`recap-value tactical-stats-value rank-position rank-${myRankPosition}`}>
                 {renderRankBadge(myRankPosition)}
               </span>
             </div>
-            <div className="recap-divider"></div>
-            <div className="recap-item">
-              <span className="recap-label">PUNTI TOTALI</span>
-              <span className="recap-value total-points">{(myTeamData?.punti_totali || 0).toFixed(1)}</span>
+            <div className="recap-item tactical-stat-box">
+              <span className="recap-label tactical-stat-label">PUNTI TOTALI</span>
+              <span className="recap-value tactical-stats-value total-points">{(myTeamData?.punti_totali || 0).toFixed(1)}</span>
             </div>
-            <div className="recap-divider"></div>
-            <div className="recap-item">
-              <span className="recap-label">PENALITÀ</span>
-              <span className="recap-value penalty-points">
+            <div className="recap-item tactical-stat-box">
+              <span className="recap-label tactical-stat-label">PENALITÀ</span>
+              <span className="recap-value tactical-stats-value penalty-points">
                 {myTeamData?.penalita > 0 ? `-${myTeamData.penalita}` : '0'}
               </span>
             </div>
@@ -373,7 +373,7 @@ const Dashboard = () => {
             <div className={`action-status-card formation ${!targetDates.giornataFormazioneId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
                 <h3>{targetDates.giornataFormazioneId ? `Giornata ${targetDates.numeroGiornataFormazione} ` : "Schieramento Formazione"}</h3>
-                <span className="time-countdown">⏳ {formationCountdown}</span>
+                <span className="time-countdown tactical-timer-badge">⏳ {formationCountdown}</span>
               </div>
               <p className="action-card-description">
                 {targetDates.giornataFormazioneId 
@@ -381,11 +381,11 @@ const Dashboard = () => {
                   : "Finestra di inserimento momentaneamente chiusa o in attesa di apertura turno futuro."}
               </p>
               <button 
-                className="btn-action-trigger btn-formation"
+                className="tactical-btn tactical-btn-primary"
                 disabled={!targetDates.giornataFormazioneId}
                 onClick={() => navigate(`/formazione/inserisci/${targetDates.giornataFormazioneId}`)}
               >
-              Inserisci Formazione
+                Inserisci Formazione
               </button>
             </div>
 
@@ -393,7 +393,7 @@ const Dashboard = () => {
             <div className={`action-status-card votes ${!targetDates.giornataVotiId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
                 <h3>{targetDates.giornataVotiId ? `Calcolo Giornata ${targetDates.numeroGiornataVoti} ` : "Inserimento Voti"}</h3>
-                <span className="time-countdown client-timer">⏳ {votesCountdown}</span>
+                <span className="time-countdown tactical-timer-badge client-timer">⏳ {votesCountdown}</span>
               </div>
               <p className="action-card-description">
                 {targetDates.giornataVotiId 
@@ -401,11 +401,11 @@ const Dashboard = () => {
                   : "Nessun calcolo voti pendente o finestre di rettifica aperte al momento."}
               </p>
               <button 
-                className="btn-action-trigger btn-votes"
+                className="tactical-btn tactical-btn-secondary"
                 disabled={!targetDates.giornataVotiId}
                 onClick={() => navigate(`/voti/inserisci/${targetDates.giornataVotiId}`)}
               >
-              Inserisci Voti
+                Inserisci Voti
               </button>
             </div>
           </div>

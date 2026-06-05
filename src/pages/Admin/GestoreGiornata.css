@@ -1,25 +1,27 @@
-.gestore-giornate-page {
+/* Layout di Pagina Base */
+.tactical-giornate-page {
   padding: 24px;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #ffffff;
   max-width: 1600px;
   margin: 0 auto;
+  min-height: 100vh;
 }
 
-.admin-giornate-loading {
+.tactical-loading {
   text-align: center;
   padding-top: 40vh;
-  color: #aaaaaa;
+  color: var(--tactical-text-secondary);
+  font-family: 'Montserrat', sans-serif;
   font-size: 1.1rem;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
 
-/* Header Area */
-.admin-giornate-header {
+/* Header dell'Area */
+.tactical-giornate-header {
   margin-bottom: 24px;
 }
 
-.admin-giornate-header-title-container {
+.tactical-header-title-container {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -27,398 +29,422 @@
   flex-wrap: wrap;
 }
 
-.btn-back-giornate {
-  background-color: #1e1e24;
-  color: #ffffff;
-  border: 1px solid #333333;
+.tactical-brand {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--tactical-text-primary);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.tactical-subtitle {
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Pulsante Back Premium */
+.tactical-btn-back {
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-border-gold);
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
 }
 
-.btn-back-giornate:hover {
-  background-color: #2e2e38;
-  border-color: #00e676;
+.tactical-btn-back:hover {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
   transform: translateX(-3px);
 }
 
-.admin-giornate-header h2 {
-  margin: 0;
-  color: #00e676;
-  font-size: 24px;
-  font-weight: 700;
-}
-
-.admin-giornate-header p {
-  color: #aaaaaa;
-  font-size: 14px;
-  margin: 0;
-}
-
-/* Workspace Layout */
-.admin-giornate-workspace {
+/* Area Spazio di Lavoro (Workspace) */
+.tactical-giornate-workspace {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
 @media (min-width: 1200px) {
-  .admin-giornate-workspace {
+  .tactical-giornate-workspace {
     flex-direction: row;
     align-items: flex-start;
   }
 }
 
-/* CARD FORM */
-.giornata-form-card {
+/* Card del Form (Pannello Laterale) */
+.tactical-form-card {
   flex: 1;
   min-width: 320px;
-  background-color: #1e1e24;
+  background-color: var(--tactical-bg-card);
   padding: 24px;
-  border-radius: 12px;
-  border: 1px solid #2e2e38;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  border: 1px solid var(--tactical-border-gold);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
 @media (min-width: 1200px) {
-  .giornata-form-card {
+  .tactical-form-card {
     max-width: 400px;
     position: sticky;
     top: 20px;
   }
 }
 
-.giornata-form-card h3 {
+.tactical-card-title {
   margin: 0 0 20px 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 18px;
-  color: #ff9100;
-  border-bottom: 1px solid #2e2e38;
+  color: var(--tactical-text-gold);
+  border-bottom: 1px solid var(--tactical-border-gold);
   padding-bottom: 12px;
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.form-input-group {
+/* Gruppi di Input e Campi */
+.tactical-input-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 18px;
 }
 
-.form-input-group label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #cccccc;
+.tactical-input-group label {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--tactical-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.form-input-group input {
-  background-color: #121214;
-  border: 1px solid #333333;
-  color: #ffffff;
+.tactical-input-group input {
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  color: var(--tactical-text-primary);
   padding: 12px;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   border-radius: 6px;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.form-input-group input:focus {
-  border-color: #ff9100;
-  box-shadow: 0 0 0 2px rgba(255, 145, 0, 0.2);
+.tactical-input-group input:focus {
+  border-color: var(--tactical-accent-gold);
+  box-shadow: 0 0 0 2px rgba(198, 156, 109, 0.2);
 }
 
-.form-actions-row {
+.tactical-form-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 10px;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 15px;
 }
 
-.btn-submit-giornata {
-  background-color: #ff9100;
-  color: #121214;
-  border: none;
-  padding: 12px 18px;
-  font-size: 14px;
-  font-weight: bold;
+/* Pulsanti Standard e Varianti */
+.tactical-btn {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  padding: 12px 20px;
   border-radius: 6px;
   cursor: pointer;
-  flex: 2;
-  transition: background-color 0.2s;
-}
-
-.btn-submit-giornata:hover {
-  background-color: #ffab40;
-}
-
-.btn-cancel-giornata {
-  background-color: #3a3a44;
-  color: #ffffff;
-  border: none;
-  padding: 12px 18px;
-  font-size: 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  flex: 1;
-  transition: background-color 0.2s;
-}
-
-.btn-cancel-giornata:hover {
-  background-color: #4e4e5a;
-}
-
-/* LISTA TURNI CONFIGURATI */
-.giornate-list-section {
-  flex: 2.5;
-  background-color: #1e1e24;
-  padding: 24px;
-  border-radius: 12px;
-  border: 1px solid #2e2e38;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.giornate-list-section h3 {
-  margin: 0 0 20px 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.no-giornate-box {
+  transition: all 0.2s ease;
+  width: 100%;
+  display: block;
   text-align: center;
-  color: #aaaaaa;
-  padding: 40px;
-  background-color: #121214;
+}
+
+.tactical-btn-primary {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+  border: none;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.tactical-btn-primary:hover {
+  filter: brightness(1.1);
+}
+
+.tactical-btn-secondary {
+  background-color: transparent;
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-accent-gold);
+}
+
+.tactical-btn-secondary:hover {
+  background-color: rgba(198, 156, 109, 0.1);
+}
+
+/* Sezione Lista Turni */
+.tactical-list-section {
+  flex: 2.5;
+  background-color: var(--tactical-bg-card);
+  padding: 24px;
   border-radius: 8px;
-  border: 1px dashed #333333;
+  border: 1px solid var(--tactical-border-gold);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.tactical-section-title {
+  margin: 0 0 20px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--tactical-text-primary);
+}
+
+.tactical-no-data-box {
+  text-align: center;
+  color: var(--tactical-text-secondary);
+  padding: 40px;
+  background-color: var(--tactical-bg-main);
+  border-radius: 6px;
+  border: 1px dashed var(--tactical-border-gold);
+  font-family: 'Inter', sans-serif;
   font-style: italic;
 }
 
-.giornate-cards-grid {
-  display: block; 
+.tactical-cards-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
-.giornata-status-card {
-  background-color: #121214;
-  border: 1px solid #2e2e38;
-  border-radius: 10px;
-  padding: 16px;
-  margin-bottom: 16px;
+@media (min-width: 768px) {
+  .tactical-cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  }
+}
+
+/* Cards di Stato della Giornata */
+.tactical-status-card {
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  border-radius: 8px;
+  padding: 18px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-.giornata-status-card:hover {
+.tactical-status-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
-.giornata-status-card.border-stato-in-programma { border-left: 5px solid #555555; }
-.giornata-status-card.border-stato-in-corso { border-left: 5px solid #0288d1; }
-.giornata-status-card.border-stato-fase-calcolo { border-left: 5px solid #f57c00; }
-.giornata-status-card.border-stato-conclusa { border-left: 5px solid #388e3c; }
+/* Bordi Colorati per Stato - Adattati al Design Tattico */
+.tactical-status-card.border-stato-in-programma { border-left: 5px solid var(--tactical-text-secondary); }
+.tactical-status-card.border-stato-in-corso { border-left: 5px solid var(--tactical-highlight-points); }
+.tactical-status-card.border-stato-fase-calcolo { border-left: 5px solid var(--tactical-accent-gold); }
+.tactical-status-card.border-stato-conclusa { border-left: 5px solid var(--tactical-border-gold); }
 
-.giornata-card-header {
-  display: block;
+.tactical-status-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 14px;
-  border-bottom: 1px solid #2e2e38;
+  border-bottom: 1px solid var(--tactical-border-gold);
   padding-bottom: 10px;
 }
 
-.giornata-card-title {
+.tactical-status-card-title {
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
   font-weight: 700;
-  color: #00e676;
-  display: block;
-  margin-bottom: 6px;
+  color: var(--tactical-text-primary);
 }
 
-.giornata-card-body {
+/* Badge del Timer / Stato Turno */
+.tactical-timer-badge {
+  background-color: var(--tactical-bg-timer);
+  color: var(--tactical-text-primary);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Adattamenti Dinamici Testo degli Stati inside the badge */
+.tactical-timer-badge.stato-in-corso {
+  color: var(--tactical-highlight-points);
+  border-color: var(--tactical-highlight-points);
+}
+.tactical-timer-badge.stato-fase-calcolo {
+  color: var(--tactical-accent-gold);
+}
+
+.tactical-status-card-body {
   margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.data-row {
-  display: block;
-  padding: 6px 0;
-  font-size: 13.5px;
+.tactical-data-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
 }
 
-.data-label {
-  color: #aaaaaa;
+.tactical-data-label {
+  color: var(--tactical-text-secondary);
   font-weight: 500;
-  margin-right: 6px;
 }
 
-.data-value {
-  color: #ffffff;
-  font-weight: 600;
+.tactical-data-value {
+  color: var(--tactical-text-primary);
+  font-weight: 700;
 }
 
-.giornata-card-actions {
-  display: block;
+/* Azioni dentro la Card */
+.tactical-status-card-actions {
+  display: flex;
+  gap: 10px;
   padding-top: 12px;
-  border-top: 1px solid #2e2e38;
+  border-top: 1px solid var(--tactical-border-gold);
+  margin-top: auto;
 }
 
-.btn-card-edit,
-.btn-card-delete {
-  border: 1px solid #333333;
-  background-color: #1e1e24;
-  color: #ffffff;
-  padding: 8px 14px;
+.tactical-action-btn {
+  flex: 1;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  color: var(--tactical-text-primary);
+  padding: 8px 12px;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 600;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.15s ease;
-  margin-right: 10px;
-  margin-bottom: 5px;
+  transition: all 0.2s ease;
+  text-align: center;
 }
 
-.btn-card-edit:hover {
-  border-color: #ff9100;
-  color: #ff9100;
-  background-color: rgba(255, 145, 0, 0.05);
+.tactical-action-btn.edit:hover {
+  border-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-gold);
+  background-color: rgba(198, 156, 109, 0.05);
 }
 
-.btn-card-delete:hover {
-  border-color: #ff1744;
-  color: #ff1744;
-  background-color: rgba(255, 23, 68, 0.05);
+.tactical-action-btn.delete:hover {
+  border-color: var(--tactical-highlight-penalty);
+  color: var(--tactical-highlight-penalty);
+  background-color: rgba(128, 0, 0, 0.05);
 }
-
-.badge-stato-turno {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 20px;
-  text-transform: uppercase;
-  display: inline-block;
-  letter-spacing: 0.3px;
-}
-
-.badge-stato-turno.in-programma { background-color: #333333; color: #aaaaaa; }
-.badge-stato-turno.in-corso { background-color: rgba(2, 136, 209, 0.15); color: #0288d1; border: 1px solid rgba(2, 136, 209, 0.3); }
-.badge-stato-turno.fase-calcolo { background-color: rgba(245, 124, 0, 0.15); color: #f57c00; border: 1px solid rgba(245, 124, 0, 0.3); }
-.badge-stato-turno.conclusa { background-color: rgba(56, 142, 60, 0.15); color: #388e3c; border: 1px solid rgba(56, 142, 60, 0.3); }
-
 
 /* ==========================================================================
-   NUOVO STILE PREMIUM PER L'ALERT DI CONFERMA ELIMINAZIONE (MODAL)
+   MODAL ALERT DI CONFERMA ELIMINAZIONE PREMIUM (TACTICAL SUITE)
    ========================================================================== */
-
-/* Sfondo scuro semitrasparente che copre l'intera applicazione e blocca i clic esterni */
-.custom-alert-overlay {
+.tactical-alert-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8); /* Oscura l'app dietro */
+  top: 0; left: 0; width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 9999; /* Rimane sopra a qualsiasi altro elemento */
+  z-index: 9999;
   padding: 16px;
-  backdrop-filter: blur(4px); /* Effetto sfocatura di classe */
+  backdrop-filter: blur(6px);
 }
 
-/* La scatola dell'alert personalizzato */
-.custom-alert-modal {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
-  border-top: 4px solid #ff1744; /* Linea superiore rossa di pericolo */
-  border-radius: 12px;
+.tactical-alert-modal {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  border-top: 4px solid var(--tactical-highlight-penalty);
+  border-radius: 8px;
   padding: 28px;
   max-width: 480px;
   width: 100%;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-  animation: modalFadeIn 0.25s ease-out; /* Animazione fluida di comparsa */
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  animation: tacticalModalIn 0.2s ease-out;
 }
 
-/* Icona centrale di pericolo */
-.custom-alert-icon {
-  font-size: 40px;
+.tactical-alert-icon {
+  font-size: 36px;
   margin-bottom: 12px;
 }
 
-/* Titolo dell'alert */
-.custom-alert-title {
+.tactical-alert-title {
   margin: 0 0 12px 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 20px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--tactical-text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-/* Testo principale */
-.custom-alert-text {
-  font-size: 14.5px;
-  color: #cccccc;
-  line-height: 1.5;
+.tactical-alert-text {
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  color: var(--tactical-text-primary);
+  line-height: 1.6;
   margin: 0 0 16px 0;
 }
 
-/* Box di avviso critico */
-.custom-alert-warning {
-  background-color: rgba(255, 23, 68, 0.1);
-  border: 1px dashed rgba(255, 23, 68, 0.3);
-  color: #ff1744;
+.tactical-highlight {
+  color: var(--tactical-text-gold);
+  font-weight: 700;
+}
+
+.tactical-alert-warning {
+  background-color: rgba(158, 42, 43, 0.08);
+  border: 1px dashed var(--tactical-highlight-penalty);
+  color: var(--tactical-highlight-penalty);
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   padding: 12px;
   border-radius: 6px;
   margin: 0 0 24px 0;
-  font-weight: 500;
+  font-weight: 600;
 }
 
-/* Contenitore dei bottoni in basso */
-.custom-alert-actions {
+.tactical-alert-actions {
   display: flex;
   gap: 12px;
 }
 
-/* Bottone di annullamento (Grigio/Sicuro) */
-.btn-alert-cancel {
-  flex: 1;
-  background-color: #32323c;
-  color: #ffffff;
-  border: 1px solid #44444c;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.15s;
-}
-
-.btn-alert-cancel:hover {
-  background-color: #42424c;
-}
-
-/* Bottone di conferma (Rosso Destruttivo) */
-.btn-alert-confirm {
-  flex: 1;
-  background-color: #ff1744;
+/* Pulsante distruttivo specifico */
+.tactical-alert-confirm-btn {
+  background-color: var(--tactical-highlight-penalty);
   color: #ffffff;
   border: none;
-  padding: 12px;
-  font-size: 14px;
-  font-weight: 700;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.15s;
 }
 
-.btn-alert-confirm:hover {
-  background-color: #d50000;
+.tactical-alert-confirm-btn:hover {
+  filter: brightness(1.2);
 }
 
-/* Micro-animazione per l'entrata fluida dell'alert */
-@keyframes modalFadeIn {
+@keyframes tacticalModalIn {
   from {
     opacity: 0;
-    transform: translateY(-20px) scale(0.95);
+    transform: translateY(-15px) scale(0.97);
   }
   to {
     opacity: 1;

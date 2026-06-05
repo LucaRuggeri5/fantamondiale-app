@@ -13,7 +13,6 @@ const GestoreGiornata = () => {
   const [adminLegaId, setAdminLegaId] = useState(null); 
   
   // STATO PER L'ALERT PERSONALIZZATO
-  // Se è null, l'alert è chiuso. Se contiene un oggetto { id, numero }, l'alert si apre per quel turno.
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   // Campi del form per l'inserimento o la modifica di una giornata
@@ -127,7 +126,7 @@ const GestoreGiornata = () => {
         resetForm();
       }
       
-      setDeleteTarget(null); // Chiude l'alert personalizzato ripristinando lo stato a null
+      setDeleteTarget(null); 
       fetchGiornate(adminLegaId); 
     } catch (err) {
       console.error("Errore durante l'eliminazione della giornata:", err);
@@ -200,26 +199,26 @@ const GestoreGiornata = () => {
     });
   };
 
-  if (loading) return <div className="admin-giornate-loading">Caricamento calendario di controllo... ⏳</div>;
+  if (loading) return <div className="tactical-loading">Caricamento calendario di controllo... ⏳</div>;
 
   return (
-    <div className="gestore-giornate-page">
-      <div className="admin-giornate-header">
-        <div className="admin-giornate-header-title-container">
-          <button className="btn-back-giornate" onClick={() => navigate('/dashboard')}>
+    <div className="tactical-app-container tactical-giornate-page">
+      <div className="tactical-giornate-header">
+        <div className="tactical-header-title-container">
+          <button className="tactical-btn-back" onClick={() => navigate('/dashboard')}>
             ⬅️ Indietro
           </button>
-          <h2>👑 Configurazione Turni & Scadenze</h2>
+          <h2 className="tactical-brand">Configurazione Giornate</h2>
         </div>
-        <p>Pannello di controllo del calendario per impostare blocchi formazioni e stati della giornata</p>
+        <p className="tactical-subtitle">Pannello di controllo del calendario per impostare blocchi formazioni e stati della giornata</p>
       </div>
 
-      <div className="admin-giornate-workspace">
+      <div className="tactical-giornate-workspace">
         {/* Form di Inserimento / Modifica */}
-        <form className="giornata-form-card" onSubmit={handleSalvaGiornata}>
-          <h3>{editingId ? '📝 Modifica Turno' : '➕ Crea Nuova Giornata'}</h3>
+        <form className="tactical-form-card" onSubmit={handleSalvaGiornata}>
+          <h3 className="tactical-card-title">{editingId ? '📝 Modifica Turno' : '➕ Crea Nuova Giornata'}</h3>
           
-          <div className="form-input-group">
+          <div className="tactical-input-group">
             <label>Numero Giornata / Turno:</label>
             <input 
               type="number" 
@@ -230,7 +229,7 @@ const GestoreGiornata = () => {
             />
           </div>
 
-          <div className="form-input-group">
+          <div className="tactical-input-group">
             <label>Inizio / Apertura Inserimento Formazioni:</label>
             <input 
               type="datetime-local" 
@@ -239,7 +238,7 @@ const GestoreGiornata = () => {
             />
           </div>
 
-          <div className="form-input-group">
+          <div className="tactical-input-group">
             <label>Scadenza / Blocco Consegna Formazioni:</label>
             <input 
               type="datetime-local" 
@@ -248,7 +247,7 @@ const GestoreGiornata = () => {
             />
           </div>
 
-          <div className="form-input-group">
+          <div className="tactical-input-group">
             <label>Scadenza Inserimento Voti Admin:</label>
             <input 
               type="datetime-local" 
@@ -257,12 +256,12 @@ const GestoreGiornata = () => {
             />
           </div>
 
-          <div className="form-actions-row">
-            <button type="submit" className="btn-submit-giornata">
+          <div className="tactical-form-actions">
+            <button type="submit" className="tactical-btn tactical-btn-primary">
               {editingId ? 'Salva Modifiche' : 'Crea Giornata'}
             </button>
             {editingId && (
-              <button type="button" className="btn-cancel-giornata" onClick={resetForm}>
+              <button type="button" className="tactical-btn tactical-btn-secondary" onClick={resetForm}>
                 Annulla
               </button>
             )}
@@ -270,53 +269,53 @@ const GestoreGiornata = () => {
         </form>
 
         {/* Griglia delle Card dei Turni */}
-        <div className="giornate-list-section">
-          <h3>Turni Configurati</h3>
+        <div className="tactical-list-section">
+          <h3 className="tactical-section-title">Turni Configurati</h3>
           
           {giornate.length === 0 ? (
-            <div className="no-giornate-box">
+            <div className="tactical-no-data-box">
               Nessuna giornata presente. Creane una usando il form laterale.
             </div>
           ) : (
-            <div className="giornate-cards-grid">
+            <div className="tactical-cards-grid">
               {giornate.map(g => {
                 const statoReale = calcolaStatoInTempoReale(g);
                 return (
-                  <div key={g.id} className={`giornata-status-card border-stato-${statoReale.replace(' ', '-')}`}>
+                  <div key={g.id} className={`tactical-status-card border-stato-${statoReale.replace(' ', '-')}`}>
                     
-                    <div className="giornata-card-header">
-                      <span className="giornata-card-title">Giornata {g.numero_giornata}</span>
-                      <span className={`badge-stato-turno ${statoReale.replace(' ', '-')}`}>
+                    <div className="tactical-status-card-header">
+                      <span className="tactical-status-card-title">Giornata {g.numero_giornata}</span>
+                      <span className={`tactical-timer-badge stato-${statoReale.replace(' ', '-')}`}>
                         {statoReale}
                       </span>
                     </div>
 
-                    <div className="giornata-card-body">
-                      <div className="data-row">
-                        <span className="data-label">🟢 Apertura Formazioni:</span>
-                        <span className="data-value">{formattaDataLeggibile(g.apertura_formazioni)}</span>
+                    <div className="tactical-status-card-body">
+                      <div className="tactical-data-row">
+                        <span className="tactical-data-label">🟢 Apertura Formazioni:</span>
+                        <span className="tactical-data-value">{formattaDataLeggibile(g.apertura_formazioni)}</span>
                       </div>
-                      <div className="data-row">
-                        <span className="data-label">🔴 Blocco Consegna:</span>
-                        <span className="data-value">{formattaDataLeggibile(g.scadenza_formazione)}</span>
+                      <div className="tactical-data-row">
+                        <span className="tactical-data-label">🔴 Blocco Consegna:</span>
+                        <span className="tactical-data-value">{formattaDataLeggibile(g.scadenza_formazione)}</span>
                       </div>
-                      <div className="data-row">
-                        <span className="data-label">👑 Scadenza Voti Admin:</span>
-                        <span className="data-value">{formattaDataLeggibile(g.scadenza_voti)}</span>
+                      <div className="tactical-data-row">
+                        <span className="tactical-data-label">👑 Scadenza Voti Admin:</span>
+                        <span className="tactical-data-value">{formattaDataLeggibile(g.scadenza_voti)}</span>
                       </div>
                     </div>
 
-                    <div className="giornata-card-actions">
+                    <div className="tactical-status-card-actions">
                       <button 
                         type="button" 
-                        className="btn-card-edit" 
+                        className="tactical-action-btn edit" 
                         onClick={() => handleEditClick(g)}
                       >
                         ✏️ Modifica
                       </button>
                       <button 
                         type="button" 
-                        className="btn-card-delete" 
+                        className="tactical-action-btn delete" 
                         onClick={() => apriConfermaElimina(g.id, g.numero_giornata)}
                       >
                         🗑️ Elimina
@@ -331,29 +330,29 @@ const GestoreGiornata = () => {
         </div>
       </div>
 
-      {/* RENDER DELL'ALERT DI ELIMINAZIONE PERSONALIZZATO (MODAL) */}
+      {/* MODAL ALERT DI ELIMINAZIONE TACTICAL SUITE */}
       {deleteTarget && (
-        <div className="custom-alert-overlay">
-          <div className="custom-alert-modal">
-            <div className="custom-alert-icon">⚠️</div>
-            <h4 className="custom-alert-title">Sei assolutamente sicuro?</h4>
-            <p className="custom-alert-text">
-              Stai per eliminare definitivamente la <strong>Giornata {deleteTarget.numero}</strong> dal calendario di gioco del FantaMondiale.
+        <div className="tactical-alert-overlay">
+          <div className="tactical-alert-modal">
+            <div className="tactical-alert-icon">⚠️</div>
+            <h4 className="tactical-alert-title">Sei assolutamente sicuro?</h4>
+            <p className="tactical-alert-text">
+              Stai per eliminare definitivamente la <strong className="tactical-highlight">Giornata {deleteTarget.numero}</strong> dal calendario di gioco del FantaMondiale.
             </p>
-            <p className="custom-alert-warning">
+            <p className="tactical-alert-warning">
               Questa azione è irreversibile e rimuoverà tutte le scadenze impostate per questo turno.
             </p>
-            <div className="custom-alert-actions">
+            <div className="tactical-alert-actions">
               <button 
                 type="button" 
-                className="btn-alert-cancel" 
+                className="tactical-btn tactical-btn-secondary" 
                 onClick={() => setDeleteTarget(null)}
               >
                 No, Annulla
               </button>
               <button 
                 type="button" 
-                className="btn-alert-confirm" 
+                className="tactical-btn tactical-alert-confirm-btn" 
                 onClick={handleEliminaEffettiva}
               >
                 Sì, Elimina Turno

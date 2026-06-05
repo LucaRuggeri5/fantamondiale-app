@@ -14,7 +14,6 @@ const Classifica = () => {
         setLoading(true);
         if (!user) return;
 
-        // 1. Recuperiamo la lega dell'utente
         const { data: userData, error: userErr } = await supabase
           .from('utenti')
           .select('lega_id')
@@ -24,7 +23,6 @@ const Classifica = () => {
         if (userErr) throw userErr;
         if (!userData?.lega_id) return;
 
-        // 2. Recuperiamo tutte le squadre della lega
         const { data: squadre, error: sqErr } = await supabase
           .from('squadre')
           .select('id, nome, url_logo, penalita')
@@ -32,7 +30,6 @@ const Classifica = () => {
 
         if (sqErr) throw sqErr;
 
-        // 3. Recuperiamo tutti i punteggi salvati nelle formazioni per questa lega
         const { data: punteggi, error: pErr } = await supabase
           .from('formazioni')
           .select('squadra_id, punteggio_totale')
@@ -40,14 +37,11 @@ const Classifica = () => {
 
         if (pErr) throw pErr;
 
-        // 4. Elaborazione dei dati: Somma dei punti
         const classificaCalcolata = squadre.map(squadra => {
-          // Filtriamo i punteggi di questa specifica squadra
           const puntiSquadra = punteggi
             .filter(p => p.squadra_id === squadra.id)
             .reduce((acc, curr) => acc + (curr.punteggio_totale || 0), 0);
 
-          // Calcolo finale: Somma Giornate - Penalità
           const totaleFinale = puntiSquadra - (squadra.penalita || 0);
 
           return {
@@ -58,10 +52,8 @@ const Classifica = () => {
           };
         });
 
-        // 5. Ordinamento Decrescente
         classificaCalcolata.sort((a, b) => b.points - a.points);
 
-        // Aggiungiamo la posizione dopo l'ordinamento
         const leaderboardFinal = classificaCalcolata.map((item, index) => ({
           ...item,
           position: index + 1
@@ -78,47 +70,40 @@ const Classifica = () => {
     fetchClassificaDinamica();
   }, [user]);
 
-  if (loading) return <div className="classifica-loading">Calcolo posizioni in corso... 🏆</div>;
+  if (loading) {
+    return <div className="classifica-loading">Calcolo posizioni in corso... 🏆</div>;
+  }
 
   return (
-    <div className="classifica-page">
+    <div className="classifica-page tactical-dashboard-gap">
       <div className="classifica-header">
-        <h2>Classifica Generale 🏆</h2>
-        <p className="subtitle">Punteggi totali aggiornati in tempo reale:</p>
+        <h2 className="tactical-page-title">Classifica 🏆</h2>
+        <p className="subtitle">Punteggi totali aggiornati in tempo reale</p>
       </div>
 
-      <div className="classifica-table-container">
+      <div className="classifica-table-container tactical-table-card">
         <table className="classifica-table">
           <thead>
             <tr>
-              <th className="text-left">Pos</th>
-              <th className="text-left">Squadra</th>
-              <th className="text-right">Punti</th>
+              <th className="text-left table-head-label">Pos</th>
+              <th className="text-left table-head-label">Squadra</th>
+              <th className="text-right table-head-label">Punti</th>
             </tr>
           </thead>
           <tbody>
             {leaderboard.length === 0 ? (
               <tr>
-                <td colSpan="3" className="no-data">Nessun dato disponibile.</td>
+                <td colSpan="3" className="no-data">Nessuna squadra trovata.</td>
               </tr>
             ) : (
               leaderboard.map((row) => (
-                <tr key={row.id} className={`row-pos-${row.position}`}>
-                  {/* Posizione allineata a sinistra */}
-                  <td className="text-left pos-cell">
-                    {row.position === 1 ? '🥇' : row.position === 2 ? '🥈' : row.position === 3 ? '🥉' : `#${row.position}`}
-                  </td>
-                  
-                  {/* Nome Squadra e Penalità allineati a sinistra, senza logo */}
-                  <td className="text-left team-cell-info">
+                <tr key={row.id} className={`tactical-table-row row-pos-${row.position}`}>
+                  <td className="pos-cell">{row.position === 1 ? '🥇' : row.position === 2 ? '🥈' : row.position === 3 ? '🥉' : `#${row.position}`}</td>
+                  <td className="team-cell">
                     <div className="table-team-name">{row.name}</div>
                     {row.penalita > 0 && <div className="table-penalty-label">Penalità: -{row.penalita}</div>}
                   </td>
-                  
-                  {/* Punti allineati a destra */}
-                  <td className="text-right points-cell">
-                    {row.points.toFixed(1)}
-                  </td>
+                  <td className="points-cell text-right">{row.points.toFixed(1)}</td>
                 </tr>
               ))
             )}

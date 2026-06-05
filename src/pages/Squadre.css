@@ -1,6 +1,8 @@
+/* ==========================================
+   1. STRUTTURA GENERALE & CARICAMENTO
+   ========================================== */
 .squadre-page-container {
-  padding: 15px;
-  font-family: system-ui, -apple-system, sans-serif;
+  padding: 16px;
 }
 
 .squadre-loading {
@@ -8,36 +10,49 @@
   justify-content: center;
   align-items: center;
   height: 60vh;
-  color: #888;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
 }
 
-.participants-section h3 {
+.tactical-page-title {
   margin: 0 0 4px 0;
-  font-size: 20px;
-  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--tactical-text-primary);
 }
 
 .section-subtitle {
-  color: #aaa;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
-  margin: 0 0 15px 0;
+  margin: 0 0 16px 0;
+  line-height: 1.4;
 }
 
+/* ==========================================
+   2. ELENCO SCHEDE PARTECIPANTI (CARDS)
+   ========================================== */
 .participants-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
-.participant-card {
-  background-color: #1e1e24;
+.participant-card.tactical-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  border-left: 4px solid var(--tactical-text-gold);
   border-radius: 8px;
-  padding: 15px;
+  padding: 16px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  border-left: 3px solid #00b0ff;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  gap: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .participant-card.clickable {
@@ -45,25 +60,30 @@
 }
 
 .participant-card.clickable:hover {
-  background-color: #25252d;
+  background-color: var(--tactical-bg-timer);
   transform: translateX(2px);
+  border-color: var(--tactical-text-gold);
 }
 
 .participant-card.disabled {
-  border-left-color: #444;
-  opacity: 0.7;
+  border-left-color: var(--tactical-text-secondary);
+  opacity: 0.6;
 }
 
+/* ==========================================
+   3. ELEMENTI INTERNI DEL CLUB
+   ========================================== */
 .avatar-placeholder {
-  background-color: #121214;
-  width: 42px;
-  height: 42px;
+  background-color: var(--tactical-bg-main);
+  width: 44px;
+  height: 44px;
   border-radius: 6px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 20px;
-  border: 1px solid #2e2e38;
+  font-size: 18px;
+  border: 1px solid var(--tactical-border-gold);
+  flex-shrink: 0;
 }
 
 .participant-details {
@@ -71,24 +91,33 @@
 }
 
 .participant-details h4 {
-  margin: 0 0 3px 0;
+  margin: 0 0 4px 0;
+  font-family: 'Inter', sans-serif;
   font-size: 15px;
-  color: #fff;
-  font-weight: 600;
+  color: var(--tactical-text-primary);
+  font-weight: 700;
+  letter-spacing: -0.2px;
 }
 
 .participant-details p {
   margin: 0;
-  color: #aaa;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
 }
 
 .trainer-name {
-  color: #ddd;
+  color: var(--tactical-text-primary);
+}
+
+.trainer-name strong {
+  font-weight: 600;
 }
 
 .arrow-indicator {
-  color: #00b0ff;
-  font-size: 12px;
-  font-weight: bold;
+  color: var(--tactical-text-gold);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding-left: 4px;
 }

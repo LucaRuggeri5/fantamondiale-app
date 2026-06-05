@@ -153,7 +153,6 @@ const Calendario = () => {
 
   if (loading) return <div className="calendario-loading">Caricamento calendario... ⏳</div>;
 
-  // Configurazione rapida badge e stili per evitare lunghi contesti if/else nel JSX
   const configStati = {
     'in corso': { testo: 'IN CORSO', classe: 'in_corso' },
     'fase calcolo': { testo: 'CALCOLO', classe: 'calcolo' },
@@ -162,9 +161,9 @@ const Calendario = () => {
   };
 
   return (
-    <div className="calendario-page">
+    <div className="calendario-page tactical-dashboard-gap">
       <div className="calendario-top-bar">
-        <h2>Calendario 📅</h2>
+        <h2 className="tactical-page-title">Calendario 📅</h2>
         <p className="subtitle">Tocca una giornata per vedere i dettagli e le formazioni schierate.</p>
       </div>
 
@@ -178,7 +177,7 @@ const Calendario = () => {
             const rigaAperta = giornataSelezionata?.id === day.id;
 
             return (
-              <div key={day.id} className="matchday-card-container">
+              <div key={day.id} className="matchday-card-container tactical-card">
                 <div 
                   className={`matchday-row ${classeStato} ${rigaAperta ? 'aperta' : ''}`}
                   onClick={() => handleSelezionaGiornataVisualizza(day, statoReale)}

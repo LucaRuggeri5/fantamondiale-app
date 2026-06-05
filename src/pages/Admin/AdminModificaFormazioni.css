@@ -24,7 +24,8 @@
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
   font-size: 12px;
   transition: all 0.2s ease;
 }
@@ -35,6 +36,7 @@
 }
 
 .admin-warning-text {
+  font-family: 'Inter', sans-serif;
   color: #ff4757; 
   font-weight: bold; 
   margin: 5px 0 0 0;
@@ -45,11 +47,11 @@
 .admin-filter-bar {
   display: flex;
   gap: 12px;
-  background-color: #1e1e24;
+  background-color: var(--tactical-bg-card);
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 15px;
-  border: 1px solid #333;
+  border: 1px solid var(--tactical-border-gold);
 }
 
 .admin-filter-bar .filter-group {
@@ -60,18 +62,20 @@
 }
 
 .admin-filter-bar label {
-  color: #ccc;
+  font-family: 'Montserrat', sans-serif;
+  color: var(--tactical-text-secondary);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
 .admin-filter-bar select {
-  background-color: #121214;
-  border: 1px solid #444;
-  color: #fff;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  color: var(--tactical-text-primary);
   padding: 8px;
   border-radius: 6px;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   cursor: pointer;
   width: 100%;
@@ -95,10 +99,11 @@
 }
 
 .btn-modulo {
-  background-color: #121214;
-  color: #ccc;
-  border: 1px solid #3e3e4a;
+  background-color: var(--tactical-bg-main);
+  color: var(--tactical-text-secondary);
+  border: 1px solid var(--tactical-border-gold);
   padding: 8px 12px;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: bold;
   border-radius: 6px;
@@ -116,6 +121,8 @@
 .admin-btn-override {
   background-color: #ff4757 !important;
   color: #fff !important;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
   box-shadow: 0 4px 10px rgba(255, 71, 87, 0.2);
   transition: background 0.2s, transform 0.1s;
 }

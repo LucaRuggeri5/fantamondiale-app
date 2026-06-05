@@ -1,32 +1,47 @@
+/* ========================================== */
+/* DISPOSIZIONE DELLA PAGINA CLASSIFICA        */
+/* ========================================== */
 .classifica-page {
-  padding: 15px;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #fff;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .classifica-loading {
   text-align: center;
   padding-top: 40vh;
-  color: #888;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
+  font-weight: 500;
 }
 
-.classifica-page h2 {
+.tactical-page-title {
   margin: 0 0 4px 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 22px;
+  font-weight: 800;
+  color: var(--tactical-text-primary);
 }
 
 .classifica-page .subtitle {
-  color: #aaa;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
-  margin: 0 0 20px 0;
+  margin: 0;
 }
 
-.classifica-table-container {
-  background-color: #1e1e24;
-  border-radius: 10px;
-  border: 1px solid #2e2e38;
+/* ========================================== */
+/* TABELLA EDITORIALE STRUTTURATA (CARD)     */
+/* ========================================== */
+.classifica-table-container.tactical-table-card {
+  background-color: var(--tactical-bg-card);
+  border-radius: 8px;
+  border: 1px solid var(--tactical-border-gold);
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .classifica-table {
@@ -34,42 +49,44 @@
   border-collapse: collapse;
 }
 
-.classifica-table th {
-  color: #777;
+.table-head-label {
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
-  padding: 15px 12px;
-  border-bottom: 1px solid #2e2e38;
+  font-weight: 700;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--tactical-border-gold);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
 }
 
-.classifica-table td {
+.tactical-table-row td {
   padding: 14px 12px;
-  border-bottom: 1px solid #25252e;
+  border-bottom: 1px solid var(--tactical-border-gold);
   vertical-align: middle;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
 }
 
 .classifica-table tr:last-child td {
   border-bottom: none;
 }
 
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-}
+/* ========================================== */
+/* ALLINEAMENTI E CELLE DEL PODIO            */
+/* ========================================== */
+.text-left { text-align: left; }
+.text-right { text-align: right; }
 
 .pos-cell {
-  font-weight: bold;
-  color: #aaa;
-  width: 60px; /* Spazio controllato fisso per la colonna podio/emoji */
-  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: var(--tactical-text-secondary);
+  width: 50px;
+  font-size: 13.5px;
 }
 
 .team-cell-info {
-  /* Struttura verticale pulita per ospitare il nome e l'eventuale label penalità */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -77,30 +94,60 @@
 }
 
 .table-team-name {
+  font-family: 'Inter', sans-serif;
   font-weight: 600;
-  font-size: 15px;
-  color: #fff;
+  font-size: 14.5px;
+  color: var(--tactical-text-primary);
 }
 
 .table-penalty-label {
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
-  color: #ff5252;
-  font-weight: 500;
+  color: var(--tactical-highlight-penalty);
+  font-weight: 600;
 }
 
 .points-cell {
-  font-weight: 800;
-  font-size: 16px;
-  color: #00e676;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 15.5px;
+  color: var(--tactical-highlight-points);
 }
 
 .no-data {
   text-align: center;
-  padding: 40px !important;
-  color: #555;
+  padding: 32px !important;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
 }
 
-/* Evidenziazione cromatica morbida per il primo in classifica */
-.row-pos-1 { background-color: rgba(255, 215, 0, 0.02); }
-.row-pos-1 .pos-cell { color: #ffd700; font-size: 18px; }
+/* ========================================== */
+/* SFUMATURE PARTICOLARI DEL PODIO (SUITE)   */
+/* ========================================== */
+.row-pos-1 { background-color: rgba(255, 215, 0, 0.015); }
+.row-pos-1 .pos-cell { font-size: 17px; }
+
+.row-pos-2 { background-color: rgba(176, 176, 176, 0.01); }
+.row-pos-3 { background-color: rgba(205, 127, 50, 0.01); }
+
+.classifica-page { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+.classifica-table-container { background-color: var(--tactical-bg-card); border-radius: 8px; border: 1px solid var(--tactical-border-gold); overflow: hidden; }
+.classifica-table { width: 100%; border-collapse: collapse; }
+
+.table-head-label { color: var(--tactical-text-secondary); font-size: 11px; padding: 12px; border-bottom: 1px solid var(--tactical-border-gold); text-transform: uppercase; }
+
+/* Forza l'allineamento verticale al centro per ogni cella */
+.tactical-table-row td { 
+  padding: 12px; 
+  border-bottom: 1px solid var(--tactical-border-gold); 
+  vertical-align: middle; 
+}
+
+.pos-cell { font-weight: 700; color: var(--tactical-text-secondary); width: 50px; }
+.team-cell { text-align: left; }
+.table-team-name { font-weight: 600; font-size: 14px; color: var(--tactical-text-primary); }
+.table-penalty-label { font-size: 10px; color: var(--tactical-highlight-penalty); margin-top: 2px; }
+.points-cell { font-weight: 700; color: var(--tactical-highlight-points); }
+
+.row-pos-1 { background-color: rgba(255, 215, 0, 0.05); }

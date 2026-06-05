@@ -1,42 +1,54 @@
-.sidebar-overlay {
+/* ========================================== */
+/* OVERLAY OSCURATO SFOCATO                   */
+/* ========================================== */
+.sidebar-overlay.tactical-sidebar-blur {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  height: 100dvh; /* Altezza dinamica per evitare tagli su smartphone */
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 1000; /* Superiore alla BottomNavbar che è a 999 */
-  backdrop-filter: blur(2px);
+  height: 100dvh;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: opacity 0.3s ease;
 }
 
-.sidebar-container {
+/* ========================================== */
+/* CONTENITORE SIDEBAR STRUTTURATO            */
+/* ========================================== */
+.sidebar-container.tactical-command-center {
   position: fixed;
   top: 0;
-  left: -280px;
-  width: 280px;
+  left: -290px;
+  width: 290px;
   height: 100vh;
-  height: 100dvh; /* Altezza dinamica perfetta che si adatta alle barre del browser mobile */
-  background-color: #1e1e24;
-  z-index: 1001; /* Il livello più alto in assoluto della pagina */
+  height: 100dvh;
+  background-color: var(--tactical-bg-card);
+  border-right: 1px solid var(--tactical-border-gold);
+  z-index: 1001;
   display: flex;
   flex-direction: column;
-  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.5);
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, border-color 0.3s ease;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.25);
 }
 
-.sidebar-container.open {
+.sidebar-container.tactical-command-center.open {
   left: 0;
 }
 
-/* Header */
-.sidebar-header {
-  padding: 15px;
-  border-bottom: 1px solid #2e2e38;
+/* ========================================== */
+/* HEADER SIDEBAR (Profilo Rapido)            */
+/* ========================================== */
+.sidebar-header.tactical-sidebar-top {
+  padding: 18px 16px;
+  border-bottom: 1px solid var(--tactical-border-gold);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #18181d;
+  background-color: var(--tactical-bg-main);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .user-welcome {
@@ -45,105 +57,163 @@
   gap: 12px;
 }
 
-.user-details h4 {
-  margin: 0 0 2px 0;
+.tactical-username {
+  margin: 0 0 4px 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 14px;
-  color: #fff;
-  font-weight: 600;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
 }
 
-.badge-role {
+.tactical-badge-role {
+  font-family: 'Inter', sans-serif;
   font-size: 10px;
-  font-weight: bold;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .badge-role.admin {
-  color: #ffca28; /* Oro elegante per distinguere l'admin */
+  color: var(--tactical-text-gold);
 }
 
 .badge-role.player {
-  color: #00b0ff;
+  color: var(--tactical-text-secondary);
 }
 
-.close-sidebar-btn {
+.close-sidebar-btn.tactical-close-trigger {
   background: none;
   border: none;
-  color: #888;
+  color: var(--tactical-text-secondary);
   font-size: 26px;
   cursor: pointer;
   line-height: 1;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
 }
 
-.close-sidebar-btn:hover {
-  color: #fff;
+.close-sidebar-btn.tactical-close-trigger:hover {
+  color: var(--tactical-text-primary);
 }
 
-/* Menu Content */
-.sidebar-menu-content {
-  padding: 20px 15px;
+/* ========================================== */
+/* AREA CONTENUTO MENU CON SCROLL ACCOGLIENTE */
+/* ========================================== */
+.sidebar-menu-content.tactical-sidebar-scroll {
+  padding: 24px 16px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  overflow-y: auto; /* Permette lo scroll se ci sono tante voci di menu o schermi piccoli */
+  gap: 24px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tactical-border-gold) transparent;
 }
 
-.menu-section .section-title {
+/* Titoli delle sezioni */
+.tactical-group-title {
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
   text-transform: uppercase;
-  color: #00b0ff;
-  margin: 0 0 8px 0;
-  font-weight: bold;
-  letter-spacing: 0.5px;
+  color: var(--tactical-text-secondary);
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  letter-spacing: 0.8px;
 }
 
-.menu-section.admin-section .admin-title {
-  color: #ff9100; /* Accento arancione per la zona di controllo admin */
+/* Evidenziazione per la zona di amministrazione */
+.tactical-group-title-admin {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--tactical-accent-gold);
+  margin: 0 0 10px 0;
+  font-weight: 700;
+  letter-spacing: 0.8px;
 }
 
-.menu-section ul {
+.tactical-admin-box {
+  background-color: rgba(198, 156, 109, 0.03);
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px dashed rgba(198, 156, 109, 0.2);
+}
+
+.tactical-menu-list {
   list-style: none;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.menu-section ul li {
-  padding: 11px 8px;
+/* Voce di menu base */
+.tactical-menu-item {
+  padding: 10px 12px;
   cursor: pointer;
+  font-family: 'Inter', sans-serif;
   font-size: 13.5px;
-  color: #ccc;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  font-weight: 500;
+  color: var(--tactical-text-primary);
+  border-radius: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
-.menu-section ul li:hover {
-  color: #fff;
-  background-color: #26262e;
+.tactical-menu-icon {
+  font-size: 15px;
+  display: inline-block;
+  width: 20px;
+  text-align: center;
 }
 
-/* Footer & Clerk Component */
-.sidebar-footer {
-  padding: 15px;
-  border-top: 1px solid #2e2e38;
-  background-color: #15151a;
+/* Animazione tattica all'hover: microindentazione verso destra */
+.tactical-menu-item:hover {
+  color: var(--tactical-text-gold);
+  background-color: var(--tactical-bg-timer);
+  transform: translateX(4px);
+}
+
+/* Voci specifiche amministratore */
+.tactical-menu-item.admin-item {
+  font-size: 13px;
+  color: var(--tactical-text-primary);
+}
+
+.tactical-menu-item.admin-item:hover {
+  background-color: rgba(198, 156, 109, 0.08);
+}
+
+/* ========================================== */
+/* FOOTER SIDEBAR (Integrazione Clerk)        */
+/* ========================================== */
+.sidebar-footer.tactical-sidebar-bottom {
+  padding: 16px;
+  border-top: 1px solid var(--tactical-border-gold);
+  background-color: var(--tactical-bg-main);
+  position: sticky;
+  bottom: 0;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .clerk-account-wrapper {
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
 }
 
-.clerk-label {
+.tactical-clerk-text {
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
-  color: #aaa;
-  font-weight: 500;
+  color: var(--tactical-text-secondary);
+  font-weight: 600;
+  transition: color 0.2s ease;
 }
 
-.clerk-account-wrapper:hover .clerk-label {
-  color: #fff;
+.clerk-account-wrapper:hover .tactical-clerk-text {
+  color: var(--tactical-text-gold);
 }

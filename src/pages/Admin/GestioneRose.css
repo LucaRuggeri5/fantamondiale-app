@@ -1,446 +1,417 @@
-.admin-rose-container {
-  padding: 16px;
-  max-width: 1300px;
+/* Container Principale ad Assetto Orizzontale */
+.tactical-rose-container {
+  max-width: 1250px;
   margin: 0 auto;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #e2e8f0;
-  -webkit-tap-highlight-color: transparent;
+  padding: 16px;
 }
 
-.admin-rose-loading {
+/* Spinner e Schermate di Attesa Servizi */
+.tactical-rose-loading {
   text-align: center;
-  padding-top: 45vh;
-  color: #a0aec0;
-  font-size: 16px;
-  letter-spacing: 0.5px;
+  padding-top: 40vh;
+  color: var(--tactical-text-secondary);
+  font-size: 15px;
+  font-weight: 500;
 }
 
-/* Loader per la query asincrona del mercato */
-.market-mini-loader {
+.tactical-market-async-loader {
   text-align: center;
   font-size: 13px;
-  color: #ff9100;
-  padding: 24px 0;
+  color: var(--tactical-accent-gold);
+  padding: 30px 0;
   font-style: italic;
 }
 
-/* Header ottimizzato per Mobile */
-.admin-rose-header {
+/* Header della Sede Federale */
+.tactical-rose-header {
   display: flex;
   align-items: center;
   gap: 16px;
-  margin-bottom: 16px;
-  border-bottom: 1px solid #2d3748;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--tactical-border-gold);
   padding-bottom: 14px;
 }
 
-.btn-back-rose {
-  background-color: #1a202c;
-  color: #a0aec0;
-  border: 1px solid #2d3748;
-  padding: 10px 16px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.admin-title-group h2 {
+.tactical-title-group h2 {
   margin: 0;
   font-size: 20px;
-  color: #ff9100;
-  font-weight: 700;
+  color: var(--tactical-text-gold);
+  font-weight: 800;
 }
 
-/* Selettore Squadre a pieno schermo largo sui telefoni */
-.squadra-select-box {
-  background-color: #1a202c;
+/* Box Selezione Unità Club */
+.tactical-select-club-box {
+  background-color: var(--tactical-bg-card);
   padding: 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-bottom: 16px;
-  border: 1px solid #2d3748;
+  gap: 8px;
+  margin-bottom: 20px;
+  border: 1px solid var(--tactical-border-gold);
 }
 
-.squadra-select-box label {
+.tactical-select-club-box label {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-weight: 700;
-  color: #a0aec0;
+  color: var(--tactical-text-secondary);
 }
 
-.admin-select {
-  background-color: #11141a;
-  border: 1px solid #2d3748;
-  padding: 14px 12px;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 15px;
+.tactical-select-input-suite {
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 12px;
+  border-radius: 6px;
+  color: var(--tactical-text-primary);
+  font-size: 14px;
   outline: none;
   cursor: pointer;
   width: 100%;
 }
 
-/* SISTEMA DI TAB MOBILE (Nascosto su Desktop) */
-.mobile-tabs-nav {
+/* BARRA DI NAVIGAZIONE TAB MOBILE (Nascosta su Desktop) */
+.tactical-mobile-tabs-nav {
   display: flex;
-  background-color: #11141a;
-  border: 1px solid #2d3748;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   padding: 4px;
-  border-radius: 10px;
+  border-radius: 8px;
   margin-bottom: 16px;
 }
 
-.tab-nav-btn {
+.tactical-tab-btn {
   flex: 1;
   background: none;
   border: none;
-  color: #718096;
-  padding: 12px 8px;
-  font-size: 14px;
+  color: var(--tactical-text-secondary);
+  padding: 12px 6px;
+  font-size: 13px;
   font-weight: 700;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
-.tab-nav-btn.active {
-  background-color: #ff9100;
-  color: #11141a;
+.tactical-tab-btn.active {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
 }
 
-/* Gestione visibilità Mobile-First delle colonne */
-.workspace-grid {
+/* Gestione Visibilità Condizionale Mobile-First delle Tabelle */
+.tactical-workspace-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
 }
 
-.workspace-column.hide-mobile {
+.tactical-column-card.hide-mobile {
   display: none;
 }
 
-.workspace-column.show-mobile {
+.tactical-column-card.show-mobile {
   display: block;
 }
 
-/* MEDIA QUERY: Riorganizzazione per Schermi Grandi (Desktop) */
+/* RESPONSIVE DESIGN: Ottimizzazione per Monitor/Laptop */
 @media (min-width: 950px) {
-  .admin-rose-container {
-    padding: 24px;
-  }
-  .admin-rose-header {
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-  }
-  .admin-title-group h2 {
-    font-size: 24px;
-  }
-  .mobile-tabs-nav {
+  .tactical-mobile-tabs-nav {
     display: none; 
   }
-  .workspace-grid {
+  .tactical-workspace-grid {
     grid-template-columns: 1.15fr 0.85fr;
-    gap: 24px;
+    gap: 20px;
     align-items: start;
   }
-  .workspace-column.hide-mobile,
-  .workspace-column.show-mobile {
+  .tactical-column-card.hide-mobile,
+  .tactical-column-card.show-mobile {
     display: block; 
   }
 }
 
-.workspace-column {
-  background-color: #1a202c;
-  border-radius: 12px;
-  border: 1px solid #2d3748;
+/* Card Contenitore Colonne */
+.tactical-column-card {
+  background-color: var(--tactical-bg-card);
+  border-radius: 8px;
+  border: 1px solid var(--tactical-border-gold);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.column-header {
+.tactical-column-card-header {
+  background-color: rgba(198, 156, 109, 0.05);
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--tactical-border-gold);
+}
+
+.tactical-column-card-header h3 {
+  margin: 0;
+  font-size: 14px;
+  color: var(--tactical-text-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tactical-space-between-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #222936;
-  padding: 14px 16px;
-  border-bottom: 1px solid #2d3748;
 }
 
-.column-header h3 {
-  margin: 0;
-  font-size: 15px;
-  color: #fff;
-  font-weight: 600;
+.tactical-global-badge-count {
+  font-size: 12px;
+  font-weight: 700;
+  background-color: rgba(198, 156, 109, 0.15);
+  color: var(--tactical-text-gold);
+  padding: 2px 8px;
+  border-radius: 12px;
 }
 
-
-
-.badge-count-rosa {
-  background-color: rgba(255, 145, 0, 0.15);
-  color: #ff9100;
-}
-
-/* Controlli di filtraggio fluidi e comodi al tocco */
-.filter-controls {
+/* Pannello dei Filtri Listone Mercato */
+.tactical-filter-panel {
   padding: 12px;
-  background-color: #1e2430;
-  border-bottom: 1px solid #2d3748;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-bottom: 1px solid var(--tactical-border-gold);
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.admin-search-input {
-  width: 100%;
-  background-color: #11141a;
-  border: 1px solid #2d3748;
-  padding: 12px;
-  padding-right: 36px;
-  border-radius: 8px;
-  color: white;
-  font-size: 14px;
-  outline: none;
-}
-
-.admin-search-input:focus {
-  border-color: #ff9100;
-}
-
-.search-wrapper {
+.tactical-search-input-wrapper {
   position: relative;
 }
 
-.clear-search-btn {
+.tactical-market-search {
+  width: 100%;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 10px 36px 10px 12px;
+  border-radius: 6px;
+  color: var(--tactical-text-primary);
+  font-size: 13px;
+  outline: none;
+}
+
+.tactical-clear-search {
   position: absolute;
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
   border: none;
-  color: #718096;
-  font-size: 20px;
+  color: var(--tactical-text-secondary);
+  font-size: 18px;
   cursor: pointer;
 }
 
-/* Pulsantiera Ruoli Mobile-First Stacked/Grid su schermi stretti */
-.role-btn-group {
+/* Selettori dei Ruoli */
+.tactical-role-grid-selector {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
 }
 
-.role-filter-btn {
-  background-color: #11141a;
-  border: 1px solid #2d3748;
-  color: #718096;
+.tactical-role-filter-tab {
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  color: var(--tactical-text-secondary);
   padding: 8px 4px;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   gap: 2px;
 }
 
-.role-letter {
+.role-main-letter {
   font-weight: 800;
   font-size: 14px;
 }
 
-.role-fraction {
+.role-sub-fraction {
   font-size: 10px;
-  font-weight: 500;
+  opacity: 0.8;
 }
 
-.role-filter-btn.P.active { background-color: #ffca28; color: #11141a; border-color: #ffca28; }
-.role-filter-btn.D.active { background-color: #00b0ff; color: #11141a; border-color: #00b0ff; }
-.role-filter-btn.C.active { background-color: #00e676; color: #11141a; border-color: #00e676; }
-.role-filter-btn.A.active { background-color: #ff5252; color: #11141a; border-color: #ff5252; }
+/* Attivazioni Cromatiche Morbide per la Sezione Ruoli */
+.tactical-role-filter-tab.P.active { background-color: #ffca28; color: #000; border-color: #4a5759; }
+.tactical-role-filter-tab.D.active { background-color: #00b0ff; color: #000; border-color: #4a5759; }
+.tactical-role-filter-tab.C.active { background-color: #00e676; color: #000; border-color: #4a5759; }
+.tactical-role-filter-tab.A.active { background-color: #ff1744; color: #000; border-color: #4a5759; }
 
-/* Liste ad altezza fissa tarate in Viewport Height */
-.admin-players-list {
+/* Liste ad Altezza Fissa Dedicata */
+.tactical-scrollable-pool {
+  padding: 8px;
   display: flex;
   flex-direction: column;
-  padding: 8px;
   gap: 8px;
-}
-
-.admin-players-list.scrollable {
-  height: 55vh;
-  min-height: 350px;
+  height: 52vh;
+  min-height: 380px;
   overflow-y: auto;
 }
 
-.admin-players-list.scrollable-rosa {
-  height: 55vh;
-  min-height: 350px;
-  overflow-y: auto;
-}
-
-/* Card Giocatori */
-.player-admin-card {
-  background-color: #11141a;
-  padding: 12px;
-  border-radius: 10px;
+/* Righe e Card Giocatori */
+.tactical-market-row-item {
+  background-color: var(--tactical-bg-main);
+  padding: 10px 12px;
+  border-radius: 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #2d3748;
+  border: 1px solid var(--tactical-border-gold);
 }
 
-.player-admin-card.disabled-item {
-  opacity: 0.3;
-  background-color: #0b0d12;
+.tactical-market-row-item.item-locked {
+  opacity: 0.35;
+  background-color: rgba(0, 0, 0, 0.2);
 }
 
-.player-info-side {
+.tactical-player-core-side {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.player-meta {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-/* Allineamento riga bandiera + nome */
-.player-name-row {
+.tactical-player-identity {
   display: flex;
   align-items: center;
 }
 
-.admin-flag {
-  font-size: 16px;
-  display: inline-flex;
-  align-items: center;
-}
-
-.player-name-txt, .player-name-txt-white {
+.tactical-flag-margin {
+  margin-right: 8px;
   font-size: 14px;
-  font-weight: 600;
-  line-height: 1.2;
 }
-.player-name-txt { color: #cbd5e0; }
-.player-name-txt-white { color: #ffffff; }
 
-/* Chips Riepilogo Rosa */
-.team-roles-summary {
+.tactical-player-fullname {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--tactical-text-secondary);
+}
+
+.tactical-player-fullname.primary-white {
+  color: var(--tactical-text-primary);
+}
+
+/* Barra chips riepilogo orizzontale della rosa attuale */
+.tactical-horizontal-summary-bar {
   display: flex;
   gap: 6px;
   padding: 10px 12px;
-  background-color: #1e2430;
-  border-bottom: 1px solid #2d3748;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid var(--tactical-border-gold);
 }
 
-.summary-chip {
+.tactical-summary-chip-item {
   flex: 1;
   text-align: center;
-  padding: 8px 4px;
-  border-radius: 6px;
+  padding: 6px 2px;
+  border-radius: 4px;
   font-size: 11px;
-  color: #11141a;
-  font-weight: bold;
-  border: 1px solid transparent;
+  font-weight: 700;
+  background-color: rgba(255, 255, 255, 0.02);
+  color: var(--tactical-text-secondary);
+  border: 1px solid var(--tactical-border-gold);
 }
 
-.summary-chip.P { background-color: rgba(255, 202, 40, 0.08); color: #ffca28; border-color: rgba(255, 202, 40, 0.15); }
-.summary-chip.D { background-color: rgba(0, 176, 255, 0.08); color: #00b0ff; border-color: rgba(0, 176, 255, 0.15); }
-.summary-chip.C { background-color: rgba(0, 230, 118, 0.08); color: #00e676; border-color: rgba(0, 230, 118, 0.15); }
-.summary-chip.A { background-color: rgba(255, 82, 82, 0.08); color: #ff5252; border-color: rgba(255, 82, 82, 0.15); }
+.tactical-summary-chip-item.is-filled {
+  background-color: rgba(198, 156, 109, 0.15);
+  color: var(--tactical-text-gold);
+}
 
-.summary-chip.P.full { background-color: #ffca28; color: #11141a; }
-.summary-chip.D.full { background-color: #00b0ff; color: #11141a; }
-.summary-chip.C.full { background-color: #00e676; color: #11141a; }
-.summary-chip.A.full { background-color: #ff5252; color: #11141a; }
-
-/* Badge Ruoli */
-.role-indicator {
+/* Indicatori e Distintivi Ruolo */
+.tactical-badge-role-indicator {
   display: inline-block;
-  width: 24px;
-  height: 24px;
-  line-height: 24px;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
   text-align: center;
   font-size: 11px;
   font-weight: 800;
-  border-radius: 6px;
-  color: #11141a;
+  border-radius: 4px;
+  color: #000;
 }
-.role-indicator.P { background-color: #ffca28; }
-.role-indicator.D { background-color: #00b0ff; }
-.role-indicator.C { background-color: #00e676; }
-.role-indicator.A { background-color: #ff5252; color: #11141a; }
+.tactical-badge-role-indicator.P { background-color: #ffca28 }
+.tactical-badge-role-indicator.D { background-color: #00b0ff; }
+.tactical-badge-role-indicator.C { background-color: #00e676; }
+.tactical-badge-role-indicator.A { background-color: #ff1744; }
 
-/* Pulsanti Azione generosi per le dita */
-.btn-admin-action {
+/* Pulsanti D'Ingaggio e Licenziamento Atleti */
+.tactical-action-btn-trigger {
   border: none;
-  padding: 10px 14px;
-  border-radius: 8px;
+  padding: 8px 12px;
+  border-radius: 4px;
   font-weight: 700;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.btn-admin-action.add {
-  background-color: #00e676;
-  color: #11141a;
-}
-
-.btn-admin-action.delete {
-  background-color: rgba(255, 82, 82, 0.12);
-  color: #ff5252;
-  border: 1px solid rgba(255, 82, 82, 0.25);
-}
-
-.status-occupied {
   font-size: 12px;
-  color: #4a5568;
+  cursor: pointer;
+  text-transform: uppercase;
 }
 
-.status-limit-reached {
+.tactical-action-btn-trigger.add {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+}
+
+.tactical-action-btn-trigger.remove {
+  background-color: transparent;
+  color: var(--tactical-highlight-penalty);
+  border: 1px solid rgba(211, 47, 47, 0.3);
+}
+
+.tactical-action-btn-trigger.remove:hover {
+  background-color: rgba(211, 47, 47, 0.05);
+}
+
+/* Stati Bloccati / Limiti Raggiunti */
+.tactical-status-tag {
   font-size: 11px;
-  color: #e53e3e;
-  background-color: rgba(229, 62, 62, 0.12);
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-weight: 700;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
 }
 
-/* Stati segnaposto */
-.empty-notice {
-  font-size: 13px;
-  color: #718096;
-  text-align: center;
-  padding: 20px 0;
+.tactical-status-tag.locked {
+  color: var(--tactical-text-secondary);
+  background-color: rgba(255, 255, 255, 0.05);
 }
 
-.empty-notice-box {
-  padding: 30px 10px;
-  text-align: center;
+.tactical-status-tag.capped {
+  color: var(--tactical-highlight-penalty);
+  background-color: rgba(211, 47, 47, 0.08);
 }
 
-.select-squadra-placeholder {
+/* Messaggi e Schermate di Avviso Vuote */
+.tactical-empty-notice-txt {
+  font-size: 12px;
+  color: var(--tactical-text-secondary);
   text-align: center;
+  padding: 24px 0;
+}
+
+.tactical-empty-placeholder-box {
   padding: 40px 16px;
-  background-color: #1a202c;
-  border-radius: 12px;
-  border: 1px dashed #2d3748;
-  color: #718096;
+  text-align: center;
+  font-size: 13px;
+  color: var(--tactical-text-secondary);
+  line-height: 1.5;
 }
 
-.placeholder-icon {
-  font-size: 32px;
-  margin-bottom: 8px;
+.tactical-unselected-placeholder-screen {
+  text-align: center;
+  padding: 60px 16px;
+  background-color: var(--tactical-bg-card);
+  border-radius: 8px;
+  border: 1px dashed var(--tactical-border-gold);
+  color: var(--tactical-text-secondary);
 }
 
-.select-squadra-placeholder h3 {
-  color: #cbd5e0;
-  margin: 0 0 4px 0;
+.tactical-placeholder-glyph {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.tactical-unselected-placeholder-screen h3 {
+  color: var(--tactical-text-primary);
+  margin: 0 0 6px 0;
   font-size: 16px;
 }

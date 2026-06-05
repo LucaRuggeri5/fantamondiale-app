@@ -9,6 +9,7 @@ const InserisciVoti = () => {
   const { user } = useUser();
   const navigate = useNavigate();
 
+  // Stati per la gestione dei dati e caricamenti
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [giornataInfo, setGiornataInfo] = useState(null);
@@ -16,7 +17,7 @@ const InserisciVoti = () => {
   const [calciatoriList, setCalciatoriList] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  // Genera le opzioni del voto da 0 a 10 con passi di 0.5
+  // Genera i voti disponibili da 10 a 0 scendendo di 0.5
   const opzioniVoto = useMemo(() => {
     const voti = [];
     for (let i = 10; i >= 0; i -= 0.5) {
@@ -25,15 +26,18 @@ const InserisciVoti = () => {
     return voti;
   }, []);
 
+  // Effetto principale per caricare i dati della giornata e della formazione del fantallenatore
   useEffect(() => {
     const caricaDatiVoti = async () => {
       try {
         setLoading(true);
         if (!user || !giornataId) return;
 
+        // Recuperiamo le info della giornata corrente
         const { data: gioData } = await supabase.from('giornate').select('*').eq('id', giornataId).single();
         setGiornataInfo(gioData);
 
+        // Controllo scadenze temporali
         const adesso = new Date();
         if (adesso < new Date(gioData.scadenza_formazione) || adesso >= new Date(gioData.scadenza_voti)) {
           alert(adesso < new Date(gioData.scadenza_formazione) ? "Il turno non è ancora chiuso." : "I termini sono scaduti.");
@@ -41,9 +45,11 @@ const InserisciVoti = () => {
           return;
         }
 
+        // Recuperiamo la squadra dell'utente loggato
         const { data: utente } = await supabase.from('utenti').select('squadra_id').eq('id', user.id).single();
         if (!utente?.squadra_id) return navigate('/dashboard');
 
+        // Controlliamo se esiste una formazione inviata
         const { data: form } = await supabase.from('formazioni').select('id').eq('giornata_id', giornataId).eq('squadra_id', utente.squadra_id).maybeSingle();
         if (!form) {
           alert("Nessuna formazione schierata.");
@@ -51,10 +57,12 @@ const InserisciVoti = () => {
         }
         setFormazioneId(form.id);
 
+        // Scarichiamo la lista dei calciatori in formazione
         const { data: fcData } = await supabase.from('formazioni_calciatori').select(`
           id, posizione, ruolo, calciatore_id, voto_base, bonus_malus, voto_fanta, calciatori_reali!calciatore_id (id, nome)
         `).eq('formazione_id', form.id).order('posizione', { ascending: true });
 
+        // Mappiamo i dati impostando valori di default adatti a un Junior Dev
         setCalciatoriList(fcData.map(fc => {
           const infoC = Array.isArray(fc.calciatori_reali) ? fc.calciatori_reali[0] : fc.calciatori_reali;
           return {
@@ -63,14 +71,14 @@ const InserisciVoti = () => {
             posizione: fc.posizione,
             ruolo: fc.ruolo,
             nome: infoC?.nome || 'Calciatore Sconosciuto',
-            voto_base: fc.voto_base != null ? fc.voto_base.toString() : '6', // Preimpostato a 6 se vuoto
+            voto_base: fc.voto_base != null ? fc.voto_base.toString() : '6', // Default a 6
             bonus_malus: fc.bonus_malus != null ? fc.bonus_malus.toString() : '0',
             voto_fanta: fc.voto_fanta || 6,
             senzaVoto: fc.voto_base == null
           };
         }));
       } catch (err) {
-        console.error(err);
+        console.error("Errore nel caricamento dei dati: ", err);
       } finally {
         setLoading(false);
       }
@@ -78,13 +86,15 @@ const InserisciVoti = () => {
     caricaDatiVoti();
   }, [user, giornataId, navigate]);
 
-  // Motore di calcolo delle sostituzioni e dei punteggi live
+  // Calcolo automatico delle sostituzioni e dei totali di giornata
   const calcoloRisultato = useMemo(() => {
     let sost = 0;
     let totale = 0;
     const conteggiati = [];
+    // Separiamo i panchinari per gestire i subentri
     const panchina = calciatoriList.filter(c => c.posizione > 11).map(p => ({ ...p, utilizzato: false }));
 
+    // Analizziamo gli 11 titolari
     calciatoriList.filter(c => c.posizione <= 11).forEach(t => {
       const baseNum = parseFloat(t.voto_base);
       if (!t.senzaVoto && !isNaN(baseNum)) {
@@ -98,7 +108,7 @@ const InserisciVoti = () => {
         });
         totale += fanta;
       } else {
-        // Cerca sostituto dello stesso ruolo in panchina non ancora utilizzato e con voto valido
+        // Logica sostituzione: max 4 cambi, stesso ruolo, deve avere un voto valido
         const sub = sost < 4 && panchina.find(p => p.ruolo === t.ruolo && !p.utilizzato && !p.senzaVoto && !isNaN(parseFloat(p.voto_base)));
         if (sub) {
           sub.utilizzato = true; 
@@ -114,6 +124,7 @@ const InserisciVoti = () => {
           });
           totale += fanta;
         } else {
+          // Se non ci sono panchinari disponibili, il giocatore prende 0 (Malus)
           conteggiati.push({ 
             nome: t.nome, 
             ruolo: t.ruolo, 
@@ -129,6 +140,7 @@ const InserisciVoti = () => {
     return { totaleSquadra: totale, sostituzioniEffettuate: sost, giocatoriConteggiati: conteggiati };
   }, [calciatoriList]);
 
+  // Funzione per aggiornare i voti nello stato locale
   const updateGiocatore = (id, campi) => {
     setCalciatoriList(prev => prev.map(c => {
       if (c.id_relazione !== id) return c;
@@ -148,6 +160,7 @@ const InserisciVoti = () => {
     }));
   };
 
+  // Funzione per salvare tutti i dati su Supabase
   const handleSalvaTuttiVoti = async () => {
     try {
       setSaving(true);
@@ -174,30 +187,31 @@ const InserisciVoti = () => {
     }
   };
 
+  // Renderizzatore della singola riga giocatore
   const renderRow = (c, isRiserva = false) => (
     <div key={c.id_relazione} className={`voti-player-card ${isRiserva ? 'riserva' : ''} ${c.senzaVoto ? 'player-sv' : ''}`}>
       <div className="player-main-info">
         <div className="player-meta-side">
-          <span className={`role-indicator-voti ${c.ruolo}`}>{c.ruolo}</span>
+          <span className={`role-indicator-voti role-${c.ruolo}`}>{c.ruolo}</span>
           <strong className="voti-player-name">{c.nome}</strong>
-          {isRiserva && <span className="panchina-order">Pan. #{c.posizione - 11}</span>}
+          {isRiserva && <span className="panchina-order">PAN # {c.posizione - 11}</span>}
         </div>
-        <div className={`tot-display-badge ${c.senzaVoto ? 'sv' : ''}`}>
+        <div className={`tot-display-badge ${c.senzaVoto ? 'sv' : ''} ${c.voto_fanta >= 7 ? 'high-score' : ''}`}>
           {c.senzaVoto ? 'S.V.' : c.voto_fanta.toFixed(1)}
         </div>
       </div>
 
       <div className="voti-controls-grid">
-        {/* Switch S.V. */}
+        {/* Bottone Senza Voto */}
         <button 
           type="button"
           className={`btn-toggle-sv ${c.senzaVoto ? 'active' : ''}`}
           onClick={() => updateGiocatore(c.id_relazione, { senzaVoto: !c.senzaVoto })}
         >
-          {c.senzaVoto ? '✓ Senza Voto' : 'Imposta S.V.'}
+          {c.senzaVoto ? '✓ S.V.' : 'Imposta S.V.'}
         </button>
 
-        {/* Menu a Tendina Voto Base */}
+        {/* Dropdown Voto Base */}
         <div className="select-container-voto">
           <select
             value={c.senzaVoto ? '' : c.voto_base}
@@ -212,7 +226,7 @@ const InserisciVoti = () => {
           </select>
         </div>
 
-        {/* Pulsantiera Incrementale Rapida per Bonus/Malus */}
+        {/* Stepper Incrementale per Bonus e Malus */}
         <div className="bonus-stepper-control">
           <button 
             type="button"
@@ -237,63 +251,67 @@ const InserisciVoti = () => {
     </div>
   );
 
+  if (loading) {
+    return <div className="voti-loading">Caricamento Mappa Tattica...</div>;
+  }
+
   return (
     <div className="voti-page-container">
-      {/* Intestazione */}
+      {/* Intestazione Tattica */}
       <div className="voti-header">
         <button className="btn-back-voti" onClick={() => navigate('/dashboard')}>
           ← Indietro
         </button>
         <div className="voti-title-group">
-          <h2>Giornata {giornataInfo?.numero_giornata}</h2>
+          <h2>VOTI GIORNATA {giornataInfo?.numero_giornata}</h2>
         </div>
       </div>
 
       <div className="voti-main-layout">
-        {/* COLONNA INPUT GIOCATORI */}
+        {/* Colonna di Input dei Calciatori */}
         <div className="voti-inputs-column">
           <div className="voti-section-box">
-            <div className="section-title-bar">Titolari</div>
+            <div className="section-title-bar">TITOLARI SCHIERATI</div>
             <div className="cards-stack">
               {calciatoriList.filter(c => c.posizione <= 11).map(c => renderRow(c))}
             </div>
           </div>
           
           <div className="voti-section-box">
-            <div className="section-title-bar warning">Panchina</div>
+            <div className="section-title-bar riserve-bar">LINEA DI PANCHINA</div>
             <div className="cards-stack">
               {calciatoriList.filter(c => c.posizione > 11).map(c => renderRow(c, true))}
             </div>
           </div>
         </div>
 
-        {/* SIDEBAR DESKTOP / DRAWER MOBILE (Riepilogo Compatto Senza Scrolling) */}
+        {/* Sidebar Riepilogativa (Desktop ed espansione Mobile) */}
         <div className={`voti-summary-column ${isDrawerOpen ? 'drawer-open' : ''}`}>
           <div className="voti-drawer-backdrop" onClick={() => setIsDrawerOpen(false)}></div>
           <div className="summary-sticky-card">
             <div className="drawer-header-mobile">
-              <h3>Riepilogo Calcolo Live</h3>
+              <h3>PROIEZIONE LIVE SQUADRA</h3>
               <button className="close-drawer-btn" onClick={() => setIsDrawerOpen(false)}>✕</button>
             </div>
             
             <div className="score-main-display">
-              <span className="score-label">PROIEZIONE PUNTEGGIO SQUADRA</span>
+              <span className="score-label">PUNTEGGIO TOTALE LIVE</span>
               <span className="score-number-value">{calcoloRisultato.totaleSquadra.toFixed(1)}</span>
             </div>
 
             <div className="sub-row-summary">
               <span>Sostituzioni Effettuate:</span>
               <span className={`sub-badge ${calcoloRisultato.sostituzioniEffettuate > 0 ? 'active' : ''}`}>
-                {calcoloRisultato.sostituzioniEffettuate} di 4
+                {calcoloRisultato.sostituzioniEffettuate} / 4
               </span>
             </div>
 
-            {/* Listato Ottimizzato ad un'unica schermata */}
+            {/* Listato compatto dei calcoli effettuati */}
             <div className="components-clean-list">
               {calcoloRisultato.giocatoriConteggiati.map((gc, i) => (
                 <div key={i} className={`component-item-row ${gc.isSub ? 'is-substituted' : ''} ${gc.isMalus ? 'is-empty-malus' : ''}`}>
                   <div className="comp-left-info">
-                    <span className={`mini-role ${gc.ruolo}`}>{gc.ruolo}</span>
+                    <span className={`mini-role role-${gc.ruolo}`}>{gc.ruolo}</span>
                     <div className="comp-name-details">
                       <span className="comp-player-name">{gc.nome}</span>
                       <small className="comp-type-label">{gc.tipo}</small>
@@ -312,24 +330,24 @@ const InserisciVoti = () => {
               onClick={handleSalvaTuttiVoti} 
               disabled={saving}
             >
-              {saving ? 'Salvataggio...' : '💾 Salva Voti Formazione'}
+              {saving ? 'SALVATAGGIO...' : '💾 SALVA VOTI FORMICAZIONE'}
             </button>
           </div>
         </div>
       </div>
 
-      {/* FOOTER BAR NAVIGATION MOBILE */}
+      {/* Control Bar per visualizzazione Mobile */}
       <div className="mobile-action-bar">
         <div className="m-bar-info">
-          <span>Live Punti</span>
+          <span>Punti Live</span>
           <strong>{calcoloRisultato.totaleSquadra.toFixed(1)}</strong>
         </div>
         <div className="m-bar-buttons">
           <button className="btn-m-secondary" onClick={() => setIsDrawerOpen(true)}>
-            Vedi Riepilogo 📋
+            RIEPILOGO
           </button>
           <button className="btn-m-primary" onClick={handleSalvaTuttiVoti} disabled={saving}>
-            {saving ? '...' : '💾 Salva'}
+            {saving ? '...' : '💾 SALVA'}
           </button>
         </div>
       </div>

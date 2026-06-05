@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importato
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import './Squadre.css';
 
 const Squadre = () => {
   const { user } = useUser();
-  const navigate = useNavigate(); // Inizializzato
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [groupedSquadre, setGroupedSquadre] = useState([]); 
 
@@ -36,14 +36,13 @@ const Squadre = () => {
 
         const squadreMap = {};
         iscritti.forEach(iscritto => {
-          // Identificatore temporaneo se non ha ancora scelto o creato il team
           const haSquadra = !!iscritto.squadra_id;
           const sqId = haSquadra ? iscritto.squadra_id : 'no-team-' + iscritto.nome_utente;
           const sqNome = iscritto.squadre?.nome || "In attesa di creazione...";
 
           if (!squadreMap[sqId]) {
             squadreMap[sqId] = {
-              id: haSquadra ? iscritto.squadra_id : null, // null serve per bloccare il click
+              id: haSquadra ? iscritto.squadra_id : null,
               nome: sqNome,
               allenatori: []
             };
@@ -67,7 +66,6 @@ const Squadre = () => {
     loadSquadreData();
   }, [user]);
 
-  // Gestione del reindirizzamento al dettaglio
   const handleSquadraClick = (id) => {
     if (!id) {
       alert("Questa squadra non è ancora stata fondata o associata!");
@@ -85,9 +83,9 @@ const Squadre = () => {
   }
 
   return (
-    <div className="squadre-page-container">
+    <div className="squadre-page-container tactical-dashboard-gap">
       <div className="participants-section">
-        <h3>Squadre nella Lega 🏆</h3>
+        <h3 className="tactical-page-title">Squadre nella Lega 🏆</h3>
         <p className="section-subtitle">
           Seleziona un club partecipante per visualizzarne la rosa completa di calciatori reali.
         </p>
@@ -96,7 +94,7 @@ const Squadre = () => {
           {groupedSquadre.map((squadra, idx) => (
             <div 
               key={idx} 
-              className={`participant-card ${squadra.id ? 'clickable' : 'disabled'}`}
+              className={`participant-card tactical-card ${squadra.id ? 'clickable' : 'disabled'}`}
               onClick={() => handleSquadraClick(squadra.id)}
             >
               <div className="avatar-placeholder">🛡️</div>

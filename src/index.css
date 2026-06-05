@@ -1,20 +1,94 @@
-/* Reset di base per azzerare i margini nativi dei browser */
+/* Importazione dei font consigliati per massima precisione tattica */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@500;600;700;800&display=swap');
+
+:root {
+  /* ========================================== */
+  /* MODALITÀ NOTTE (Default - Tactical Suite)  */
+  /* ========================================== */
+  --tactical-bg-main: #1c1c1c;           /* Antracite profondo con texture pelle */
+  --tactical-bg-card: #2a2a2a;           /* Contenitori leggermente più chiari */
+  --tactical-accent-gold: #c69c6d;       /* Oro spazzolato / Ottone opaco */
+  --tactical-border-gold: #4a3e30;       /* Bordo oro brunito e discreto */
+  --tactical-highlight-points: #ffb800;  /* Oro vivo per i punteggi alti */
+  --tactical-highlight-penalty: #ff0000; /* Rosso bordeaux per le penalità */
+  --tactical-bg-timer: #3c3c3c;          /* Grigio fango scuro per i contatori */
+
+  /* Testo Notte */
+  --tactical-text-primary: #f0f0f0;      /* Crema chiaro per massima leggibilità */
+  --tactical-text-secondary: #999999;    /* Grigio fumo per etichette e dettagli */
+  --tactical-text-gold: #c69c6d;         /* Oro per link o testo speciale */
+  --tactical-text-on-button: #1c1c1c;    /* Testo scuro sopra i bottoni oro solidi */
+  
+  /* Filtro Mappa Tattica */
+  --tactical-map-opacity: 0.07;          /* Mappa quasi fusa nello sfondo scuro */
+
+  /* Manteniamo le variabili del bottone toggle integrate nel tema */
+  --toggle-bg-hover: rgba(255, 255, 255, 0.08);
+  --toggle-icon-color: #ffb74d;
+  --ripple-x: 90%;
+  --ripple-y: 27px;
+}
+
+/* Sincronizzato con il meccanismo di switch di App.jsx */
+body[data-theme="light"] {
+  /* ========================================== */
+  /* MODALITÀ GIORNO                           */
+  /* ========================================== */
+  --tactical-bg-main: #f4edd9;           /* Color pergamena/crema caldo ricca */
+  --tactical-bg-card: #eae2cc;           /* Contenitori leggermente più scuri/caldi */
+  --tactical-accent-gold: #a67c52;       /* Bronzo/Ottone più saturo per contrasto */
+  --tactical-border-gold: #c2b69d;       /* Bordo morbido color sabbia/oro */
+  --tactical-highlight-points: #b87d00;  /* Oro antico scuro per i punteggi */
+  --tactical-highlight-penalty: #800000; /* Rosso mattone editoriale per le penalità */
+  --tactical-bg-timer: #dfd5be;          /* Beige scuro per i contatori */
+
+  /* Testo Giorno */
+  --tactical-text-primary: #2b261f;      /* Marrone/Antracite caldissimo */
+  --tactical-text-secondary: #7a7060;    /* Seppia/Grigio terra per le scritte secondarie */
+  --tactical-text-gold: #8c6239;         /* Cuoio/Oro brunito per elementi cliccabili */
+  --tactical-text-on-button: #ffffff;    /* Testo bianco sui bottoni scuri/bronzo */
+
+  /* Filtro Mappa Tattica */
+  --tactical-map-opacity: 0.12;          /* Più visibile sulla carta chiara */
+
+  /* Variabili del bottone toggle per modalità giorno */
+  --toggle-bg-hover: rgba(0, 0, 0, 0.05);
+  --toggle-icon-color: #5c6bc0;
+}
+
+/* Reset Globale Mobile-First */
 * {
   margin: 0;
   padding: 0;
   box-shadow: none;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent; /* Elimina il flash blu al tocco su mobile */
 }
 
 body {
-  background-color: #121214;
-  color: #ffffff;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--tactical-bg-main);
+  color: var(--tactical-text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease;
 }
 
-/* Stile minimale per i link e i bottoni generici */
-button {
+/* Tipografia e normalizzazione elementi generici */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+}
+
+button, input, select, textarea {
   font-family: inherit;
+  background: none;
+  border: none;
+  color: inherit;
+}
+
+a {
+  color: var(--tactical-text-gold);
+  text-decoration: none;
 }

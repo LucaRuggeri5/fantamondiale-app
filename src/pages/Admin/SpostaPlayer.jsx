@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importato per gestire il ritorno
+import { useNavigate } from 'react-router-dom'; // Gestisce il reindirizzamento tra moduli
 import { supabase } from '../../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import './SpostaPlayer.css';
 
 const SpostaPlayer = () => {
   const { user } = useUser();
-  const navigate = useNavigate(); // Inizializzazione dell'hook di navigazione
+  const navigate = useNavigate(); // Hook di navigazione della plancia
   const [loading, setLoading] = useState(true);
   const [utentiLega, setUtentiLega] = useState([]);
   const [squadreLega, setSquadreLega] = useState([]);
@@ -17,6 +17,7 @@ const SpostaPlayer = () => {
       setLoading(true);
       if (!user) return;
 
+      // Recupera i dati dell'amministratore per estrarre il lega_id di competenza
       const { data: curAdmin, error: aErr } = await supabase
         .from('utenti')
         .select('*')
@@ -26,7 +27,7 @@ const SpostaPlayer = () => {
       setAdminContext(curAdmin);
 
       if (curAdmin.lega_id) {
-        // 1. Recupera tutti gli utenti della lega
+        // 1. Recupera tutti gli iscritti associati alla stessa lega
         const { data: iscritti, error: iErr } = await supabase
           .from('utenti')
           .select('*')
@@ -35,7 +36,7 @@ const SpostaPlayer = () => {
         if (iErr) throw iErr;
         setUtentiLega(iscritti || []);
 
-        // 2. Recupera tutte le squadre registrate in questa lega
+        // 2. Recupera tutti i club registrati all'interno della medesima lega
         const { data: club, error: cErr } = await supabase
           .from('squadre')
           .select('*')
@@ -55,7 +56,9 @@ const SpostaPlayer = () => {
     loadSpostaData();
   }, [user]);
 
+  // Gestione del cambio di club dal menu a tendina
   const handleTeamChange = async (utenteId, nuovaSquadraId) => {
+    // Se viene scelta la stringa vuota, l'utente viene impostato a null (svincolato)
     const valoreSquadra = nuovaSquadraId === "" ? null : nuovaSquadraId;
 
     try {
@@ -66,6 +69,7 @@ const SpostaPlayer = () => {
 
       if (error) throw error;
 
+      // Sincronizzazione immediata dello stato locale per evitare refresh di pagina
       setUtentiLega(prev => prev.map(u => u.id === utenteId ? { ...u, squadra_id: valoreSquadra } : u));
     } catch (err) {
       console.error(err);
@@ -73,41 +77,51 @@ const SpostaPlayer = () => {
     }
   };
 
-  if (loading) return <div className="sposta-loading">Preparazione spogliatoi e rose... ⚽</div>;
+  if (loading) {
+    return <div className="tactical-sposta-loading">Preparazione spogliatoi e rose... ⚽</div>;
+  }
 
   return (
-    <div className="sposta-page-container">
-      <div className="sposta-header">
-        <div className="sposta-header-title-container">
-          <button className="btn-back-sposta" onClick={() => navigate('/dashboard')}>
+    <div className="tactical-app-container tactical-sposta-page">
+      {/* Intestazione di Sezione */}
+      <div className="tactical-sposta-header">
+        <div className="tactical-sposta-title-wrapper">
+          <button className="tactical-btn-back" onClick={() => navigate('/dashboard')}>
             ⬅️ Indietro
           </button>
-          <h2>Sposta Player di Squadra ⚽</h2>
+          <h2 className="tactical-brand">Sposta Player di Squadra</h2>
         </div>
-        <p className="sposta-subtitle">Assegna i fantallenatori della lega al rispettivo club o rimuovili per lasciarli svincolati.</p>
+        <p className="tactical-sposta-subtitle">
+          Assegna i fantallenatori della lega al rispettivo club o rimuovili.
+        </p>
       </div>
 
-      <div className="sposta-list">
+      {/* Lista di Trasferimento Fantallenatori */}
+      <div className="tactical-sposta-list">
         {utentiLega.map((ut) => (
-          <div key={ut.id} className="player-transfer-card">
-            <div className="transfer-meta">
+          <div key={ut.id} className="tactical-player-transfer-card">
+            
+            {/* Metadati Anagrafici Player */}
+            <div className="tactical-transfer-meta">
               <h4>{ut.nome_utente}</h4>
-              <span className="transfer-email">{ut.email}</span>
+              <span className="tactical-transfer-email">{ut.email}</span>
             </div>
 
-            <div className="transfer-select-wrapper">
-              <label>Club Associato:</label>
+            {/* Menu Dropdown Selettore Club */}
+            <div className="tactical-transfer-select-wrapper">
+              <label>Club Associato</label>
               <select
                 value={ut.squadra_id || ""}
                 onChange={(e) => handleTeamChange(ut.id, e.target.value)}
-                className="select-transfer-dropdown"
+                className="tactical-select-transfer-dropdown"
               >
                 <option value="">-- Svincolato / Nessuna squadra --</option>
                 {squadreLega.map(sq => (
-                  <option key={sq.id} value={sq.id}>🛡️ {sq.nome}</option>
+                  <option key={sq.id} value={sq.id}>{sq.nome}</option>
                 ))}
               </select>
             </div>
+
           </div>
         ))}
       </div>

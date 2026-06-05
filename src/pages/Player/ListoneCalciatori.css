@@ -1,286 +1,322 @@
-.player-page-container {
-  padding: 14px;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #fff;
+/* Layout Principale della Pagina Listone */
+.tactical-listone-page {
+  padding: 24px 16px;
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
-/* Stile per il pulsante Torna Indietro */
-.listone-back-btn {
-  background: transparent;
-  border: none;
-  color: #a0aec0;
-  font-size: 13px;
-  font-weight: 600;
+/* Header Superiore e Pulsante di Ritorno */
+.tactical-listone-header-section {
+  margin-bottom: 20px;
+}
+
+.tactical-listone-back-btn {
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  padding: 4px 0;
-  margin-bottom: 12px;
-  transition: color 0.2s ease, transform 0.2s ease;
-}
-
-.listone-back-btn:hover {
-  color: #20bf6b; 
-  transform: translateX(-2px);
-}
-
-.player-page-header {
+  transition: all 0.2s ease;
   margin-bottom: 16px;
 }
 
-.player-page-header h2 {
+.tactical-listone-back-btn:hover {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+  transform: translateX(-3px);
+}
+
+.tactical-listone-header .tactical-brand {
   margin: 0 0 4px 0;
-  font-size: 22px;
-  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--tactical-text-primary);
 }
 
-.player-page-subtitle {
-  color: #aaa;
-  font-size: 12px;
+.tactical-listone-subtitle {
+  font-family: 'Inter', sans-serif;
+  color: var(--tactical-text-secondary);
+  font-size: 13px;
   margin: 0;
+  line-height: 1.5;
 }
 
-.player-loading {
+/* Sincronizzazione Database Loader */
+.tactical-listone-loading {
   text-align: center;
-  padding-top: 40vh;
-  color: #888;
+  padding-top: 45vh;
+  color: var(--tactical-text-secondary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   font-size: 14px;
 }
 
-.listone-filtri-box {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
+/* BOX FILTRI DI RICERCA COMPATTO */
+.tactical-listone-filtri-box {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   border-radius: 8px;
-  padding: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 12px;
 }
 
-.search-calciatore-input {
-  background-color: #121214;
-  border: 1px solid #2e2e38;
-  padding: 10px;
+.tactical-search-calciatore-input {
+  width: 100%;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 12px;
   border-radius: 6px;
-  color: #fff;
-  font-size: 13px;
+  color: var(--tactical-text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
   outline: none;
+  transition: border-color 0.2s;
 }
 
-.search-calciatore-input:focus {
-  border-color: #04C869;
+.tactical-search-calciatore-input:focus {
+  border-color: var(--tactical-accent-gold);
 }
 
-.ruolo-filter-row {
+/* Pulsanti Filtro Ruolo */
+.tactical-ruolo-filter-row {
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
-.filter-role-btn {
+.tactical-filter-role-btn {
   flex: 1;
-  background-color: #121214;
-  border: 1px solid #2e2e38;
-  color: #aaa;
-  padding: 8px 0;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  color: var(--tactical-text-secondary);
+  padding: 10px 0;
   border-radius: 6px;
-  font-size: 12px;
-  font-weight: bold;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12.5px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s;
 }
 
-.filter-role-btn.active.TUTTI { background-color: #2e2e38; color: #fff; border-color: #aaa; }
-.filter-role-btn.active.P { background-color: #ffca28; color: #121214; border-color: #ffca28; }
-.filter-role-btn.active.D { background-color: #00b0ff; color: #fff; border-color: #00b0ff; }
-.filter-role-btn.active.C { background-color: #00e676; color: #121214; border-color: #00e676; }
-.filter-role-btn.active.A { background-color: #ff1744; color: #fff; border-color: #ff1744; }
+/* Stati Attivi Uniformati per Ruolo (Valori d'impatto storici del Fantacalcio) */
+.tactical-filter-role-btn.is-active.tactical-role-TUTTI { background-color: var(--tactical-accent-gold); color: var(--tactical-text-on-button); border-color: var(--tactical-accent-gold); }
+.tactical-filter-role-btn.is-active.tactical-role-P { background-color: #ffca28; color: #121214; border-color: #ffca28; }
+.tactical-filter-role-btn.is-active.tactical-role-D { background-color: #00b0ff; color: #121214; border-color: #00b0ff; }
+.tactical-filter-role-btn.is-active.tactical-role-C { background-color: #00e676; color: #121214; border-color: #00e676; }
+.tactical-filter-role-btn.is-active.tactical-role-A { background-color: #ff1744; color: #121214; border-color: #ff1744; }
 
-.risultati-count {
-  font-size: 11px;
-  color: #8a8a93;
-  margin: 0 0 14px 4px;
-  font-weight: 500;
+.tactical-risultati-count {
+  font-family: 'Inter', sans-serif;
+  font-size: 11.5px;
+  color: var(--tactical-text-secondary);
+  margin: 0 0 16px 4px;
+  font-weight: 600;
 }
 
-/* --- MODALITÀ INIZIALE: BLOCCHI NAZIONALI (ACCORDION) --- */
-.nazioni-blocks-container {
+/* --- MODALITÀ STANDBY: BLOCCHI NAZIONALI (ACCORDION) --- */
+.tactical-nazioni-blocks-container {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-.nazione-block-card {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
-  border-radius: 10px;
+.tactical-nazione-block-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: border-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.nazione-block-card.is-open {
-  border-color: #04C869;
+.tactical-nazione-block-card.is-open {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-.nazione-block-header.clickable {
+.tactical-nazione-block-header.tactical-clickable {
   cursor: pointer;
   user-select: none;
-  transition: background-color 0.15s ease;
 }
 
-.nazione-block-header.clickable:hover {
-  background-color: #1c1c24;
-}
-
-.nazione-block-header {
-  background-color: #15151a;
-  padding: 12px 14px;
+.tactical-nazione-block-header {
+  background-color: rgba(255, 255, 255, 0.01);
+  padding: 14px 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #2e2e38;
+  transition: background-color 0.2s;
 }
 
-.nazione-block-header h3 {
+.tactical-nazione-block-header:hover {
+  background-color: rgba(212, 175, 55, 0.04);
+}
+
+.tactical-nazione-block-header h3 {
   margin: 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 14px;
-  color: #04C869;
-  letter-spacing: 0.5px;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.header-right-zone {
+.tactical-nazione-title-text {
+  letter-spacing: 0.5px;
+}
+
+.tactical-header-right-zone {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.accordion-arrow {
-  font-size: 10px;
-  color: #718096;
+.tactical-accordion-arrow {
+  font-size: 11px;
+  color: var(--tactical-text-gold);
+  font-weight: bold;
 }
 
-.nazione-count-badge {
-  font-size: 10px;
-  background-color: #26262f;
-  color: #bbb;
-  padding: 3px 8px;
+.tactical-nazione-count-badge {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  background-color: var(--tactical-bg-main);
+  color: var(--tactical-text-secondary);
+  padding: 4px 10px;
   border-radius: 20px;
-  border: 1px solid #333;
+  border: 1px solid var(--tactical-border-gold);
+  font-weight: 600;
 }
 
-.nazione-block-players {
+/* Sotto-righe calciatori nell'accordion */
+.tactical-nazione-block-players {
   display: flex;
   flex-direction: column;
-  background-color: #131317;
+  background-color: var(--tactical-bg-main);
+  border-top: 1px solid var(--tactical-border-gold);
 }
 
-.loading-players-mini {
-  padding: 14px;
-  font-size: 12px;
-  color: #888;
+.tactical-loading-players-mini {
+  padding: 16px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  color: var(--tactical-text-secondary);
   text-align: center;
 }
 
-.listone-player-mini-row {
+.tactical-listone-player-mini-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 14px;
-  border-bottom: 1px solid #18181d;
-  border-left: 3px solid #444;
+  padding: 11px 18px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.08);
 }
 
-.listone-player-mini-row:last-child {
+.tactical-listone-player-mini-row:last-child {
   border-bottom: none;
 }
 
-.mini-row-left {
+.tactical-mini-row-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
-/* --- MODALITÀ FILTRATA: LISTA LINEARE --- */
-.listone-linear-list {
+/* --- MODALITÀ FILTRATA: LISTA LINEARE DIRETTALE --- */
+.tactical-listone-linear-list {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
-.calciatore-listone-row {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
-  border-left: 3px solid #444;
+.tactical-calciatore-listone-row {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   border-radius: 6px;
-  padding: 11px 14px;
+  padding: 12px 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* Bordi colorati Ruoli */
-.border-P { border-left-color: #ffca28 !important; }
-.border-D { border-left-color: #00b0ff !important; }
-.border-C { border-left-color: #00e676 !important; }
-.border-A { border-left-color: #ff1744 !important; }
+/* Bordi laterali indicatori per Ruolo */
+.tactical-listone-player-mini-row.tactical-border-P,
+.tactical-calciatore-listone-row.tactical-border-P { border-left: 4px solid #ffca28; }
+.tactical-listone-player-mini-row.tactical-border-D,
+.tactical-calciatore-listone-row.tactical-border-D { border-left: 4px solid #00b0ff; }
+.tactical-listone-player-mini-row.tactical-border-C,
+.tactical-calciatore-listone-row.tactical-border-C { border-left: 4px solid #00e676; }
+.tactical-listone-player-mini-row.tactical-border-A,
+.tactical-calciatore-listone-row.tactical-border-A { border-left: 4px solid #ff1744; }
 
-.left-calc-info {
+.tactical-left-calc-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
-.listone-ruolo-badge {
-  font-size: 10px;
-  font-weight: 800;
-  padding: 2px 6px;
+/* Badge del ruolo rotondi/quadrati compatti */
+.tactical-listone-ruolo-badge {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 900;
+  padding: 3px 0;
   border-radius: 4px;
-  min-width: 14px;
+  width: 24px;
   text-align: center;
-  color: #121214;
 }
 
-.listone-ruolo-badge.P { background-color: #ffca28; color: #121214; }
-.listone-ruolo-badge.D { background-color: #00b0ff; color: #fff; }
-.listone-ruolo-badge.C { background-color: #00e676; color: #121214; }
-.listone-ruolo-badge.A { background-color: #ff1744; color: #fff; }
+.tactical-listone-ruolo-badge.tactical-role-P { background-color: #ffca28; color: #121214; }
+.tactical-listone-ruolo-badge.tactical-role-D { background-color: #00b0ff; color: #121214; }
+.tactical-listone-ruolo-badge.tactical-role-C { background-color: #00e676; color: #121214; }
+.tactical-listone-ruolo-badge.tactical-role-A { background-color: #ff1744; color: #121214; }
 
-.name-nat-block {
+.tactical-name-nat-block {
   display: flex;
   flex-direction: column;
 }
 
-.calc-name {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #fff;
+.tactical-calc-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
 }
 
-.calc-nat {
-  font-size: 10.5px;
-  color: #8a8a93;
-  margin-top: 2px;
+.tactical-calc-nat {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--tactical-text-secondary);
+  margin-top: 3px;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 }
 
-.no-data-msg {
+.tactical-no-data-msg {
   text-align: center;
-  color: #666;
-  font-size: 13px;
-  padding: 30px;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  padding: 40px;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.2s ease-out;
+/* Animazioni fluide di apertura */
+.tactical-animate-fade-in {
+  animation: tacticalFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes fadeIn {
+@keyframes tacticalFadeIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }

@@ -1,120 +1,182 @@
-.sposta-page-container {
-  padding: 15px;
-  font-family: system-ui, -apple-system, sans-serif;
+/* Layout Generale della Pagina Mercato/Spostamenti */
+.tactical-sposta-page {
+  padding: 24px 16px;
+  max-width: 850px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
-.sposta-loading {
+/* Loader di Caricamento */
+.tactical-sposta-loading {
   text-align: center;
   padding-top: 45vh;
-  color: #888;
+  color: var(--tactical-text-secondary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   font-size: 14px;
 }
 
-/* Allineamento Tasto Indietro e Titolo Principale */
-.sposta-header-title-container {
+/* Intestazione Strutturale */
+.tactical-sposta-header {
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--tactical-border-gold);
+  padding-bottom: 16px;
+}
+
+.tactical-sposta-title-wrapper {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 4px;
+  gap: 16px;
+  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
-/* Bottone Torna Indietro customizzato */
-.btn-back-sposta {
-  background-color: #1e1e24;
-  color: #ffffff;
-  border: 1px solid #333;
+/* Titolo d'Impatto Editoriale */
+.tactical-sposta-title-wrapper .tactical-brand {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
+  color: var(--tactical-text-primary);
+}
+
+/* Pulsante di Ritorno Coordinato */
+.tactical-btn-back {
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-border-gold);
   padding: 8px 16px;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
 }
 
-.btn-back-sposta:hover {
-  background-color: #2e2e38;
-  border-color: #ff9100;
-  transform: translateX(-2px);
+.tactical-btn-back:hover {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+  transform: translateX(-3px);
 }
 
-.sposta-header h2 {
-  margin: 0;
-  font-size: 20px;
-  color: #ff9100;
-}
-
-.sposta-subtitle {
-  color: #aaa;
-  font-size: 12px;
-  margin: 0 0 20px 0;
-  line-height: 1.4;
-}
-
-.sposta-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.player-transfer-card {
-  background-color: #1e1e24;
-  border-radius: 8px;
-  padding: 15px;
-  border: 1px solid #2e2e38;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-@media (min-width: 576px) {
-  .player-transfer-card {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 20px;
-  }
-}
-
-.transfer-meta h4 {
-  margin: 0 0 2px 0;
-  font-size: 14px;
-  color: #fff;
-}
-
-.transfer-email {
-  color: #666;
-  font-size: 11px;
-}
-
-.transfer-select-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 220px;
-}
-
-.transfer-select-wrapper label {
-  font-size: 10px;
-  color: #aaa;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.select-transfer-dropdown {
-  background-color: #121214;
-  border: 1px solid #333;
-  padding: 8px;
-  border-radius: 4px;
-  color: white;
+/* Descrizione Sottotitolo */
+.tactical-sposta-subtitle {
+  font-family: 'Inter', sans-serif;
+  color: var(--tactical-text-secondary);
   font-size: 13px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Elenco delle Card */
+.tactical-sposta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Card Trasferimento Tattica */
+.tactical-player-transfer-card {
+  background-color: var(--tactical-bg-card);
+  border-radius: 8px;
+  padding: 16px 18px;
+  border: 1px solid var(--tactical-border-gold);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: all 0.2s ease;
+}
+
+.tactical-player-transfer-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Informazioni Anagrafiche Utente */
+.tactical-transfer-meta h4 {
+  margin: 0 0 3px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
+}
+
+.tactical-transfer-email {
+  font-family: 'Inter', sans-serif;
+  color: var(--tactical-text-secondary);
+  font-size: 12px;
+}
+
+/* Involucro del Selettore Dropdown */
+.tactical-transfer-select-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 240px;
+}
+
+.tactical-transfer-select-wrapper label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--tactical-text-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Dropdown Natively Styled */
+.tactical-select-transfer-dropdown {
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 10px;
+  border-radius: 6px;
+  color: var(--tactical-text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
   outline: none;
   cursor: pointer;
   width: 100%;
+  transition: border-color 0.2s;
+  -webkit-appearance: none; /* Uniforma lo stile su iOS e Safari */
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23d4af37' viewBox='0 0 16 16'><path d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 12px) center;
+  padding-right: 32px;
 }
 
-.select-transfer-dropdown:focus {
-  border-color: #ff9100;
+.tactical-select-transfer-dropdown:focus {
+  border-color: var(--tactical-accent-gold);
+}
+
+/* Opzioni interne del menu a tendina (per browser compatibili) */
+.tactical-select-transfer-dropdown option {
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-primary);
+}
+
+/* Ottimizzazione Desktop in Linea Orizzontale */
+@media (min-width: 650px) {
+  .tactical-sposta-title-wrapper .tactical-brand {
+    font-size: 24px;
+  }
+
+  .tactical-player-transfer-card {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  
+  .tactical-transfer-select-wrapper {
+    margin-left: auto;
+  }
 }

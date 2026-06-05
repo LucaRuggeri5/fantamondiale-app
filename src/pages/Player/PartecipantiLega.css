@@ -1,165 +1,203 @@
-.player-page-container {
-  padding: 14px;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #fff;
+/* Layout Strutturale di Pagina */
+.tactical-partecipanti-page {
+  padding: 24px 16px;
+  max-width: 750px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
-.player-page-header {
-  margin-bottom: 16px;
+/* Header dell'Anagrafica */
+.tactical-partecipanti-page-header {
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--tactical-border-gold);
+  padding-bottom: 16px;
 }
 
-.player-page-header h2 {
-  margin: 0 0 4px 0;
-  font-size: 22px;
-  font-weight: 700;
+.tactical-partecipanti-page-header .tactical-brand {
+  margin: 0 0 6px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--tactical-text-primary);
 }
 
-.player-page-subtitle {
-  color: #aaa;
-  font-size: 12px;
+.tactical-partecipanti-page-subtitle {
+  font-family: 'Inter', sans-serif;
+  color: var(--tactical-text-secondary);
+  font-size: 13px;
   margin: 0;
+  line-height: 1.5;
 }
 
-/* STYLING COMPONENTE INVITO/COPIA CODICE */
-.codice-invito-container {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
+/* BOX CONDIVISIONE E COPIA CODICE LEGA */
+.tactical-codice-invito-container {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 20px;
+  padding: 16px;
+  margin-bottom: 24px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-.codice-label {
+.tactical-codice-label {
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
-  color: #8a8a93;
+  color: var(--tactical-text-secondary);
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.5px;
 }
 
-.codice-row {
+.tactical-codice-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #121214;
-  border: 1px solid #2e2e38;
-  padding: 8px 12px;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 10px 14px;
   border-radius: 6px;
 }
 
-.codice-valore {
-  font-family: monospace;
-  font-size: 14px;
-  font-weight: bold;
-  color: #00e676;
-  letter-spacing: 1px;
+.tactical-codice-valore {
+  font-family: 'Inter', monospace;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
+  letter-spacing: 1.5px;
 }
 
-.btn-copia-codice {
-  background-color: #00b0ff;
-  color: #fff;
+/* Pulsante Azione Copia */
+.tactical-btn-copia-codice {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
   border: none;
-  padding: 6px 12px;
+  padding: 8px 16px;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 700;
   border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.btn-copia-codice:hover {
-  background-color: #0091ea;
+.tactical-btn-copia-codice:hover {
+  filter: brightness(1.15);
 }
 
-.btn-copia-codice.success {
-  background-color: #00e676;
-  color: #121214;
+/* Stato Successo al Click avvenuto */
+.tactical-btn-copia-codice.is-success {
+  background-color: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.3);
 }
 
-/* LISTA PARTECIPANTI */
-.player-loading {
+/* LISTA DEI PARTECIPANTI */
+.tactical-partecipanti-loading {
   text-align: center;
-  padding-top: 40vh;
-  color: #888;
+  padding-top: 45vh;
+  color: var(--tactical-text-secondary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   font-size: 14px;
 }
 
-.partecipanti-list {
+.tactical-partecipanti-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-}
-
-.partecipante-card {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.partecipante-avatar-group {
-  display: flex;
-  align-items: center;
   gap: 12px;
 }
 
-.avatar-placeholder {
-  width: 36px;
-  height: 36px;
-  background-color: #2e2e38;
+/* Card Singolo Partecipante */
+.tactical-partecipante-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tactical-partecipante-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.tactical-partecipante-avatar-group {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Segnaposto Iniziali Circolare */
+.tactical-avatar-placeholder {
+  width: 40px;
+  height: 40px;
+  background-color: var(--tactical-bg-main);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
-  font-weight: bold;
-  color: #00b0ff;
-  border: 1px solid #444;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tactical-text-gold);
+  border: 1px solid var(--tactical-border-gold);
 }
 
-.partecipante-info {
+.tactical-partecipante-info {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
-.part-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #fff;
-}
-
-.part-email {
-  font-size: 11px;
-  color: #8a8a93;
-}
-
-.badge-role-view {
-  font-size: 10px;
+.tactical-part-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
   font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 6px;
+  color: var(--tactical-text-primary);
+}
+
+.tactical-part-email {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  color: var(--tactical-text-secondary);
+}
+
+/* Badge di Visualizzazione Ruolo */
+.tactical-badge-role-view {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
   text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
-.badge-role-view.admin {
-  background-color: rgba(255, 202, 40, 0.12);
-  color: #ffca28;
+.tactical-badge-role-view.admin {
+  background-color: rgba(212, 175, 55, 0.1);
+  color: var(--tactical-text-gold);
+  border: 1px solid rgba(212, 175, 55, 0.15);
 }
 
-.badge-role-view.player {
-  background-color: rgba(0, 176, 255, 0.12);
-  color: #00b0ff;
+.tactical-badge-role-view.player {
+  background-color: rgba(153, 153, 153, 0.08);
+  color: var(--tactical-text-secondary);
+  border: 1px solid var(--tactical-border-gold);
 }
 
-.no-data-msg {
+.tactical-no-data-msg {
   text-align: center;
-  color: #666;
-  font-size: 13px;
-  padding: 20px;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  padding: 40px;
 }

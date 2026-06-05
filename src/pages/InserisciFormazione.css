@@ -1,16 +1,20 @@
+/* ==========================================
+   1. STRUTTURA GENERALE & CARICAMENTO
+   ========================================== */
 .inserisci-formazione-page {
   padding: 12px;
-  font-family: system-ui, -apple-system, sans-serif;
   max-width: 600px;
   margin: 0 auto;
   box-sizing: border-box;
-  color: #fff;
+  color: var(--tactical-text-primary);
 }
 
 .formazione-loading {
   text-align: center;
   padding-top: 45vh;
-  color: #888;
+  color: var(--tactical-text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
 }
 
 .formazione-header {
@@ -22,43 +26,55 @@
 
 .formazione-header h2 {
   margin: 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
+  color: var(--tactical-text-primary);
 }
 
 .btn-back-formazione {
-  background-color: #1e1e24;
-  color: #fff;
-  border: 1px solid #2e2e38;
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-primary);
+  border: 1px solid var(--tactical-border-gold);
   padding: 6px 12px;
   font-weight: bold;
   border-radius: 6px;
   cursor: pointer;
+  transition: background-color 0.2s;
 }
 
-.modulo-selector-card {
-  background-color: #1e1e24;
+.btn-back-formazione:hover {
+  background-color: var(--tactical-bg-timer);
+}
+
+/* ==========================================
+   2. CONTROLLI MODULO E CONTATORI RECAP
+   ========================================== */
+.modulo-selector-card.tactical-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   padding: 12px;
   border-radius: 8px;
   margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  border: 1px solid #2e2e38;
 }
 
 .modulo-selector-card label {
-  font-size: 12px;
-  color: #aaa;
-  font-weight: 600;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  color: var(--tactical-text-secondary);
+  font-weight: 700;
   text-transform: uppercase;
 }
 
 .select-modulo-dropdown {
-  background-color: #121214;
-  color: #fff;
-  border: 1px solid #3e3e4a;
+  background-color: var(--tactical-bg-main);
+  color: var(--tactical-text-primary);
+  border: 1px solid var(--tactical-border-gold);
   padding: 10px;
+  font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: bold;
   border-radius: 6px;
@@ -68,21 +84,28 @@
 }
 
 .select-modulo-dropdown:focus {
-  border-color: #ff9100;
+  border-color: var(--tactical-text-gold);
 }
 
-.recap-schieramento {
+.recap-schieramento.tactical-card {
   display: flex;
   justify-content: space-around;
   margin-bottom: 12px;
-  background-color: #121214;
-  padding: 8px;
-  border-radius: 6px;
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 10px;
+  border-radius: 8px;
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
-  border: 1px solid #222;
 }
 
-/* GRAFICA CAMPO DA CALCIO */
+.recap-schieramento b {
+  color: var(--tactical-text-gold);
+}
+
+/* ==========================================
+   3. RETTANGOLO VERDE (GRAFICA CAMPO)
+   ========================================== */
 .campo-visual-section {
   display: flex;
   flex-direction: column;
@@ -98,6 +121,7 @@
   padding: 20px 8px;
   position: relative;
   box-sizing: border-box;
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.2);
 }
 
 .campo-erba {
@@ -119,7 +143,6 @@
 .linea-gessata.centrocampo-linea { top: 50%; left: 0; right: 0; height: 0; display: flex; align-items: center; justify-content: center; border-bottom: none;}
 .cerchio-centrocampo { width: 70px; height: 70px; border: 1.5px solid rgba(255, 255, 255, 0.25); border-radius: 50%; }
 
-/* SOLUZIONE DISORDINE: Abilitato flex-wrap per evitare compressioni estreme */
 .linea-campo {
   display: flex;
   justify-content: center;
@@ -130,7 +153,9 @@
   z-index: 2;
 }
 
-/* CARD GIOCATORI: Più stabili, equilibrate e leggibili */
+/* ==========================================
+   4. CARDS DEI GIOCATORI SUL CAMPO
+   ========================================== */
 .campo-player-card {
   flex: 0 1 calc(20% - 8px);
   min-width: 62px;
@@ -146,17 +171,18 @@
   position: relative;
   box-sizing: border-box;
   transition: transform 0.1s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .campo-player-card:active {
   transform: scale(0.95);
 }
 
-/* BORDI DINAMICI BASATI SUL RUOLO (Sia vuoti che occupati) */
-.campo-player-card.vuoto.border-P { border: 1.5px dashed #ffca28; background-color: rgba(255, 202, 40, 0.08); }
-.campo-player-card.vuoto.border-D { border: 1.5px dashed #00b0ff; background-color: rgba(0, 176, 255, 0.08); }
-.campo-player-card.vuoto.border-C { border: 1.5px dashed #00e676; background-color: rgba(0, 230, 118, 0.08); }
-.campo-player-card.vuoto.border-A { border: 1.5px dashed #ff1744; background-color: rgba(255, 23, 68, 0.08); }
+/* Bordi dedicati alle categorie ruolo */
+.campo-player-card.vuoto.border-P { border: 1.5px dashed #ffca28; background-color: rgba(255, 202, 40, 0.12); }
+.campo-player-card.vuoto.border-D { border: 1.5px dashed #00b0ff; background-color: rgba(0, 176, 255, 0.12); }
+.campo-player-card.vuoto.border-C { border: 1.5px dashed #00e676; background-color: rgba(0, 230, 118, 0.12); }
+.campo-player-card.vuoto.border-A { border: 1.5px dashed #ff1744; background-color: rgba(255, 23, 68, 0.12); }
 
 .campo-player-card.occupato.border-P { border: 1.5px solid #ffca28; }
 .campo-player-card.occupato.border-D { border: 1.5px solid #00b0ff; }
@@ -169,12 +195,12 @@
   padding: 4px;
 }
 .campo-player-card.vuoto .add-icon { font-size: 15px; font-weight: bold; color: #fff; }
-.campo-player-card.vuoto .add-label { font-size: 8px; margin-top: 1px; color: #bbb; }
+.campo-player-card.vuoto .add-label { font-size: 8px; margin-top: 1px; color: #bbb; font-family: 'Inter', sans-serif; }
 
 .campo-player-card.occupato {
-  background-color: #1e1e24;
-  color: #fff;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+  background-color: var(--tactical-bg-card);
+  color: var(--tactical-text-primary);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }
 
 .badge-ruolo-mini {
@@ -182,6 +208,7 @@
   top: 4px;
   left: 50%;
   transform: translateX(-50%);
+  font-family: 'Montserrat', sans-serif;
   font-size: 9px;
   padding: 1px 5px;
   border-radius: 3px;
@@ -196,8 +223,9 @@
 .badge-ruolo-mini.A { background-color: #ff1744; color: #fff; }
 
 .campo-player-name {
+  font-family: 'Inter', sans-serif;
   font-size: 9px; 
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.2;
   word-wrap: break-word;
   white-space: normal;
@@ -224,20 +252,24 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* PANCHINA */
-.panchina-container {
-  background-color: #1e1e24;
-  padding: 12px;
+/* ==========================================
+   5. CONTENITORE PANCHINA
+   ========================================== */
+.panchina-container.tactical-card {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 14px;
   border-radius: 8px;
-  border: 1px solid #2e2e38;
 }
 
 .panchina-container h3 { 
-  margin: 0 0 10px 0; 
+  margin: 0 0 12px 0; 
+  font-family: 'Montserrat', sans-serif;
   font-size: 13px; 
-  color: #ffca28; 
+  font-weight: 800;
+  color: var(--tactical-text-gold); 
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 .panchina-vertical-list {
@@ -247,10 +279,10 @@
 }
 
 .panchina-ruolo-row {
-  background-color: #121214;
+  background-color: var(--tactical-bg-main);
   border-radius: 6px;
-  padding: 4px;
-  border: 1px solid #222;
+  padding: 5px;
+  border: 1px solid var(--tactical-border-gold);
 }
 
 .panchina-ruolo-header-flat {
@@ -259,7 +291,7 @@
   align-items: center;
   padding: 8px 6px;
   cursor: pointer;
-  background-color: #19191d;
+  background-color: rgba(255, 255, 255, 0.02);
   border-radius: 4px;
 }
 
@@ -277,14 +309,16 @@
 }
 
 .ruolo-flat-title {
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
-  font-weight: 600;
-  color: #eee;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
 }
 
 .counter-flat-riserve {
+  font-family: 'Inter', sans-serif;
   font-size: 12px;
-  color: #aaa;
+  color: var(--tactical-text-secondary);
   display: flex;
   align-items: center;
   gap: 6px;
@@ -303,23 +337,26 @@
 }
 
 .empty-pan-text-flat {
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
-  color: #444;
+  color: var(--tactical-text-secondary);
   font-style: italic;
   padding: 4px 6px;
   display: block;
 }
 
 .panchinaro-item-flat {
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
-  background-color: #1e1e24;
+  background-color: var(--tactical-bg-card);
   padding: 8px 12px;
   border-radius: 4px;
-  color: #fff;
+  color: var(--tactical-text-primary);
   display: flex;
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  border: 1px solid transparent;
 }
 
 .panchinaro-item-flat.flat-border-P { border-left: 3px solid #ffca28; }
@@ -328,7 +365,7 @@
 .panchinaro-item-flat.flat-border-A { border-left: 3px solid #ff1744; }
 
 .panchinaro-name-flat {
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .remove-icon-flat {
@@ -337,11 +374,13 @@
   font-size: 11px;
 }
 
-/* OVERLAY MODALE */
+/* ==========================================
+   6. SCHERMATA MODALE (OVERLAY SELEZIONE)
+   ========================================== */
 .overlay-scelta-giocatore { 
   position: fixed; 
   top: 0; left: 0; right: 0; bottom: 0; 
-  background-color: rgba(0,0,0,0.85); 
+  background-color: rgba(0, 0, 0, 0.85); 
   display: flex; 
   align-items: center; 
   justify-content: center; 
@@ -349,59 +388,100 @@
   padding: 12px; 
 }
 
-.overlay-content-card { 
-  background-color: #1e1e24; 
+.overlay-content-card.tactical-card { 
+  background-color: var(--tactical-bg-card); 
   width: 100%; 
   max-width: 360px; 
   border-radius: 8px; 
   overflow: hidden; 
-  border: 1px solid #3e3e4a;
+  border: 1px solid var(--tactical-border-gold);
 }
 
 .overlay-header { 
-  background-color: #121214; 
+  background-color: var(--tactical-bg-main); 
   padding: 12px; 
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
+  border-bottom: 1px solid var(--tactical-border-gold);
 }
 
-.overlay-header h4 { margin:0; font-size: 13px; color: #ff9100; }
-.btn-close-overlay { background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
-.overlay-list-scroll { max-height: 280px; overflow-y: auto; padding: 6px; }
+.overlay-header h4 { 
+  margin: 0; 
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px; 
+  font-weight: 800;
+  color: var(--tactical-text-gold); 
+}
+
+.btn-close-overlay { 
+  background: none; 
+  border: none; 
+  color: var(--tactical-text-primary); 
+  font-size: 22px; 
+  cursor: pointer; 
+}
+
+.overlay-list-scroll { 
+  max-height: 280px; 
+  overflow-y: auto; 
+  padding: 8px; 
+}
 
 .giocatore-overlay-row { 
   display: flex; 
   justify-content: space-between; 
   padding: 10px; 
-  background-color: #121214; 
-  margin-bottom: 5px; 
+  background-color: var(--tactical-bg-main); 
+  margin-bottom: 6px; 
   border-radius: 6px; 
   font-size: 13px; 
   align-items: center;
   cursor: pointer;
+  border: 1px solid var(--tactical-border-gold);
+}
+
+.giocatore-overlay-name {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  color: var(--tactical-text-primary);
 }
 
 .btn-select-giocatore { 
-  background-color: #00e676; 
-  color: #121214; 
+  background-color: var(--tactical-text-gold); 
+  color: var(--tactical-bg-main); 
   border: none; 
-  padding: 4px 10px; 
+  padding: 5px 12px; 
   border-radius: 4px; 
+  font-family: 'Inter', sans-serif;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 700;
+  cursor: pointer;
 }
 
-/* BOTTONE SALVA */
+/* ==========================================
+   7. BOTTONE SALVATAGGIO FINALE
+   ========================================== */
+.formazione-footer-actions {
+  margin-top: 12px;
+}
+
 .btn-save-formazione-def {
-  background-color: #00e676;
-  color: #121214;
+  background-color: var(--tactical-text-gold);
+  color: var(--tactical-bg-main);
   border: none;
+  font-family: 'Montserrat', sans-serif;
   font-size: 14px;
-  font-weight: bold;
+  font-weight: 800;
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border-radius: 8px;
   cursor: pointer;
-  margin-top: 5px;
+  transition: opacity 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-save-formazione-def:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

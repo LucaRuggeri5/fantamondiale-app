@@ -1,189 +1,230 @@
-.gestione-page-container {
-  padding: 14px;
-  font-family: system-ui, -apple-system, sans-serif;
-  color: #fff;
+/* Layout Strutturale Principale */
+.tactical-gestione-page {
+  padding: 24px 16px;
+  max-width: 650px;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
-.gestione-page-header {
-  margin-bottom: 20px;
-}
-
-.gestione-page-header h2 {
-  margin: 0 0 4px 0;
-  font-size: 22px;
-  font-weight: 700;
-}
-
-.gestione-page-subtitle {
-  color: #aaa;
-  font-size: 12px;
-  margin: 0;
-}
-
-.gestione-loading {
+/* Loader di Caricamento Principale */
+.tactical-gestione-loading {
   text-align: center;
-  padding-top: 40vh;
-  color: #888;
+  padding-top: 45vh;
+  color: var(--tactical-text-secondary);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
   font-size: 14px;
 }
 
-/* BOX DI INFO RIGUARDO LA SQUADRA */
-.gestione-card-info {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
+/* Intestazione Titoli Modulo */
+.tactical-gestione-page-header {
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--tactical-border-gold);
+  padding-bottom: 16px;
+}
+
+.tactical-gestione-page-header .tactical-brand {
+  margin: 0 0 6px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--tactical-text-primary);
+}
+
+.tactical-gestione-page-subtitle {
+  font-family: 'Inter', sans-serif;
+  color: var(--tactical-text-secondary);
+  font-size: 13px;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Scheda Riepilogativa Info Correnti */
+.tactical-gestione-card-info {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   border-radius: 8px;
-  padding: 14px;
+  padding: 16px 20px;
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 
-.info-row {
+.tactical-info-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 13px;
-  border-bottom: 1px solid #262630;
-  padding-bottom: 8px;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  border-bottom: 1px solid var(--tactical-border-gold);
+  padding-bottom: 10px;
 }
 
-.info-row:last-child {
+.tactical-info-row:last-child {
   border-bottom: none;
   padding-bottom: 0;
 }
 
-.info-label {
-  color: #8a8a93;
-  font-weight: 500;
+.tactical-info-label {
+  color: var(--tactical-text-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
 }
 
-.info-value {
-  color: #fff;
+.tactical-info-value {
+  color: var(--tactical-text-primary);
   font-weight: 600;
 }
 
-.info-value.club-attuale {
-  color: #00b0ff;
+/* Evidenziazione Oro Club Attuale */
+.tactical-info-value.tactical-club-attuale {
+  color: var(--tactical-text-gold);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
 }
 
-/* FORM DI MODIFICA */
-.gestione-form-box {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
+/* Pannello Form Modifica */
+.tactical-gestione-form-box {
+  background-color: var(--tactical-bg-card);
+  border: 1px solid var(--tactical-border-gold);
   border-radius: 8px;
-  padding: 16px;
+  padding: 20px;
 }
 
-.gestione-form-box h3 {
-  margin: 0 0 14px 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: #00b0ff;
+.tactical-gestione-form-box h3 {
+  margin: 0 0 16px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
 }
 
-.form-edit-squadra {
+.tactical-form-edit-squadra {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
-.input-group {
+/* Gruppi di Input Testuali */
+.tactical-input-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.input-group label {
-  font-size: 12px;
-  color: #aaa;
-  font-weight: 500;
+.tactical-input-group label {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: var(--tactical-text-secondary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.input-group input {
-  background-color: #121214;
-  border: 1px solid #2e2e38;
-  padding: 12px;
+.tactical-input-group input {
+  background-color: var(--tactical-bg-main);
+  border: 1px solid var(--tactical-border-gold);
+  padding: 12px 14px;
   border-radius: 6px;
-  color: #fff;
-  font-size: 13px;
+  color: var(--tactical-text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
 }
 
-.input-group input:focus {
-  border-color: #00b0ff;
+.tactical-input-group input:focus {
+  border-color: var(--tactical-accent-gold);
+  box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.2);
 }
 
-/* MESSAGGI FEEDBACK */
-.form-feedback-msg {
-  font-size: 12px;
-  padding: 10px;
-  border-radius: 6px;
-  text-align: center;
-  font-weight: 500;
-}
-
-.form-feedback-msg.success {
-  background-color: rgba(0, 230, 118, 0.1);
-  color: #00e676;
-  border: 1px solid rgba(0, 230, 118, 0.2);
-}
-
-.form-feedback-msg.error {
-  background-color: rgba(255, 23, 68, 0.1);
-  color: #ff1744;
-  border: 1px solid rgba(255, 23, 68, 0.2);
-}
-
-.form-feedback-msg.info {
-  background-color: rgba(0, 176, 255, 0.1);
-  color: #00b0ff;
-  border: 1px solid rgba(0, 176, 255, 0.2);
-}
-
-/* BOTTONE SALVATAGGIO */
-.btn-salva-squadra {
-  background-color: #00b0ff;
-  color: #fff;
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-salva-squadra:hover:not(:disabled) {
-  background-color: #0091ea;
-}
-
-.btn-salva-squadra:disabled {
-  background-color: #2e2e38;
-  color: #666;
+.tactical-input-group input:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-/* NO SQUADRA FALLBACK BOX */
-.no-squadra-box {
-  background-color: #1e1e24;
-  border: 1px solid #2e2e38;
-  border-radius: 8px;
-  padding: 24px;
+/* Messaggi di Feedback Generati dai Form */
+.tactical-form-feedback-msg {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  padding: 12px;
+  border-radius: 6px;
   text-align: center;
-  margin-top: 20vh;
+  font-weight: 600;
 }
 
-.no-squadra-box h3 {
-  margin: 0 0 8px 0;
-  color: #ff1744;
-  font-size: 16px;
+.tactical-form-feedback-msg.success {
+  background-color: rgba(46, 204, 113, 0.1);
+  color: #2ecc71;
+  border: 1px solid rgba(46, 204, 113, 0.2);
 }
 
-.no-squadra-box p {
-  margin: 0;
+.tactical-form-feedback-msg.error {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+.tactical-form-feedback-msg.info {
+  background-color: rgba(212, 175, 55, 0.1);
+  color: var(--tactical-text-gold);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+/* Pulsante di Esecuzione/Salvataggio */
+.tactical-btn-salva-squadra {
+  background-color: var(--tactical-accent-gold);
+  color: var(--tactical-text-on-button);
+  border: none;
+  padding: 14px;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
   font-size: 13px;
-  color: #aaa;
-  line-height: 1.5;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tactical-btn-salva-squadra:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.tactical-btn-salva-squadra:disabled {
+  background-color: var(--tactical-bg-timer);
+  color: var(--tactical-text-secondary);
+  border: 1px solid var(--tactical-border-gold);
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* Box di Fallback: Svincolato/Nessun Club */
+.tactical-no-squadra-box {
+  background-color: var(--tactical-bg-card);
+  border: 2px dashed #e74c3c;
+  border-radius: 8px;
+  padding: 32px 24px;
+  text-align: center;
+  margin-top: 15vh;
+}
+
+.tactical-no-squadra-box h3 {
+  margin: 0 0 10px 0;
+  font-family: 'Montserrat', sans-serif;
+  color: #e74c3c;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.tactical-no-squadra-box p {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  color: var(--tactical-text-secondary);
+  line-height: 1.6;
 }

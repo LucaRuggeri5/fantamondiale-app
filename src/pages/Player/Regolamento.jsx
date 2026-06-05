@@ -6,23 +6,26 @@ const Regolamento = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="regolamento-container">
-      <div className="regolamento-card">
-        {/* Pulsante per tornare indietro */}
-        <button className="regolamento-back-btn" onClick={() => navigate('/dashboard')}>
-          ← Torna Indietro
+    <div className="tactical-app-container tactical-regolamento-page">
+      <div className="tactical-regolamento-card">
+        {/* Pulsante di navigazione coerente */}
+        <button className="tactical-back-btn" onClick={() => navigate('/dashboard')}>
+          ⬅️ indietro
         </button>
 
-        <div className="regolamento-icon">📜</div>
-        <h1 className="regolamento-title">Regolamento Ufficiale</h1>
-        <p className="regolamento-subtitle">FantaMondiale ⚽</p>
+        <div className="tactical-regolamento-icon">📜</div>
+        <h1 className="tactical-regolamento-title">Regolamento Ufficiale</h1>
+        <p className="tactical-regolamento-subtitle">FantaMondiale Suite ⚽</p>
         
-        <div className="regolamento-divider"></div>
+        <div className="tactical-regolamento-divider"></div>
         
-        <div className="regolamento-notice-box">
-          <span className="loading-dots-icon">⏳</span>
-          <h3>Sezione in arrivo</h3>
-          <p>La commissione di lega sta ultimando i dettagli e i calcoli dei bonus/malus. Il regolamento completo sarà disponibile a breve.</p>
+        <div className="tactical-regolamento-notice-box">
+          <span className="tactical-loading-dots-icon">⏳</span>
+          <h3 className="tactical-notice-title">Sezione in fase di redazione</h3>
+          <p className="tactical-notice-text">
+            La commissione tecnica di lega sta finalizzando i parametri ufficiali relativi ai bonus e malus di questa edizione. 
+            Il documento completo verrà pubblicato non appena le configurazioni saranno validate.
+          </p>
         </div>
       </div>
     </div>
