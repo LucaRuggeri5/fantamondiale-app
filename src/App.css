@@ -75,7 +75,7 @@
 }
 
 /* ========================================== */
-/* APP HEADER (Stile Editoriale d'Élite)     */
+/* APP HEADER (Stile Editoriale d'Élite)      */
 /* ========================================== */
 .app-header {
   position: fixed;
@@ -126,6 +126,18 @@
 
 .app-title:hover {
   opacity: 0.85;
+}
+
+.demo-badge {
+  margin-left: 10px; 
+  background-color: #e67e22; 
+  color: #fff; 
+  padding: 3px 8px; 
+  border-radius: 4px; 
+  font-size: 0.75rem; 
+  font-family: 'Montserrat', sans-serif;
+  font-weight: bold;
+  letter-spacing: 0.3px;
 }
 
 /* ========================================== */
@@ -180,11 +192,11 @@
 .main-content {
   position: relative;
   z-index: 1; /* Forza i componenti figli a stare sopra la griglia e l'overlay */
-  padding-bottom: 80px; /* Spazio di rispetto per non sovrapporsi alla BottomNavbar */
+  padding-bottom: 80px; /* Spazio di respeito per non sovrapporsi alla BottomNavbar */
 }
 
 /* ========================================== */
-/* FINESTRE ALERT PERSONALIZZATE E POPUP       */
+/* FINESTRE ALERT PERSONALIZZATE E POPUP        */
 /* ========================================== */
 .custom-alert-overlay {
   position: fixed;

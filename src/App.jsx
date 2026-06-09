@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
 // Importiamo i componenti necessari per la gestione della navigazione e delle rotte
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
-// Importiamo i moduli di autenticazione di Clerk
-import { SignedIn, SignedOut, SignIn, useUser } from '@clerk/clerk-react';
+// Importiamo i moduli di autenticazione di Clerk e l'hook useSignIn per il login programmatico
+import { SignedIn, SignedOut, SignIn, useUser, useSignIn } from '@clerk/clerk-react';
 // Importiamo il client Supabase configurato per il database
-import { supabase } from './supabaseClient'; 
+import { supabase } from './supabaseClient';
 
 // Importiamo tutte le pagine dell'applicazione (Onboarding, Dashboard, Area Player e Area Admin)
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import Squadre from './pages/Squadre';
-import DettaglioSquadra from './pages/DettaglioSquadra'; 
+import DettaglioSquadra from './pages/DettaglioSquadra';
 import Calendario from './pages/Calendario';
 import Classifica from './pages/Classifica';
-import InserisciFormazione from './pages/InserisciFormazione'; 
-import InserisciVoti from './pages/InserisciVoti'; 
-import GestioneRose from './pages/Admin/GestioneRose'; 
-import AssegnaPermessi from './pages/Admin/AssegnaPermessi'; 
-import SpostaPlayer from './pages/Admin/SpostaPlayer'; 
-import GestoreGiornata from './pages/Admin/GestoreGiornata'; 
-import AdminModificaFormazioni from './pages/Admin/AdminModificaFormazioni'; 
-import AdminModificaVoti from './pages/Admin/AdminModificaVoti'; 
-import AdminPenalita from './pages/Admin/AdminPenalita'; 
+import InserisciFormazione from './pages/InserisciFormazione';
+import InserisciVoti from './pages/InserisciVoti';
+import GestioneRose from './pages/Admin/GestioneRose';
+import AssegnaPermessi from './pages/Admin/AssegnaPermessi';
+import SpostaPlayer from './pages/Admin/SpostaPlayer';
+import GestoreGiornata from './pages/Admin/GestoreGiornata';
+import AdminModificaFormazioni from './pages/Admin/AdminModificaFormazioni';
+import AdminModificaVoti from './pages/Admin/AdminModificaVoti';
+import AdminPenalita from './pages/Admin/AdminPenalita';
 
 // Pagine dedicate alla gestione delle rose, listoni e regolamento
 import PartecipantiLega from './pages/Player/PartecipantiLega';
@@ -31,7 +31,7 @@ import Regolamento from './pages/Player/Regolamento';
 
 // Componenti globali dell'interfaccia (Navigazione)
 import BottomNavbar from './components/BottomNavbar';
-import Sidebar from './components/Sidebar'; 
+import Sidebar from './components/Sidebar';
 
 // Importiamo il foglio di stile specifico modificato con il tema Tactical Suite
 import './App.css';
@@ -39,12 +39,12 @@ import './App.css';
 // Sotto-componente per isolare l'utilizzo degli hook di react-router-dom (useNavigate, useLocation)
 const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggleTheme }) => {
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
 
   // Determina se nascondere la barra di navigazione inferiore in base alla rotta attuale
-  const nascondiNavbar = 
-    location.pathname.startsWith('/admin') || 
-    location.pathname.startsWith('/formazione') || 
+  const nascondiNavbar =
+    location.pathname.startsWith('/admin') ||
+    location.pathname.startsWith('/formazione') ||
     location.pathname.startsWith('/voti') ||
     location.pathname.startsWith('/regolamento') ||
     location.pathname.startsWith('/listone');
@@ -55,9 +55,9 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
       <div className="theme-ripple-overlay"></div>
 
       {/* Menu laterale (Sidebar) configurato con i permessi e dati dell'utente corrente */}
-      <Sidebar 
-        isOpen={isSidebarOpen} 
-        onClose={() => setIsSidebarOpen(false)} 
+      <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
         userRole={currentUser?.ruolo || 'player'}
         nomeUtente={currentUser?.nome_utente || 'Allenatore'}
         onNavigate={(targetPage) => {
@@ -109,7 +109,7 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
               navigate('/admin/penalita');
               break;
             default:
-              alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fasi!`);
+              alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fases!`);
           }
         }}
       />
@@ -125,8 +125,13 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
           <span className="app-title" onClick={() => navigate('/')}>
             FantaMondiale ⚽
           </span>
+          {currentUser?.email === 'demo@tuosito.com' && (
+            <span className="demo-badge">
+              MODALITÀ DEMO
+            </span>
+          )}
         </div>
-        
+
         {/* Pulsante di commutazione tema Notte/Giorno con icone SVG dinamiche */}
         <button className="btn-theme-toggle" onClick={(e) => toggleTheme(e)} aria-label="Cambia tema">
           {theme === 'light' ? (
@@ -163,35 +168,35 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
           <Route path="/listone" element={<ListoneCalciatori />} />
           <Route path="/formazione/inserisci/:giornataId" element={<InserisciFormazione />} />
           <Route path="/voti/inserisci/:giornataId" element={<InserisciVoti />} />
-          
+
           {/* Rotte protette destinate esclusivamente al ruolo 'admin' */}
-          <Route 
-            path="/admin/rose" 
-            element={currentUser?.ruolo === 'admin' ? <GestioneRose /> : <Navigate to="/" />} 
+          <Route
+            path="/admin/rose"
+            element={currentUser?.ruolo === 'admin' ? <GestioneRose /> : <Navigate to="/" />}
           />
-          <Route 
-            path="/admin/permessi" 
-            element={currentUser?.ruolo === 'admin' ? <AssegnaPermessi /> : <Navigate to="/" />} 
+          <Route
+            path="/admin/permessi"
+            element={currentUser?.ruolo === 'admin' ? <AssegnaPermessi /> : <Navigate to="/" />}
           />
-          <Route 
-            path="/admin/sposta-player" 
-            element={currentUser?.ruolo === 'admin' ? <SpostaPlayer /> : <Navigate to="/" />} 
+          <Route
+            path="/admin/sposta-player"
+            element={currentUser?.ruolo === 'admin' ? <SpostaPlayer /> : <Navigate to="/" />}
           />
-          <Route 
-            path="/admin/giornate" 
-            element={currentUser?.ruolo === 'admin' ? <GestoreGiornata /> : <Navigate to="/" />} 
+          <Route
+            path="/admin/giornate"
+            element={currentUser?.ruolo === 'admin' ? <GestoreGiornata /> : <Navigate to="/" />}
           />
-          <Route 
-            path="/admin/modifica-formazioni" 
-            element={currentUser?.ruolo === 'admin' ? <AdminModificaFormazioni /> : <Navigate to="/" />} 
+          <Route
+            path="/admin/modifica-formazioni"
+            element={currentUser?.ruolo === 'admin' ? <AdminModificaFormazioni /> : <Navigate to="/" />}
           />
-          <Route 
-            path="/admin/modifica-voti" 
-            element={currentUser?.ruolo === 'admin' ? <AdminModificaVoti /> : <Navigate to="/" />} 
+          <Route
+            path="/admin/modifica-voti"
+            element={currentUser?.ruolo === 'admin' ? <AdminModificaVoti /> : <Navigate to="/" />}
           />
-          <Route 
-            path="/admin/penalita" 
-            element={currentUser?.ruolo === 'admin' ? <AdminPenalita /> : <Navigate to="/" />} 
+          <Route
+            path="/admin/penalita"
+            element={currentUser?.ruolo === 'admin' ? <AdminPenalita /> : <Navigate to="/" />}
           />
           {/* Fallback di sicurezza: reindirizza alla home se la rotta non esiste */}
           <Route path="*" element={<Navigate to="/" />} />
@@ -204,19 +209,137 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
   );
 };
 
+// Componente personalizzato per la schermata di Login che integra il pulsante Demo
+const CustomLoginScreen = () => {
+  const { isLoaded, signIn, setActive } = useSignIn();
+  const [loadingDemo, setLoadingDemo] = useState(false);
+
+  const handleDemoLogin = async () => {
+    if (!isLoaded) return;
+    setLoadingDemo(true);
+
+    try {
+      // Eseguiamo l'autenticazione programmmatica con l'account di test
+      const result = await signIn.create({
+        identifier: "demo@gmail.com", // Sostituisci con l'email reale registrata su Clerk
+        password: "demoadmin",  // Sostituisci con la password reale
+      });
+
+      if (result.status === "complete") {
+        await setActive({ session: result.createdSessionId });
+      }
+    } catch (err) {
+      console.error("Errore durante il login dell'account demo:", err);
+      alert("Impossibile accedere all'account demo al momento.");
+    } finally {
+      setLoadingDemo(false);
+    }
+  };
+
+  return (
+    <div className="app-auth-container">
+      <div className="auth-wrapper">
+        {/* Il componente SignIn ora accetta la configurazione appearance allineata al file index.css */}
+        <SignIn
+          routing="hash"
+          appearance={{
+            elements: {
+              rootBox: "clerk-root-override",
+              card: {
+                backgroundColor: "var(--tactical-bg-card)",
+                border: "1px solid var(--tactical-border-gold)",
+                borderRadius: "12px",
+                boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)"
+              },
+              headerTitle: {
+                fontFamily: "'Montserrat', sans-serif",
+                color: "var(--tactical-text-primary)",
+                fontWeight: "700"
+              },
+              headerSubtitle: {
+                fontFamily: "'Inter', sans-serif",
+                color: "var(--tactical-text-secondary)"
+              },
+              socialButtonsBlockButton: {
+                backgroundColor: "var(--tactical-bg-main)",
+                border: "1px solid var(--tactical-border-gold)",
+                color: "var(--tactical-text-primary)",
+                '&:hover': {
+                  backgroundColor: "var(--tactical-bg-timer)"
+                }
+              },
+              socialButtonsBlockButtonText: {
+                color: "var(--tactical-text-primary)",
+                fontFamily: "'Inter', sans-serif"
+              },
+              dividerLine: {
+                backgroundColor: "var(--tactical-border-gold)"
+              },
+              dividerText: {
+                color: "var(--tactical-text-secondary)",
+                fontFamily: "'Inter', sans-serif"
+              },
+              formLabel: {
+                color: "var(--tactical-text-primary)",
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: "500"
+              },
+              formInputBox: {
+                fontFamily: "'Inter', sans-serif"
+              },
+              formButtonPrimary: {
+                backgroundColor: "var(--tactical-accent-gold)",
+                color: "var(--tactical-text-on-button)",
+                fontFamily: "'Montserrat', sans-serif",
+                fontWeight: "700",
+                textTransform: "uppercase",
+                '&:hover': {
+                  opacity: 0.9
+                }
+              },
+              footerActionText: {
+                color: "var(--tactical-text-secondary)",
+                fontFamily: "'Inter', sans-serif"
+              },
+              footerActionLink: {
+                color: "var(--tactical-text-gold)",
+                fontFamily: "'Inter', sans-serif",
+                '&:hover': {
+                  color: "var(--tactical-accent-gold)"
+                }
+              }
+            }
+          }}
+        />
+
+        <div className="demo-login-box">
+          <p>Vuoi solo dare un'occhiata alle funzionalità?</p>
+          <button
+            onClick={handleDemoLogin}
+            disabled={loadingDemo}
+            className="btn-demo-submit"
+          >
+            {loadingDemo ? "Accesso in corso... ⏳" : "Entra come Ospite (Demo)"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const App = () => {
   // Dichiarazione degli stati locali fondamentali
   const [leagueId, setLeagueId] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null); 
-  const [isSyncing, setIsSyncing] = useState(true); 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); 
-  
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isSyncing, setIsSyncing] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   // Calcolo automatico del tema di base a seconda dell'orario della giornata dell'utente
   const [theme, setTheme] = useState(() => {
     const currentHour = new Date().getHours();
     return (currentHour >= 7 && currentHour < 19) ? 'light' : 'dark';
   });
-  
+
   // Estrazione dell'utente autenticato tramite l'hook di Clerk
   const { user } = useUser();
 
@@ -274,8 +397,13 @@ const App = () => {
         } else {
           // Se esiste, aggiorna lo stato locale con le informazioni caricate
           setCurrentUser(utenteExist);
+
+          // Gestione di sicurezza per l'account demo: bypassa l'onboarding se gli dai una lega fittizia
           if (utenteExist.lega_id) {
             setLeagueId(utenteExist.lega_id);
+          } else if (utenteExist.email === 'demo@tuosito.com') {
+            // Se scatta il login demo ma non ha una lega su DB, gli assegniamo un ID finto fisso per sbloccare l'app
+            setLeagueId('lega-demo-id');
           }
         }
       } catch (err) {
@@ -311,9 +439,7 @@ const App = () => {
     <>
       {/* Visualizzato esclusivamente se l'utente non ha effettuato l'accesso */}
       <DeletedSignedOutPlaceholder>
-        <div className="app-auth-container">
-          <SignIn routing="hash" />
-        </div>
+        <CustomLoginScreen />
       </DeletedSignedOutPlaceholder>
 
       {/* Visualizzato esclusivamente se l'utente è correttamente loggato */}
@@ -322,7 +448,7 @@ const App = () => {
           <Onboarding onJoinLeague={handleJoinLeague} />
         ) : (
           <Router>
-            <AppContent 
+            <AppContent
               currentUser={currentUser}
               isSidebarOpen={isSidebarOpen}
               setIsSidebarOpen={setIsSidebarOpen}
