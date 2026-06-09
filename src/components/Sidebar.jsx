@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { UserButton } from '@clerk/clerk-react';
+import { UserButton, useUser } from '@clerk/clerk-react'; // Aggiunto useUser
 // Importiamo tutte le icone necessarie da Lucide React
 import { 
   House, 
@@ -15,6 +15,9 @@ import {
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
+  // Riferimento per accedere ai dati dell'utente loggato su Clerk
+  const { user } = useUser();
+
   // Riferimento al contenitore interno del menu per controllarne lo scroll
   const menuContentRef = useRef(null);
 
@@ -33,6 +36,10 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
     }
     onClose(); // Chiude automaticamente la sidebar dopo il click su una rotta
   };
+
+  // Definiamo se nascondere il Manage Account in base all'ID dell'utente loggato
+  // Sostituisci 'user_xxxxxxxxxxxx' con l'ID reale dell'account da bloccare
+  const nascondiManagePerQuestoUtente = user?.id === 'user_3Eu6T4BttC1NYpTZvfoV4Ib9zzU';
 
   return (
     <>
@@ -157,7 +164,17 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
         {/* FOOTER: Integrazione Account Clerk */}
         <div className="sidebar-footer tactical-sidebar-bottom">
           <div className="clerk-account-wrapper">
-            <UserButton afterSignOutUrl="/" />
+            <UserButton 
+              afterSignOutUrl="/" 
+              appearance={{
+                elements: {
+                  // Se l'utente è quello bloccato, nasconde il bottone, altrimenti lo mostra normalmente
+                  userButtonPopoverActionButton__manageAccount: { 
+                    display: nascondiManagePerQuestoUtente ? 'none' : 'flex' 
+                  }
+                }
+              }}
+            />
             <span className="clerk-label tactical-clerk-text">Gestisci Account</span>
           </div>
         </div>
