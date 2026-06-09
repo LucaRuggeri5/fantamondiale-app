@@ -84,7 +84,7 @@ const Squadre = () => {
   return (
     <div className="squadre-page-container tactical-dashboard-gap">
       <div className="participants-section">
-        <h3 className="tactical-page-title">Squadre nella Lega 🏆</h3>
+        <h3 className="tactical-page-title">Squadre nella Lega</h3>
         <p className="section-subtitle">Seleziona un club per visualizzarne la rosa.</p>
         
         <div className="participants-list">

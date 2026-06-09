@@ -81,19 +81,23 @@
   color: var(--tactical-text-secondary);
 }
 
+/* Modificato per centrare perfettamente l'icona X */
 .close-sidebar-btn.tactical-close-trigger {
   background: none;
   border: none;
   color: var(--tactical-text-secondary);
-  font-size: 26px;
   cursor: pointer;
-  line-height: 1;
-  padding: 4px 8px;
-  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 50%;
+  transition: color 0.2s ease, background-color 0.2s ease;
 }
 
 .close-sidebar-btn.tactical-close-trigger:hover {
   color: var(--tactical-text-primary);
+  background-color: var(--tactical-bg-timer);
 }
 
 /* ========================================== */
@@ -163,11 +167,17 @@
   gap: 10px;
 }
 
+/* Aggiornato il contenitore dell'icona per ospitare gli SVG */
 .tactical-menu-icon {
-  font-size: 15px;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 20px;
-  text-align: center;
+  color: currentColor; /* Eredita il colore dinamico del testo */
+}
+
+.tactical-menu-icon svg {
+  stroke: currentColor; /* Permette il cambio di colore sulle linee dell'icona */
 }
 
 /* Animazione tattica all'hover: microindentazione verso destra */

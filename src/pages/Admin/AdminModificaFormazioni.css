@@ -35,14 +35,6 @@
   transform: translateX(-2px);
 }
 
-.admin-warning-text {
-  font-family: 'Inter', sans-serif;
-  color: #ff4757; 
-  font-weight: bold; 
-  margin: 5px 0 0 0;
-  font-size: 12px;
-}
-
 /* Barra superiore Filtri Multipli */
 .admin-filter-bar {
   display: flex;

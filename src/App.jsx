@@ -123,7 +123,7 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
           </button>
           {/* Titolo applicazione con font Montserrat ereditato dal foglio globale */}
           <span className="app-title" onClick={() => navigate('/')}>
-            FantaMondiale ⚽
+            FantaMondiale
           </span>
           {currentUser?.email === 'demo@tuosito.com' && (
             <span className="demo-badge">

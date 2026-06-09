@@ -163,7 +163,7 @@ const Calendario = () => {
   return (
     <div className="calendario-page tactical-dashboard-gap">
       <div className="calendario-top-bar">
-        <h2 className="tactical-page-title">Calendario 📅</h2>
+        <h2 className="tactical-page-title">Calendario</h2>
         <p className="subtitle">Tocca una giornata per vedere i dettagli e le formazioni schierate.</p>
       </div>
 
@@ -186,7 +186,7 @@ const Calendario = () => {
                     <span className="matchday-number">G{day.numero_giornata}</span>
                     <div className="matchday-scadenze-block">
                       <span className="scadenza-item">🏁 Inizio: <b>{formattaData(day.apertura_formazioni)}</b></span>
-                      <span className="scadenza-item">⏳ Consegna: <b>{formattaData(day.scadenza_formazione)}</b></span>
+                      <span className="scadenza-item">⏳ Fine: <b>{formattaData(day.scadenza_formazione)}</b></span>
                     </div>
                   </div>
                   

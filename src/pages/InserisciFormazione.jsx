@@ -241,12 +241,12 @@ const InserisciFormazione = () => {
     <div className="inserisci-formazione-page tactical-dashboard-gap">
       <div className="formazione-header">
         <button className="btn-back-formazione" onClick={() => navigate('/dashboard')}>⬅️</button>
-        <h2>Schiera G{giornata?.numero_giornata}</h2>
+        <h2>Schiera Giornata {giornata?.numero_giornata}</h2>
       </div>
 
       {/* Box Selezione del Modulo Tattico */}
       <div className="modulo-selector-card tactical-card">
-        <label htmlFor="modulo-select">Modulo Tattico:</label>
+        <label htmlFor="modulo-select">Modulo:</label>
         <select
           id="modulo-select"
           className="select-modulo-dropdown"

@@ -38,10 +38,18 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Gestione dell'icona vettoriale SVG */
 .nav-icon {
-  font-size: 18px;
-  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+  color: currentColor; /* Forza l'SVG a prendere il colore del testo della tab */
   transition: transform 0.2s ease;
+}
+
+.nav-icon svg {
+  stroke: currentColor; /* Fa sì che il colore della linea cambi dinamicamente */
 }
 
 .nav-label {

@@ -65,17 +65,6 @@
   color: var(--tactical-text-primary);
 }
 
-.total-badge {
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  font-weight: 600;
-  background-color: var(--tactical-bg-main);
-  padding: 4px 10px;
-  border-radius: 20px;
-  color: var(--tactical-text-gold);
-  border: 1px solid var(--tactical-border-gold);
-}
-
 /* ==========================================
    4. STATO REQUISITI VUOTO & GRIDS
    ========================================== */

@@ -272,10 +272,9 @@ const AdminModificaFormazioni = () => {
       {/* Intestazione Amministrativa Forzata */}
       <div className="formazione-header admin-border-header">
         <div className="admin-header-title-container">
-          <button className="btn-back-admin" onClick={() => navigate('/dashboard')}>⬅️ Indietro</button>
-          <h2>👑 Pannello Admin: Modifica Forzosa Formazioni</h2>
+          <button className="btn-back-admin" onClick={() => navigate('/dashboard')}>⬅️</button>
+          <h2>Admin: Modifica Formazioni</h2>
         </div>
-        <p className="admin-warning-text">⚠️ MODALITÀ APERTA - Qualsiasi vincolo temporale o di blocco turno è disattivato.</p>
       </div>
 
       {/* Pannello Superiore di Selezione Filtri */}
@@ -397,7 +396,7 @@ const AdminModificaFormazioni = () => {
           {/* Azione di Override Amministrativo Finale */}
           <div className="formazione-footer-actions">
             <button className="btn-save-formazione-def admin-btn-override" onClick={handleSalvaFormazioneCoattiva} disabled={saving}>
-              {saving ? 'Forzatura in corso...' : '⚡ Salva e Sovrascrivi Formazione'}
+              {saving ? 'Forzatura in corso...' : 'Salva e Sovrascrivi Formazione'}
             </button>
           </div>
         </>

@@ -1,5 +1,17 @@
 import React, { useEffect, useRef } from 'react';
 import { UserButton } from '@clerk/clerk-react';
+// Importiamo tutte le icone necessarie da Lucide React
+import { 
+  House, 
+  Shield, 
+  Calendar, 
+  Trophy, 
+  Settings, 
+  ScrollText, 
+  Users, 
+  ClipboardList, 
+  X 
+} from 'lucide-react';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
@@ -39,10 +51,13 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
               </span>
             </div>
           </div>
-          <button className="close-sidebar-btn tactical-close-trigger" onClick={onClose}>&times;</button>
+          {/* Sostituita la x testuale con l'icona X di Lucide */}
+          <button className="close-sidebar-btn tactical-close-trigger" onClick={onClose}>
+            <X size={20} strokeWidth={2} />
+          </button>
         </div>
 
-        {/* CONTENUTO MENU (Aggiunto il ref qui per resettare lo scroll) */}
+        {/* CONTENUTO MENU */}
         <div className="sidebar-menu-content tactical-sidebar-scroll" ref={menuContentRef}>
 
           {/* NUOVA SEZIONE PRINCIPALE (Integrazione BottomNavbar) */}
@@ -50,16 +65,28 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
             <p className="section-title tactical-group-title">Navigazione</p>
             <ul className="tactical-menu-list">
               <li className="tactical-menu-item" onClick={() => handleNav('dashboard')}>
-                <span className="tactical-menu-icon">🏠</span> Dashboard
+                <span className="tactical-menu-icon">
+                  <House size={18} strokeWidth={2} />
+                </span> 
+                Dashboard
               </li>
               <li className="tactical-menu-item" onClick={() => handleNav('squadre')}>
-                <span className="tactical-menu-icon">🛡️</span> Squadre
+                <span className="tactical-menu-icon">
+                  <Shield size={18} strokeWidth={2} />
+                </span> 
+                Squadre
               </li>
               <li className="tactical-menu-item" onClick={() => handleNav('calendario')}>
-                <span className="tactical-menu-icon">📅</span> Calendario
+                <span className="tactical-menu-icon">
+                  <Calendar size={18} strokeWidth={2} />
+                </span> 
+                Calendario
               </li>
               <li className="tactical-menu-item" onClick={() => handleNav('classifica')}>
-                <span className="tactical-menu-icon">📊</span> Classifica
+                <span className="tactical-menu-icon">
+                  <Trophy size={18} strokeWidth={2} />
+                </span> 
+                Classifica
               </li>
             </ul>
           </div>
@@ -69,16 +96,28 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
             <p className="section-title tactical-group-title">Info & Regolamenti</p>
             <ul className="tactical-menu-list">
               <li className="tactical-menu-item" onClick={() => handleNav('gestione-squadra')}>
-                <span className="tactical-menu-icon">⚙️</span> Gestione Squadra
+                <span className="tactical-menu-icon">
+                  <Settings size={18} strokeWidth={2} />
+                </span> 
+                Gestione Squadra
               </li>
               <li className="tactical-menu-item" onClick={() => handleNav('regolamento')}>
-                <span className="tactical-menu-icon">📖</span> Regolamento FantaMondiale
+                <span className="tactical-menu-icon">
+                  <ScrollText size={18} strokeWidth={2} />
+                </span> 
+                Regolamento FantaMondiale
               </li>
               <li className="tactical-menu-item" onClick={() => handleNav('partecipanti')}>
-                <span className="tactical-menu-icon">👥</span> Partecipanti Lega
+                <span className="tactical-menu-icon">
+                  <Users size={18} strokeWidth={2} />
+                </span> 
+                Partecipanti Lega
               </li>
               <li className="tactical-menu-item" onClick={() => handleNav('listone')}>
-                <span className="tactical-menu-icon">📋</span> Listone Calciatori
+                <span className="tactical-menu-icon">
+                  <ClipboardList size={18} strokeWidth={2} />
+                </span> 
+                Listone Calciatori
               </li>
             </ul>
           </div>
@@ -95,7 +134,7 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
                   Rettifica Voti
                 </li>
                 <li className="tactical-menu-item admin-item" onClick={() => handleNav('admin-penalita')}>
-                  Penalità & Provvedimenti
+                  Penalità
                 </li>
                 <li className="tactical-menu-item admin-item" onClick={() => handleNav('admin-rose')}>
                   Gestione Rose

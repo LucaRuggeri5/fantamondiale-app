@@ -219,7 +219,7 @@ const GestoreGiornata = () => {
           <h3 className="tactical-card-title">{editingId ? '📝 Modifica Turno' : '➕ Crea Nuova Giornata'}</h3>
           
           <div className="tactical-input-group">
-            <label>Numero Giornata / Turno:</label>
+            <label>Numero Giornata:</label>
             <input 
               type="number" 
               value={numeroGiornata} 
@@ -230,7 +230,7 @@ const GestoreGiornata = () => {
           </div>
 
           <div className="tactical-input-group">
-            <label>Inizio / Apertura Inserimento Formazioni:</label>
+            <label>Inserimento Formazioni:</label>
             <input 
               type="datetime-local" 
               value={aperturaFormazioni} 
@@ -239,7 +239,7 @@ const GestoreGiornata = () => {
           </div>
 
           <div className="tactical-input-group">
-            <label>Scadenza / Blocco Consegna Formazioni:</label>
+            <label>Consegna Formazioni:</label>
             <input 
               type="datetime-local" 
               value={scadenzaFormazione} 
@@ -248,7 +248,7 @@ const GestoreGiornata = () => {
           </div>
 
           <div className="tactical-input-group">
-            <label>Scadenza Inserimento Voti Admin:</label>
+            <label>Inserimento Voti:</label>
             <input 
               type="datetime-local" 
               value={scadenzaVoti} 
@@ -292,15 +292,15 @@ const GestoreGiornata = () => {
 
                     <div className="tactical-status-card-body">
                       <div className="tactical-data-row">
-                        <span className="tactical-data-label">🟢 Apertura Formazioni:</span>
+                        <span className="tactical-data-label">Inizio Formazioni:</span>
                         <span className="tactical-data-value">{formattaDataLeggibile(g.apertura_formazioni)}</span>
                       </div>
                       <div className="tactical-data-row">
-                        <span className="tactical-data-label">🔴 Blocco Consegna:</span>
+                        <span className="tactical-data-label">Blocco Consegna:</span>
                         <span className="tactical-data-value">{formattaDataLeggibile(g.scadenza_formazione)}</span>
                       </div>
                       <div className="tactical-data-row">
-                        <span className="tactical-data-label">👑 Scadenza Voti Admin:</span>
+                        <span className="tactical-data-label">Scadenza Voti:</span>
                         <span className="tactical-data-value">{formattaDataLeggibile(g.scadenza_voti)}</span>
                       </div>
                     </div>
@@ -311,14 +311,14 @@ const GestoreGiornata = () => {
                         className="tactical-action-btn edit" 
                         onClick={() => handleEditClick(g)}
                       >
-                        ✏️ Modifica
+                      Modifica
                       </button>
                       <button 
                         type="button" 
                         className="tactical-action-btn delete" 
                         onClick={() => apriConfermaElimina(g.id, g.numero_giornata)}
                       >
-                        🗑️ Elimina
+                      Elimina
                       </button>
                     </div>
 

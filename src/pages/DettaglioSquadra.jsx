@@ -75,7 +75,6 @@ const DettaglioSquadra = () => {
             <LogoSquadra url={squadraInfo?.url_logo} nomeSquadra={squadraInfo?.nome} dimensione="medium" />
             <h2>{squadraInfo?.nome || "Club"}</h2>
           </div>
-          <span className="total-badge">Rosa: {totalPlayers}</span>
         </div>
       </div>
 
