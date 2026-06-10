@@ -1,22 +1,22 @@
 /* Layout Contenitore Principale */
 .tactical-regolamento-page {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   min-height: calc(100vh - 120px);
-  padding: 20px;
+  padding: 40px 20px;
   box-sizing: border-box;
 }
 
+/* Allargata la card per ospitare l'intero testo in modo leggibile ed elegante */
 .tactical-regolamento-card {
   position: relative;
   background-color: var(--tactical-bg-card);
   border: 1px solid var(--tactical-border-gold);
   border-radius: 12px;
-  padding: 60px 30px 40px 30px;
-  max-width: 450px;
+  padding: 50px 40px 40px 40px;
+  max-width: 800px;
   width: 100%;
-  text-align: center;
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
   animation: tacticalCardFadeIn 0.5s ease-out;
 }
@@ -24,8 +24,8 @@
 /* Pulsante Indietro */
 .tactical-back-btn {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 20px;
+  left: 24px;
   background: transparent;
   border: none;
   color: var(--tactical-text-gold);
@@ -36,6 +36,8 @@
   display: flex;
   align-items: center;
   transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .tactical-back-btn:hover {
@@ -43,17 +45,22 @@
   transform: translateX(-3px);
 }
 
+.tactical-regolamento-header-section {
+  text-align: center;
+  margin-top: 15px;
+}
+
 .tactical-regolamento-icon {
-  font-size: 48px;
-  margin-bottom: 20px;
+  color: var(--tactical-text-gold);
+  margin-bottom: 12px;
   display: inline-block;
-  animation: tacticalPulseIcon 3s infinite ease-in-out;
+  animation: tacticalPulseIcon 4s infinite ease-in-out;
 }
 
 .tactical-regolamento-title {
   color: var(--tactical-text-primary);
   font-family: 'Montserrat', sans-serif;
-  font-size: 26px;
+  font-size: 28px;
   font-weight: 800;
   margin: 0 0 4px 0;
 }
@@ -61,57 +68,173 @@
 .tactical-regolamento-subtitle {
   color: var(--tactical-text-gold);
   font-family: 'Inter', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   margin: 0;
 }
 
 .tactical-regolamento-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--tactical-border-gold), transparent);
-  margin: 28px 0;
+  margin: 32px 0;
 }
 
-/* Box Informativo */
-.tactical-regolamento-notice-box {
+/* Struttura del testo degli articoli */
+.tactical-regolamento-body-content {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.tactical-rule-section {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.tactical-section-header {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--tactical-text-gold);
+  border-bottom: 1px solid rgba(198, 156, 109, 0.15);
+  padding-bottom: 6px;
+  margin: 0;
+}
+
+.tactical-rule-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tactical-rule-block h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--tactical-text-primary);
+  margin: 0;
+}
+
+.tactical-rule-block p {
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--tactical-text-secondary);
+  margin: 0;
+}
+
+.tactical-rule-list {
+  margin: 4px 0 8px 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tactical-rule-list li {
+  font-family: 'Inter', sans-serif;
+  font-size: 13.5px;
+  color: var(--tactical-text-secondary);
+}
+
+.tactical-rule-list li strong {
+  color: var(--tactical-text-primary);
+}
+
+/* Wrapper per le tabelle affiancate */
+.tactical-tables-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 8px;
+}
+
+@media (max-width: 680px) {
+  .tactical-tables-wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tactical-table-container {
   background-color: var(--tactical-bg-main);
-  border-left: 4px solid var(--tactical-text-gold);
-  border-radius: 6px;
-  padding: 20px;
+  border: 1px solid rgba(198, 156, 109, 0.15);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.tactical-table-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.text-bonus {
+  color: #2e7d32; /* Verde scuro editoriale per bonus */
+}
+
+.text-malus {
+  color: #c62828; /* Rosso scuro editoriale per malus */
+}
+
+/* Struttura della tabella formale */
+.tactical-score-table {
+  width: 100%;
+  border-collapse: collapse;
   text-align: left;
 }
 
-.tactical-loading-dots-icon {
-  font-size: 24px;
-  display: block;
-  margin-bottom: 10px;
+.tactical-score-table th {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--tactical-text-secondary);
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--tactical-border-gold);
 }
 
-.tactical-notice-title {
+.tactical-score-table td {
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  padding: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
   color: var(--tactical-text-primary);
-  font-family: 'Montserrat', sans-serif;
-  margin: 0 0 8px 0;
-  font-size: 15px;
+}
+
+.tactical-score-table tr:last-child td {
+  border-bottom: none;
+}
+
+.tactical-score-table td:last-child {
+  text-align: right;
   font-weight: 700;
 }
 
-.tactical-notice-text {
-  color: var(--tactical-text-secondary);
-  font-family: 'Inter', sans-serif;
-  margin: 0;
-  font-size: 13.5px;
-  line-height: 1.6;
+/* Colori per i punteggi numerici delle tabelle */
+.score-positive {
+  color: #4caf50;
+}
+
+.score-negative {
+  color: #ef5350;
 }
 
 /* Animazioni */
 @keyframes tacticalCardFadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes tacticalPulseIcon {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.03); opacity: 1; }
 }
