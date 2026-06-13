@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react';
+import { ArrowLeft, Save, FileSpreadsheet, X, Minus, Plus, Check, ExternalLink } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 import './InserisciVoti.css';
 
@@ -60,10 +61,24 @@ const InserisciVoti = () => {
         // Scarichiamo la lista dei calciatori in formazione
         const { data: fcData } = await supabase.from('formazioni_calciatori').select(`
           id, posizione, ruolo, calciatore_id, voto_base, bonus_malus, voto_fanta, calciatori_reali!calciatore_id (id, nome)
-        `).eq('formazione_id', form.id).order('posizione', { ascending: true });
+        `).eq('formazione_id', form.id);
+
+        // Dizionario di pesi per forzare l'ordinamento classico di ruolo: P -> D -> C -> A
+        const pesiRuolo = { 'P': 1, 'D': 2, 'C': 3, 'A': 4 };
+
+        // Ordiniamo l'array prima di mapparlo nello stato locale
+        const arrayOrdinato = [...fcData].sort((a, b) => {
+          const pesoA = pesiRuolo[a.ruolo] || 5;
+          const pesoB = pesiRuolo[b.ruolo] || 5;
+          
+          if (pesoA !== pesoB) {
+            return pesoA - pesoB; // Ordina prima per ruolo (P, D, C, A)
+          }
+          return a.posizione - b.posizione; // A parità di ruolo, mantiene l'ordine di posizione (Titolari prima)
+        });
 
         // Mappiamo i dati impostando valori di default adatti a un Junior Dev
-        setCalciatoriList(fcData.map(fc => {
+        setCalciatoriList(arrayOrdinato.map(fc => {
           const infoC = Array.isArray(fc.calciatori_reali) ? fc.calciatori_reali[0] : fc.calciatori_reali;
           return {
             id_relazione: fc.id,
@@ -208,7 +223,11 @@ const InserisciVoti = () => {
           className={`btn-toggle-sv ${c.senzaVoto ? 'active' : ''}`}
           onClick={() => updateGiocatore(c.id_relazione, { senzaVoto: !c.senzaVoto })}
         >
-          {c.senzaVoto ? '✓ S.V.' : 'Imposta S.V.'}
+          {c.senzaVoto ? (
+            <span className="btn-with-icon"><Check size={12} /> S.V.</span>
+          ) : (
+            'Imposta S.V.'
+          )}
         </button>
 
         {/* Dropdown Voto Base */}
@@ -233,7 +252,7 @@ const InserisciVoti = () => {
             className="step-btn minus"
             onClick={() => updateGiocatore(c.id_relazione, { bonus_malus: (parseFloat(c.bonus_malus) - 0.5).toString() })}
           >
-            -
+            <Minus size={12} />
           </button>
           <div className="bonus-current-value">
             <small>B/M</small>
@@ -244,7 +263,7 @@ const InserisciVoti = () => {
             className="step-btn plus"
             onClick={() => updateGiocatore(c.id_relazione, { bonus_malus: (parseFloat(c.bonus_malus) + 0.5).toString() })}
           >
-            +
+            <Plus size={12} />
           </button>
         </div>
       </div>
@@ -260,25 +279,38 @@ const InserisciVoti = () => {
       {/* Intestazione Tattica */}
       <div className="voti-header">
         <button className="btn-back-voti" onClick={() => navigate('/dashboard')}>
-          ← Indietro
+          <ArrowLeft size={14} style={{ marginRight: '6px' }} /> Indietro
         </button>
         <div className="voti-title-group">
           <h2>VOTI GIORNATA {giornataInfo?.numero_giornata}</h2>
         </div>
       </div>
 
+      {/* Banner Collegamento Esterno FantaPazz */}
+      <a 
+        href="https://nations.fantapazz.com/fantacalcio/voti-ufficiali" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="fantapazz-banner"
+      >
+        <div className="banner-content">
+          <ExternalLink size={16} className="banner-icon" />
+          <span>Controlla i voti ufficiali in tempo reale su <strong>FantaPazz</strong></span>
+        </div>
+      </a>
+
       <div className="voti-main-layout">
         {/* Colonna di Input dei Calciatori */}
         <div className="voti-inputs-column">
           <div className="voti-section-box">
-            <div className="section-title-bar">TITOLARI SCHIERATI</div>
+            <div className="section-title-bar">TITOLARI SCHIERATI (Ordinati per Ruolo)</div>
             <div className="cards-stack">
               {calciatoriList.filter(c => c.posizione <= 11).map(c => renderRow(c))}
             </div>
           </div>
           
           <div className="voti-section-box">
-            <div className="section-title-bar riserve-bar">LINEA DI PANCHINA</div>
+            <div className="section-title-bar riserve-bar">LINEA DI PANCHINA (Ordinati per Ruolo)</div>
             <div className="cards-stack">
               {calciatoriList.filter(c => c.posizione > 11).map(c => renderRow(c, true))}
             </div>
@@ -291,7 +323,9 @@ const InserisciVoti = () => {
           <div className="summary-sticky-card">
             <div className="drawer-header-mobile">
               <h3>PROIEZIONE LIVE SQUADRA</h3>
-              <button className="close-drawer-btn" onClick={() => setIsDrawerOpen(false)}>✕</button>
+              <button className="close-drawer-btn" onClick={() => setIsDrawerOpen(false)}>
+                <X size={18} />
+              </button>
             </div>
             
             <div className="score-main-display">
@@ -330,7 +364,9 @@ const InserisciVoti = () => {
               onClick={handleSalvaTuttiVoti} 
               disabled={saving}
             >
-              {saving ? 'SALVATAGGIO...' : '💾 SALVA VOTI FORMICAZIONE'}
+              {saving ? 'SALVATAGGIO...' : (
+                <span className="btn-with-icon"><Save size={16} /> SALVA VOTI FORMAZIONE</span>
+              )}
             </button>
           </div>
         </div>
@@ -347,7 +383,7 @@ const InserisciVoti = () => {
             RIEPILOGO
           </button>
           <button className="btn-m-primary" onClick={handleSalvaTuttiVoti} disabled={saving}>
-            {saving ? '...' : '💾 SALVA'}
+            SALVA{saving ? '...' : <Save size={14} />}
           </button>
         </div>
       </div>

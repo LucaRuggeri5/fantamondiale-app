@@ -10,7 +10,7 @@
   --tactical-accent-gold: #c69c6d;       /* Oro spazzolato / Ottone opaco */
   --tactical-border-gold: #4a3e30;       /* Bordo oro brunito e discreto */
   --tactical-highlight-points: #ffb800;  /* Oro vivo per i punteggi alti */
-  --tactical-highlight-penalty: #ff0000; /* Rosso bordeaux per le penalità */
+  --tactical-highlight-penalty: #800000; /* Rosso bordeaux per le penalità */
   --tactical-bg-timer: #3c3c3c;          /* Grigio fango scuro per i contatori */
 
   /* Testo Notte */

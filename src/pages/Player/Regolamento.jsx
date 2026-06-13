@@ -1,19 +1,22 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, FileText, CheckCircle2, AlertTriangle, Award, Scale } from 'lucide-react';
+import { ArrowLeft, FileText, CheckCircle2, AlertTriangle } from 'lucide-react';
 import './Regolamento.css';
 
 const Regolamento = () => {
+  // Inizializziamo il veder per la navigazione interna dell'app
   const navigate = useNavigate();
 
   return (
     <div className="tactical-app-container tactical-regolamento-page">
       <div className="tactical-regolamento-card">
-        {/* Pulsante di navigazione coerente */}
+        
+        {/* Pulsante di navigazione coerente per tornare alla Dashboard */}
         <button className="tactical-back-btn" onClick={() => navigate('/dashboard')}>
           <ArrowLeft size={16} style={{ marginRight: '6px' }} /> Indietro
         </button>
 
+        {/* Intestazione del Regolamento */}
         <div className="tactical-regolamento-header-section">
           <div className="tactical-regolamento-icon">
             <FileText size={40} strokeWidth={1.5} />
@@ -26,7 +29,7 @@ const Regolamento = () => {
         
         <div className="tactical-regolamento-body-content">
           
-          {/* ARTICOLO 1 */}
+          {/* ARTICOLO 1 – Disposizioni generali */}
           <section className="tactical-rule-section">
             <h2 className="tactical-section-header">Art. 1 – Disposizioni generali</h2>
             
@@ -49,7 +52,7 @@ const Regolamento = () => {
             <div className="tactical-rule-block">
               <h3>1.3 Fonti ufficiali</h3>
               <p>La determinazione dei ruoli dei calciatori avviene esclusivamente tramite la piattaforma <strong>FantaPazz</strong>.</p>
-              <p>I voti ufficiali delle prestazioni vengono acquisiti dalla piattaforma <strong>Pianeta Fantacalcio (sezione rossa)</strong>.</p>
+              <p>I voti ufficiali delle prestazioni vengono acquisiti dalla piattaforma <strong>FantaPazz</strong> direttamente dal link che si può trovare nella sezione "Inserisci Voti" o dal link nella Sidebar.</p>
             </div>
 
             <div className="tactical-rule-block">
@@ -58,19 +61,30 @@ const Regolamento = () => {
               <p>La squadra inadempiente è inoltre tenuta a schierare una formazione valida, escludendo i calciatori appartenenti a gare già iniziate al momento della sottomissione.</p>
             </div>
 
+            {/* NUOVO PARAGRAFO 1.5: Arrotondamento decimali dei voti */}
             <div className="tactical-rule-block">
-              <h3>1.5 Errori di registrazione voti</h3>
+              <h3>1.5 Gestione decimali e arrotondamento voti</h3>
+              <p>Poiché il nostro sistema accetta esclusivamente votazioni con decimali puri o sottomultipli di mezzo punto (es. <strong>.00</strong> o <strong>.50</strong>), i voti registrati su FantaPazz che presentano frazioni decimali non conformi (come <em>.25</em> o <em>.75</em>) verranno modificati d'ufficio.</p>
+              <p>In queste circostanze, il voto sarà applicato effettuando un <strong>arrotondamento per difetto</strong> al primo valore valido.</p>
+              <p><strong>Esempio pratico:</strong> Un voto di 6.25 diventerà <strong>6.00</strong>; un voto di 6.75 diventerà <strong>6.50</strong>.</p>
+            </div>
+
+            {/* PARAGRAFO SCALATO DA 1.5 A 1.6 */}
+            <div className="tactical-rule-block">
+              <h3>1.6 Errori di registrazione voti</h3>
               <p>In caso di errori nella compilazione o gestione dei voti da parte dei fantallenatori, sarà applicata una <strong>penalità pari a -3 punti</strong>, oltre all’annullamento e al ricalcolo dell’eventuale vantaggio impropriamente ottenuto.</p>
               <p>Qualora l’errore comporti una variazione in diminuzione del punteggio (errore "per difetto"), non verrà applicata alcuna sanzione disciplinare.</p>
             </div>
 
+            {/* PARAGRAFO SCALATO DA 1.6 A 1.7 */}
             <div className="tactical-rule-block">
-              <h3>1.6 Quota di partecipazione</h3>
+              <h3>1.7 Quota di partecipazione</h3>
               <p>La partecipazione al torneo è subordinata al versamento di una quota di iscrizione pari a <strong>30€ per squadra</strong>.</p>
             </div>
 
+            {/* PARAGRAFO SCALATO DA 1.7 A 1.8 */}
             <div className="tactical-rule-block">
-              <h3>1.7 Premi</h3>
+              <h3>1.8 Premi</h3>
               <p>Il montepremi complessivo viene redistribuito secondo la seguente gerarchia:</p>
               <ul className="tactical-rule-list">
                 <li><strong>1° Classificato:</strong> 150€</li>
@@ -78,13 +92,14 @@ const Regolamento = () => {
               </ul>
             </div>
 
+            {/* PARAGRAFO SCALATO DA 1.8 A 1.9 */}
             <div className="tactical-rule-block">
-              <h3>1.8 Casi non disciplinati</h3>
+              <h3>1.9 Casi non disciplinati</h3>
               <p>Tutte le casistiche non espressamente previste dal presente documento saranno sottoposte a votazione vincolante tramite sondaggio ufficiale all'interno del gruppo WhatsApp dedicato. Ogni squadra ha diritto a un solo voto per ciascuna delibera.</p>
             </div>
           </section>
 
-          {/* ARTICOLO 2 */}
+          {/* ARTICOLO 2 – Regole speciali */}
           <section className="tactical-rule-section">
             <h2 className="tactical-section-header">Art. 2 – Regole speciali</h2>
 
@@ -111,12 +126,12 @@ const Regolamento = () => {
             </div>
 
             <div className="tactical-rule-block">
-              <h3>2.4 Casi di esclusione definitiva</h3>
+              <h3>2.4 Casi di exclusion definitiva</h3>
               <p>In caso di squalifica o sospensione del giocatore per doping, decesso o qualsiasi altra motivazione amministrativa insorta durante lo svolgimento della competizione, il calciatore <strong>non potrà in alcun modo essere sostituito</strong>.</p>
             </div>
           </section>
 
-          {/* ARTICOLO 3 */}
+          {/* ARTICOLO 3 – Sistema di punteggio */}
           <section className="tactical-rule-section">
             <h2 className="tactical-section-header">Art. 3 – Sistema di punteggio</h2>
             
@@ -144,7 +159,7 @@ const Regolamento = () => {
                       <td className="score-positive">+2.0</td>
                     </tr>
                     <tr>
-                      <td>Assist Servito</td>
+                      <td>Assist</td>
                       <td className="score-positive">+1.0</td>
                     </tr>
                     <tr>

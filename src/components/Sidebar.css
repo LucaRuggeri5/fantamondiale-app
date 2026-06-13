@@ -187,6 +187,16 @@
   transform: translateX(4px);
 }
 
+/* Stylizzazione specifica per i link esterni della sidebar */
+.sidebar-external-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
 /* Voci specifiche amministratore */
 .tactical-menu-item.admin-item {
   font-size: 13px;

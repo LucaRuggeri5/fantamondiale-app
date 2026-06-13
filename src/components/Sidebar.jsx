@@ -10,7 +10,8 @@ import {
   ScrollText, 
   Users, 
   ClipboardList, 
-  X 
+  X,
+  ExternalLink 
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -102,17 +103,26 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
           <div className="menu-section tactical-menu-group">
             <p className="section-title tactical-group-title">Info & Regolamenti</p>
             <ul className="tactical-menu-list">
-              <li className="tactical-menu-item" onClick={() => handleNav('gestione-squadra')}>
-                <span className="tactical-menu-icon">
-                  <Settings size={18} strokeWidth={2} />
-                </span> 
-                Gestione Squadra
-              </li>
               <li className="tactical-menu-item" onClick={() => handleNav('regolamento')}>
                 <span className="tactical-menu-icon">
                   <ScrollText size={18} strokeWidth={2} />
                 </span> 
                 Regolamento FantaMondiale
+              </li>
+              {/* Voce Link Esterno ai Voti FantaPazz */}
+              <li className="tactical-menu-item">
+                <a 
+                  href="https://nations.fantapazz.com/fantacalcio/voti-ufficiali" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="sidebar-external-link"
+                  onClick={onClose}
+                >
+                  <span className="tactical-menu-icon">
+                    <ExternalLink size={18} strokeWidth={2} />
+                  </span> 
+                  Voti FantaPazz
+                </a>
               </li>
               <li className="tactical-menu-item" onClick={() => handleNav('partecipanti')}>
                 <span className="tactical-menu-icon">
@@ -125,6 +135,12 @@ const Sidebar = ({ isOpen, onClose, userRole, nomeUtente, onNavigate }) => {
                   <ClipboardList size={18} strokeWidth={2} />
                 </span> 
                 Listone Calciatori
+              </li>
+              <li className="tactical-menu-item" onClick={() => handleNav('gestione-squadra')}>
+                <span className="tactical-menu-icon">
+                  <Settings size={18} strokeWidth={2} />
+                </span> 
+                Gestione Squadra
               </li>
             </ul>
           </div>
