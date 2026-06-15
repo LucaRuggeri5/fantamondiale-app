@@ -1,0 +1,80 @@
+/* Posizionamento fisso sullo schermo sopra a qualsiasi cosa (z-index altissimo) */
+.tactical-toast-wrapper {
+  position: fixed;
+  top: 24px;
+  right: 10px;
+  margin-left: 50px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 300px;
+  max-width: 450px;
+  padding: 14px 18px;
+  background-color: var(--tactical-bg-card, #1a1a1a);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  font-family: 'Inter', sans-serif;
+  
+  /* Animazione di comparsa dall'esterno verso l'interno */
+  animation: toastSlideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.toast-message {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--tactical-text-primary, #ffffff);
+  line-height: 1.4;
+}
+
+/* Gestione dei bordi colorati in base al tipo per un look pulito e non neon */
+.toast-success { border-left: 4px solid #4caf50; border: 1px solid rgba(76, 175, 80, 0.3); border-left: 4px solid #4caf50; }
+.toast-error { border-left: 4px solid #ef5350; border: 1px solid rgba(239, 83, 80, 0.3); border-left: 4px solid #ef5350; }
+.toast-warning { border-left: 4px solid #ffca28; border: 1px solid rgba(255, 202, 40, 0.3); border-left: 4px solid #ffca28; }
+
+/* Colori delle singole icone */
+.icon-success { color: #4caf50; }
+.icon-error { color: #ef5350; }
+.icon-warning { color: #ffca28; }
+
+/* Bottone di chiusura manuale */
+.toast-close-btn {
+  background: none;
+  border: none;
+  color: var(--tactical-text-secondary, #aaaaaa);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  margin-left: 12px;
+  transition: all 0.2s ease;
+}
+
+.tactical-toast-wrapper:hover .toast-close-btn {
+  color: var(--tactical-text-primary, #ffffff);
+}
+
+.toast-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Keyframes per l'animazione di entrata */
+@keyframes toastSlideIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

@@ -5,11 +5,17 @@ import { supabase } from '../../supabaseClient';
 import LogoSquadra from '../../components/LogoSquadra/LogoSquadra';
 import './AdminPenalita.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
+import { useNotification } from '../../context/NotificationContext';
+
 const AdminPenalita = () => {
   const navigate = useNavigate();
   const [squadre, setSquadre] = useState([]);
   const [loading, setLoading] = useState(true);
   const [savingId, setSavingId] = useState(null);
+
+  // --- INNESTO NOTIFICHE: ESTRAIAMO LE FUNZIONI SHOWTOAST E SHOWCONFIRM ---
+  const { showToast, showConfirm } = useNotification();
 
   const fetchSquadrePenalita = async () => {
     try {
@@ -28,6 +34,7 @@ const AdminPenalita = () => {
       setSquadre(squadreInizializzate);
     } catch (err) {
       console.error("Errore recupero squadre penalità:", err);
+      showToast("Impossibile caricare il registro sanzioni.", "error");
     } finally {
       setLoading(false);
     }
@@ -43,33 +50,44 @@ const AdminPenalita = () => {
     ));
   };
 
-  const handleSalvaPenalita = async (squadra) => {
+  const handleSalvaPenalita = (squadra) => {
     const valoreNumerico = parseFloat(squadra.penalitaInput);
     
     if (isNaN(valoreNumerico) || valoreNumerico < 0) {
-      alert("Inserisci un valore numerico valido e maggiore o uguale a 0.");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
+      showToast("Inserisci un valore numerico valido e maggiore o uguale a 0.", "warning");
       return;
     }
 
-    try {
-      setSavingId(squadra.id);
-      const { error } = await supabase
-        .from('squadre')
-        .update({ penalita: valoreNumerico })
-        .eq('id', squadra.id);
+    // --- MODIFICA NOTIFICHE: INNESTO DEL MODALE DI CONFERMA PRIMA DI SALVARE ---
+    showConfirm(
+      "Conferma Sanzione",
+      `Stai per impostare la penalità di ${squadra.nome} a ${valoreNumerico} punti. Vuoi procedere?`,
+      async () => {
+        try {
+          setSavingId(squadra.id);
+          const { error } = await supabase
+            .from('squadre')
+            .update({ penalita: valoreNumerico })
+            .eq('id', squadra.id);
 
-      if (error) throw error;
+          if (error) throw error;
 
-      setSquadre(prev => prev.map(s => 
-        s.id === squadra.id ? { ...s, penalita: valoreNumerico } : s
-      ));
-      alert(`Penalità di ${valoreNumerico} punti applicata a: ${squadra.nome}`);
-    } catch (err) {
-      console.error("Errore salvataggio:", err);
-      alert("Impossibile salvare la penalità.");
-    } finally {
-      setSavingId(null);
-    }
+          setSquadre(prev => prev.map(s => 
+            s.id === squadra.id ? { ...s, penalita: valoreNumerico } : s
+          ));
+          
+          // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT CON UN ELEGANTE TOAST SUCCESS ---
+          showToast(`Penalità di ${valoreNumerico} pt aggiornata per ${squadra.nome}`, "success");
+        } catch (err) {
+          console.error("Errore salvataggio:", err);
+          // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT D'ERRORE ---
+          showToast("Impossibile salvare la penalità su database.", "error");
+        } finally {
+          setSavingId(null);
+        }
+      }
+    );
   };
 
   if (loading) return <div className="tactical-penalita-loading">Caricamento registro sanzioni... ⏳</div>;

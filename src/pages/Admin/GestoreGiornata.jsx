@@ -4,6 +4,9 @@ import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../../supabaseClient'; 
 import './GestoreGiornata.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
+import { useNotification } from '../../context/NotificationContext';
+
 const GestoreGiornata = () => {
   const { user } = useUser(); 
   const navigate = useNavigate(); 
@@ -11,9 +14,9 @@ const GestoreGiornata = () => {
   const [loading, setLoading] = useState(true); 
   const [editingId, setEditingId] = useState(null); 
   const [adminLegaId, setAdminLegaId] = useState(null); 
-  
-  // STATO PER L'ALERT PERSONALIZZATO
-  const [deleteTarget, setDeleteTarget] = useState(null);
+
+  // --- INNESTO NOTIFICHE: RECUPERIAMO LE FUNZIONI CENTRALIZZATE ---
+  const { showToast, showConfirm } = useNotification();
 
   // Campi del form per l'inserimento o la modifica di una giornata
   const [numeroGiornata, setNumeroGiornata] = useState('');
@@ -37,11 +40,13 @@ const GestoreGiornata = () => {
           setAdminLegaId(data.lega_id);
           fetchGiornate(data.lega_id); 
         } else {
-          alert("Attenzione: non risulti associato a nessuna lega come amministratore.");
+          // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
+          showToast("Attenzione: non risulti associato a nessuna lega come amministratore.", "warning");
           setLoading(false);
         }
       } catch (err) {
         console.error("Errore recupero info admin:", err);
+        showToast("Errore nel recupero delle credenziali della lega.", "error");
         setLoading(false);
       }
     };
@@ -66,7 +71,8 @@ const GestoreGiornata = () => {
       setGiornate(data || []);
     } catch (err) {
       console.error("Errore lettura giornate:", err);
-      alert("Impossibile caricare le giornate di gioco.");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST ERROR ---
+      showToast("Impossibile caricare le giornate di gioco.", "error");
     } finally {
       setLoading(false);
     }
@@ -103,36 +109,33 @@ const GestoreGiornata = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Questa funzione apre l'alert personalizzato salvando i dati del turno da eliminare
+  // --- MODIFICA NOTIFICHE: ADESSO USA IL MODALE ASINCRONO CONTESTUALE ---
   const apriConfermaElimina = (giornataId, numero) => {
-    setDeleteTarget({ id: giornataId, numero: numero });
-  };
+    showConfirm(
+      "Elimina Giornata",
+      `Stai per eliminare definitivamente la Giornata ${numero} dal calendario. Questa azione rimuoverà tutte le scadenze impostate per questo turno.`,
+      async () => {
+        try {
+          const { error } = await supabase
+            .from('giornate')
+            .delete()
+            .eq('id', giornataId);
 
-  // Funzione che esegue la cancellazione effettiva su Supabase
-  const handleEliminaEffettiva = async () => {
-    if (!deleteTarget) return;
+          if (error) throw error;
 
-    try {
-      const { error } = await supabase
-        .from('giornate')
-        .delete()
-        .eq('id', deleteTarget.id);
-
-      if (error) throw error;
-
-      alert(`Giornata ${deleteTarget.numero} eliminata con successo.`);
-      
-      if (editingId === deleteTarget.id) {
-        resetForm();
+          showToast(`Giornata ${numero} eliminata con successo.`, "success");
+          
+          if (editingId === giornataId) {
+            resetForm();
+          }
+          
+          fetchGiornate(adminLegaId); 
+        } catch (err) {
+          console.error("Errore durante l'eliminazione della giornata:", err);
+          showToast("Impossibile eliminare la giornata. Verifica se ci sono dati o classifiche collegate.", "error");
+        }
       }
-      
-      setDeleteTarget(null); 
-      fetchGiornate(adminLegaId); 
-    } catch (err) {
-      console.error("Errore durante l'eliminazione della giornata:", err);
-      alert("Impossibile eliminare la giornata. Verifica se ci sono dati collegati.");
-      setDeleteTarget(null);
-    }
+    );
   };
 
   // Svuota tutti i campi del form
@@ -149,12 +152,12 @@ const GestoreGiornata = () => {
     e.preventDefault();
     
     if (!adminLegaId) {
-      alert("Errore: Mancano le informazioni sulla tua lega di appartenenza.");
+      showToast("Errore: Mancano le informazioni sulla tua lega di appartenenza.", "error");
       return;
     }
 
     if (!numeroGiornata || !aperturaFormazioni || !scadenzaFormazione || !scadenzaVoti) {
-      alert("Compila tutti i campi obbligatori.");
+      showToast("Compila tutti i campi obbligatori del form.", "warning");
       return;
     }
 
@@ -174,19 +177,19 @@ const GestoreGiornata = () => {
           .update(updatePayload)
           .eq('id', editingId);
         if (error) throw error;
-        alert("Giornata aggiornata con successo.");
+        showToast(`Giornata ${numeroGiornata} aggiornata con successo.`, "success");
       } else {
         const { error } = await supabase
           .from('giornate')
           .insert([payload]);
         if (error) throw error;
-        alert("Nuova giornata inserita nel calendario.");
+        showToast(`Nuova giornata inserita nel calendario (Turno ${numeroGiornata}).`, "success");
       }
       resetForm();
       fetchGiornate(adminLegaId); 
     } catch (err) {
       console.error(err);
-      alert("Errore durante il salvataggio dei dati.");
+      showToast("Errore durante il salvataggio dei dati su database.", "error");
     }
   };
 
@@ -329,39 +332,6 @@ const GestoreGiornata = () => {
           )}
         </div>
       </div>
-
-      {/* MODAL ALERT DI ELIMINAZIONE TACTICAL SUITE */}
-      {deleteTarget && (
-        <div className="tactical-alert-overlay">
-          <div className="tactical-alert-modal">
-            <div className="tactical-alert-icon">⚠️</div>
-            <h4 className="tactical-alert-title">Sei assolutamente sicuro?</h4>
-            <p className="tactical-alert-text">
-              Stai per eliminare definitivamente la <strong className="tactical-highlight">Giornata {deleteTarget.numero}</strong> dal calendario di gioco del FantaMondiale.
-            </p>
-            <p className="tactical-alert-warning">
-              Questa azione è irreversibile e rimuoverà tutte le scadenze impostate per questo turno.
-            </p>
-            <div className="tactical-alert-actions">
-              <button 
-                type="button" 
-                className="tactical-btn tactical-btn-secondary" 
-                onClick={() => setDeleteTarget(null)}
-              >
-                No, Annulla
-              </button>
-              <button 
-                type="button" 
-                className="tactical-btn tactical-alert-confirm-btn" 
-                onClick={handleEliminaEffettiva}
-              >
-                Sì, Elimina Turno
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 };

@@ -4,6 +4,9 @@ import { supabase } from '../../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import './SpostaPlayer.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
+import { useNotification } from '../../context/NotificationContext';
+
 const SpostaPlayer = () => {
   const { user } = useUser();
   const navigate = useNavigate(); // Hook di navigazione della plancia
@@ -11,6 +14,9 @@ const SpostaPlayer = () => {
   const [utentiLega, setUtentiLega] = useState([]);
   const [squadreLega, setSquadreLega] = useState([]);
   const [adminContext, setAdminContext] = useState(null);
+
+  // --- INNESTO NOTIFICHE: ESTRAIAMO LE FUNZIONI SHOWTOAST E SHOWCONFIRM ---
+  const { showToast, showConfirm } = useNotification();
 
   const loadSpostaData = async () => {
     try {
@@ -47,6 +53,7 @@ const SpostaPlayer = () => {
       }
     } catch (err) {
       console.error("Errore caricamento dati trasferimento:", err);
+      showToast("Impossibile caricare i dati dei trasferimenti.", "error");
     } finally {
       setLoading(false);
     }
@@ -57,24 +64,44 @@ const SpostaPlayer = () => {
   }, [user]);
 
   // Gestione del cambio di club dal menu a tendina
-  const handleTeamChange = async (utenteId, nuovaSquadraId) => {
+  const handleTeamChange = (utenteId, nomeUtente, nuovaSquadraId, nomeSquadra) => {
     // Se viene scelta la stringa vuota, l'utente viene impostato a null (svincolato)
     const valoreSquadra = nuovaSquadraId === "" ? null : nuovaSquadraId;
+    
+    // Testo dinamico per il modale in base all'azione di assegnazione o svincolo
+    const messaggioConferma = valoreSquadra 
+      ? `Vuoi davvero trasferire il player "${nomeUtente}" alla squadra "${nomeSquadra}"?`
+      : `Vuoi davvero svincolare il player "${nomeUtente}" rimuovendolo dal suo attuale club?`;
 
-    try {
-      const { error } = await supabase
-        .from('utenti')
-        .update({ squadra_id: valoreSquadra })
-        .eq('id', utenteId);
+    // --- MODIFICA NOTIFICHE: INNESTO DEL MODALE DI CONFERMA PRIMA DI SALVARE ---
+    showConfirm(
+      "Conferma Trasferimento",
+      messaggioConferma,
+      async () => {
+        try {
+          const { error } = await supabase
+            .from('utenti')
+            .update({ squadra_id: valoreSquadra })
+            .eq('id', utenteId);
 
-      if (error) throw error;
+          if (error) throw error;
 
-      // Sincronizzazione immediata dello stato locale per evitare refresh di pagina
-      setUtentiLega(prev => prev.map(u => u.id === utenteId ? { ...u, squadra_id: valoreSquadra } : u));
-    } catch (err) {
-      console.error(err);
-      alert("Errore durante lo spostamento del player.");
-    }
+          // Sincronizzazione immediata dello stato locale per evitare refresh di pagina
+          setUtentiLega(prev => prev.map(u => u.id === utenteId ? { ...u, squadra_id: valoreSquadra } : u));
+          
+          // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT CON UN TOAST SUCCESS ---
+          const messaggioSuccesso = valoreSquadra 
+            ? `Player "${nomeUtente}" trasferito con successo!` 
+            : `Player "${nomeUtente}" svincolato correttamente.`;
+          showToast(messaggioSuccesso, "success");
+          
+        } catch (err) {
+          console.error(err);
+          // --- MODIFICA NOTIFICHE: SOSTITUITO VECCHIO ALERT DI ERRORE ---
+          showToast("Errore durante lo spostamento del player su database.", "error");
+        }
+      }
+    );
   };
 
   if (loading) {
@@ -112,7 +139,10 @@ const SpostaPlayer = () => {
               <label>Club Associato</label>
               <select
                 value={ut.squadra_id || ""}
-                onChange={(e) => handleTeamChange(ut.id, e.target.value)}
+                onChange={(e) => {
+                  const targetOpt = e.target.options[e.target.selectedIndex];
+                  handleTeamChange(ut.id, ut.nome_utente, e.target.value, targetOpt.text);
+                }}
                 className="tactical-select-transfer-dropdown"
               >
                 <option value="">-- Svincolato / Nessuna squadra --</option>

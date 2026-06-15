@@ -6,11 +6,17 @@ import { useUser } from '@clerk/clerk-react';
 import LogoSquadra from '../components/LogoSquadra/LogoSquadra';
 import './Squadre.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
+import { useNotification } from '../context/NotificationContext';
+
 const Squadre = () => {
   const { user } = useUser();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [groupedSquadre, setGroupedSquadre] = useState([]); 
+
+  // --- INNESTO NOTIFICHE: ESTRAIAMO LA FUNZIONE SHOWTOAST ---
+  const { showToast } = useNotification();
 
   const loadSquadreData = async () => {
     try {
@@ -60,6 +66,8 @@ const Squadre = () => {
       }
     } catch (err) {
       console.error("Errore nel caricamento dei club della lega:", err);
+      // --- MODIFICA NOTIFICHE: TOAST ERRORE BANCO DATI ---
+      showToast("Impossibile caricare i club della lega.", "error");
     } finally {
       setLoading(false);
     }
@@ -71,7 +79,8 @@ const Squadre = () => {
 
   const handleSquadraClick = (id) => {
     if (!id) {
-      alert("Questa squadra non è ancora stata fondata o associata!");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
+      showToast("Questa squadra non è ancora stata fondata o associata!", "warning");
       return;
     }
     navigate(`/squadre/${id}`);

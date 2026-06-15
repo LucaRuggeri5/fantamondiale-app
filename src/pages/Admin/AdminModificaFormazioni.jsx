@@ -4,8 +4,14 @@ import { supabase } from '../../supabaseClient';
 import '../InserisciFormazione.css'; 
 import './AdminModificaFormazioni.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
+import { useNotification } from '../../context/NotificationContext';
+
 const AdminModificaFormazioni = () => {
   const navigate = useNavigate();
+  
+  // --- INNESTO NOTIFICHE: RECUPERIAMO LA FUNZIONE CENTRALIZZATA DEI TOAST ---
+  const { showToast } = useNotification();
   
   // Stati di caricamento asincrono e blocco interazioni
   const [loadingSetup, setLoadingSetup] = useState(true);
@@ -57,6 +63,7 @@ const AdminModificaFormazioni = () => {
         if (sData?.length > 0) setSquadraId(sData[0].id);
       } catch (err) {
         console.error("Errore setup admin:", err);
+        showToast("Errore durante l'inizializzazione dei dati admin.", "error");
       } finally {
         setLoadingSetup(false);
       }
@@ -129,6 +136,7 @@ const AdminModificaFormazioni = () => {
         }
       } catch (err) {
         console.error("Errore caricamento dati:", err);
+        showToast("Errore nel caricamento della formazione selezionata.", "error");
       } finally {
         setLoadingDati(false);
       }
@@ -146,7 +154,8 @@ const AdminModificaFormazioni = () => {
       const attualiRuolo = titolari.filter(t => t.ruolo === calciatore.ruolo).length;
 
       if (attualiRuolo >= limiteRuolo) {
-        alert(`Massimo ${limiteRuolo} giocatori per il ruolo ${calciatore.ruolo} con questo modulo.`);
+        // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
+        showToast(`Massimo ${limiteRuolo} giocatori per il ruolo ${calciatore.ruolo} con questo modulo.`, "warning");
         return;
       }
       setPanchina(prev => prev.filter(p => p.id !== calciatore.id));
@@ -161,7 +170,8 @@ const AdminModificaFormazioni = () => {
     const limiteConsentito = limitsPanchina[calciatore.ruolo];
 
     if (attualiInPanchina >= limiteConsentito) {
-      alert(`In panchina puoi mettere al massimo ${limiteConsentito} per il ruolo: ${calciatore.ruolo}`);
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
+      showToast(`In panchina puoi mettere al massimo ${limiteConsentito} per il ruolo: ${calciatore.ruolo}`, "warning");
       return;
     }
     setPanchina(prev => [...prev, calciatore]);
@@ -178,7 +188,8 @@ const AdminModificaFormazioni = () => {
   // Sovrascrittura e salvataggio forzoso sul database Supabase
   const handleSalvaFormazioneCoattiva = async () => {
     if (titolari.length === 0 && panchina.length === 0) {
-      alert("Inserisci almeno un giocatore prima di salvare!");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
+      showToast("Inserisci almeno un giocatore prima di salvare!", "warning");
       return;
     }
 
@@ -220,10 +231,13 @@ const AdminModificaFormazioni = () => {
 
       // Inserimento batch dei record nella tabella accoppiamenti
       await supabase.from('formazioni_calciatori').insert(recordCalciatori);
-      alert("Formazione salvata d'autorità con successo!");
+      
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST SUCCESS ---
+      showToast("Formazione salvata d'autorità con successo!", "success");
     } catch (err) {
       console.error(err);
-      alert("Errore durante il salvataggio admin.");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST ERROR ---
+      showToast("Errore durante il salvataggio admin.", "error");
     } finally {
       setSaving(false);
     }

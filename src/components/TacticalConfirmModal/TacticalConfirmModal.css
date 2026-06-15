@@ -1,0 +1,126 @@
+/* Sfondo scuro e blurrato speculare alla Sidebar */
+.tactical-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 9998; /* Un livello sotto al modale vero e proprio */
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* Box centrale del modale tattico */
+.tactical-modal-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  width: 90%;
+  max-width: 420px;
+  background-color: var(--tactical-bg-card, #1a1a1a);
+  border: 1px solid var(--tactical-border-gold, #c69c6d);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  font-family: 'Inter', sans-serif;
+  
+  /* Animazione di comparsa dinamica dal centro */
+  animation: modalScaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.tactical-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.tactical-modal-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(198, 156, 109, 0.1);
+  padding: 8px;
+  border-radius: 50%;
+  border: 1px solid rgba(198, 156, 109, 0.2);
+}
+
+.tactical-modal-alert-icon {
+  color: var(--tactical-text-gold, #c69c6d);
+}
+
+.tactical-modal-title {
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--tactical-text-primary, #ffffff);
+}
+
+.tactical-modal-body {
+  margin-bottom: 24px;
+}
+
+.tactical-modal-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--tactical-text-secondary, #aaaaaa);
+}
+
+/* Allineamento pulsanti d'azione a destra */
+.tactical-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Pulsanti base */
+.tactical-modal-btn {
+  padding: 10px 18px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.2s ease;
+}
+
+/* Tasto Annulla neutro */
+.btn-secondary {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--tactical-text-secondary, #aaaaaa);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--tactical-text-primary, #ffffff);
+}
+
+/* Tasto Conferma d'azione stile rosso scuro tattico per operazioni importanti */
+.btn-danger {
+  background-color: #b71c1c;
+  border: 1px solid #d32f2f;
+  color: #ffffff;
+}
+
+.btn-danger:hover {
+  background-color: #c62828;
+  box-shadow: 0 0 12px rgba(198, 40, 40, 0.4);
+}
+
+/* Keyframes per la zoom-in morbida del modale */
+@keyframes modalScaleIn {
+  from {
+    transform: translate(-50%, -40%) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}

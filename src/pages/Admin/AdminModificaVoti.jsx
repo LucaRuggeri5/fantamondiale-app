@@ -3,12 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import './AdminModificaVoti.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
+import { useNotification } from '../../context/NotificationContext';
+
 /**
  * Pannello di Controllo d'Autorità per la rettifica dei voti tattici.
  * Sviluppato con logiche lineari e Custom Properties per la Tactical Suite.
  */
 const AdminModificaVoti = () => {
   const navigate = useNavigate();
+  
+  // --- INNESTO NOTIFICHE: RECUPERIAMO LA FUNZIONE CENTRALIZZATA DEI TOAST ---
+  const { showToast } = useNotification();
   
   // Stati di caricamento dell'interfaccia
   const [loadingSetup, setLoadingSetup] = useState(true);
@@ -50,6 +56,7 @@ const AdminModificaVoti = () => {
         if (sData?.length > 0) setSquadraId(sData[0].id);
       } catch (err) {
         console.error("Errore setup filtri admin:", err);
+        showToast("Errore durante l'inizializzazione dei filtri amministrativi.", "error");
       } finally {
         setLoadingSetup(false);
       }
@@ -106,6 +113,7 @@ const AdminModificaVoti = () => {
         }));
       } catch (err) {
         console.error("Errore caricamento formazione admin:", err);
+        showToast("Impossibile recuperare la formazione per i filtri selezionati.", "error");
       } finally {
         setLoadingDati(false);
       }
@@ -204,10 +212,12 @@ const AdminModificaVoti = () => {
       await supabase.from('formazioni_calciatori').upsert(updates);
       await supabase.from('formazioni').update({ punteggio_totale: calcoloRisultato.totaleSquadra }).eq('id', formazioneId);
 
-      alert("Voti consolidati d'autorità con successo!");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST SUCCESS ---
+      showToast("Voti consolidati d'autorità con successo!", "success");
     } catch (err) {
       console.error(err);
-      alert("Errore durante il salvataggio dei voti.");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST ERROR ---
+      showToast("Errore durante il salvataggio dei voti.", "error");
     } finally {
       setSaving(false);
     }

@@ -3,6 +3,9 @@ import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../supabaseClient';
 import './Calendario.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
+import { useNotification } from '../context/NotificationContext';
+
 const ORDINE_RUOLI = { 'P': 1, 'D': 2, 'C': 3, 'A': 4 };
 
 const Calendario = () => {
@@ -15,6 +18,9 @@ const Calendario = () => {
   const [squadraSelezionata, setSquadraSelezionata] = useState(null);
   const [dettaglioFormazione, setDettaglioFormazione] = useState({ titolari: [], panchina: [] });
   const [loadingDettaglio, setLoadingDettaglio] = useState(false);
+
+  // --- INNESTO NOTIFICHE: ESTRAIAMO LA FUNZIONE SHOWTOAST ---
+  const { showToast } = useNotification();
 
   const fetchCalendarioData = async () => {
     try {
@@ -41,6 +47,7 @@ const Calendario = () => {
       }
     } catch (err) {
       console.error("Errore durante il caricamento del calendario:", err);
+      showToast("Impossibile caricare i dati del calendario.", "error");
     } finally {
       setLoading(false);
     }
@@ -60,7 +67,8 @@ const Calendario = () => {
 
   const handleSelezionaGiornataVisualizza = async (giornata, statoReale) => {
     if (statoReale === 'in programma') {
-      alert("Turno in programma: le formazioni non sono ancora accessibili.");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON UN TOAST WARNING ---
+      showToast("Turno in programma: le formazioni non sono ancora accessibili.", "warning");
       return;
     }
 
@@ -86,6 +94,7 @@ const Calendario = () => {
       setSquadreFormazioni(data || []);
     } catch (err) {
       console.error("Errore caricamento squadre:", err);
+      showToast("Errore nel recupero degli schieramenti.", "error");
     } finally {
       setLoadingSquadre(false);
     }
@@ -141,6 +150,7 @@ const Calendario = () => {
       setDettaglioFormazione({ titolari: listaTitolari, panchina: listaPanchina });
     } catch (err) {
       console.error("Errore caricamento calciatori:", err);
+      showToast("Impossibile caricare il dettaglio della formazione.", "error");
     } finally {
       setLoadingDettaglio(false);
     }

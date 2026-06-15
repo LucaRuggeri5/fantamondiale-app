@@ -4,18 +4,24 @@ import { supabase } from '../../supabaseClient'; // Connessione diretta a Supaba
 import { useUser } from '@clerk/clerk-react'; // Hook per recuperare l'utente attivo da Clerk
 import './AssegnaPermessi.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
+import { useNotification } from '../../context/NotificationContext';
+
 const AssegnaPermessi = () => {
-  const { user } = useUser(); // Estraiamo l'utente corrente autenticato
-  const navigate = useNavigate(); // Inizializziamo la navigazione
-  const [loading, setLoading] = useState(true); // Stato per la schermata di caricamento
+  const { user } = useUser(); // Estraiamo l'utente corrente autenticato da Clerk
+  const navigate = useNavigate(); // Inizializziamo la navigazione di React Router
+  const [loading, setLoading] = useState(true); // Stato per gestire la schermata di caricamento
   const [utentiLega, setUtentiLega] = useState([]); // Array contenente tutti i membri della lega
   const [adminContext, setAdminContext] = useState(null); // Contesto dell'admin corrente estratto dal DB
+
+  // --- INNESTO NOTIFICHE: ESTRAIAMO LE FUNZIONI DI FEEDBACK DAL NOSTRO CONTEXT ---
+  const { showToast, showConfirm } = useNotification();
 
   // Funzione per caricare le informazioni dal database
   const loadUtentiData = async () => {
     try {
-      setLoading(true);
-      if (!user) return; // Se l'utente non è ancora caricato da Clerk, esce
+      setLoading(true); // Attiva lo stato di caricamento grafico
+      if (!user) return; // Se l'utente non è ancora pronto su Clerk, esce
 
       // 1. Recuperiamo i dettagli dell'utente admin corrente nel nostro database
       const { data: currentAdmin, error: aErr } = await supabase
@@ -24,8 +30,8 @@ const AssegnaPermessi = () => {
         .eq('id', user.id)
         .single();
       
-      if (aErr) throw aErr;
-      setAdminContext(currentAdmin); // Salva l'utente loggato nello stato
+      if (aErr) throw aErr; // Se c'è un errore nel recupero dell'admin, lancia l'eccezione
+      setAdminContext(currentAdmin); // Salva l'utente loggato nello stato locale
 
       // 2. Se l'admin appartiene a una lega, carichiamo tutti i membri di quella lega
       if (currentAdmin.lega_id) {
@@ -35,13 +41,15 @@ const AssegnaPermessi = () => {
           .eq('lega_id', currentAdmin.lega_id)
           .order('nome_utente', { ascending: true }); // Ordine alfabetico dei membri
         
-        if (iErr) throw iErr;
-        setUtentiLega(iscritti || []); // Salva la lista dei membri nello stato
+        if (iErr) throw iErr; // Se c'è un errore nel recupero degli iscritti, lancia l'eccezione
+        setUtentiLega(iscritti || []); // Salva la lista dei membri nello stato locale
       }
     } catch (err) {
       console.error("Errore caricamento utenti permessi:", err);
+      // --- MODIFICA NOTIFICHE: TOAST DI ERRORE IN CASO DI PROBLEMI CON IL DATABASE ---
+      showToast("Impossibile caricare l'elenco dei permessi.", "error");
     } finally {
-      setLoading(false); // Spegne il caricamento
+      setLoading(false); // Spegne la schermata di caricamento in ogni caso
     }
   };
 
@@ -51,33 +59,45 @@ const AssegnaPermessi = () => {
   }, [user]);
 
   // Funzione per invertire il ruolo (Admin <-> Player)
-  const toggleRuoloUtente = async (utenteId, ruoloAttuale) => {
-    // Controllo di sicurezza fondamentale: evita l'autodeclassamento
-    if (utenteId === adminContext.id) {
-      alert("Non puoi revocare i permessi di amministrazione a te stesso!");
+  const toggleRuoloUtente = (utenteId, nomeUtente, ruoloAttuale) => {
+    // Controllo di sicurezza fondamentale: evita l'autodeclassamento del creatore/admin
+    if (utenteId === adminContext?.id) {
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT CON UN TOAST DI WARNING DEL DESIGN SYSTEM ---
+      showToast("Non puoi revocare i permessi di amministrazione a te stesso!", "warning");
       return;
     }
 
     // Calcoliamo il nuovo valore in base a quello precedente
     const nuovoRuolo = ruoloAttuale === 'admin' ? 'player' : 'admin';
-    const conferma = window.confirm(`Vuoi davvero cambiare il ruolo di questo utente in ${nuovoRuolo.toUpperCase()}?`);
-    if (!conferma) return; // Se l'admin annulla il prompt, interrompiamo l'azione
+    const etichettaRuolo = nuovoRuolo === 'admin' ? 'AMMINISTRATORE' : 'PLAYER';
 
-    try {
-      // Aggiorniamo la riga specifica su Supabase
-      const { error } = await supabase
-        .from('utenti')
-        .update({ ruolo: nuovoRuolo })
-        .eq('id', utenteId);
+    // --- MODIFICA NOTIFICHE: UTILIZZO DI SHOWCONFIRM AL POSTO DI WINDOW.CONFIRM ---
+    showConfirm(
+      "Modifica Privilegi", // Titolo del modale
+      `Vuoi davvero cambiare il ruolo di "${nomeUtente}" in ${etichettaRuolo}?`, // Messaggio descrittivo
+      async () => {
+        // Questa callback asincrona viene eseguita solo se l'utente clicca sul tasto di conferma nel modale
+        try {
+          // Aggiorniamo la riga specifica dell'utente su Supabase
+          const { error } = await supabase
+            .from('utenti')
+            .update({ ruolo: nuovoRuolo })
+            .eq('id', utenteId);
 
-      if (error) throw error;
-      
-      // Modifichiamo lo stato locale in modo ottimistico per riflettere il cambio
-      setUtentiLega(prev => prev.map(u => u.id === utenteId ? { ...u, ruolo: nuovoRuolo } : u));
-    } catch (err) {
-      console.error(err);
-      alert("Impossibile aggiornare i privilegi dell'utente.");
-    }
+          if (error) throw error; // Se l'aggiornamento fallisce, lancia l'errore
+          
+          // Modifichiamo lo stato locale in modo ottimistico per riflettere il cambio senza ricaricare la pagina
+          setUtentiLega(prev => prev.map(u => u.id === utenteId ? { ...u, ruolo: nuovoRuolo } : u));
+          
+          // --- MODIFICA NOTIFICHE: TOAST DI SUCCESS AD OPERAZIONE COMPLETATA CON SUCCESSO ---
+          showToast(`Ruolo di ${nomeUtente} aggiornato a ${etichettaRuolo}!`, "success");
+        } catch (err) {
+          console.error("Errore durante l'aggiornamento dei ruoli:", err);
+          // --- MODIFICA NOTIFICHE: TOAST DI ERRORE IN CASO DI FALLIMENTO QUERY ---
+          showToast("Impossibile aggiornare i privilegi dell'utente su database.", "error");
+        }
+      }
+    );
   };
 
   // Schermata di caricamento iniziale stilizzata
@@ -122,8 +142,9 @@ const AssegnaPermessi = () => {
               
               <button 
                 className={`tactical-btn-toggle-role ${ut.ruolo === 'admin' ? 'demote' : 'promote'}`}
-                onClick={() => toggleRuoloUtente(ut.id, ut.ruolo)}
-                disabled={ut.id === adminContext?.id} // Disabilitato se l'utente corrisponde a se stessi
+                // Passiamo anche ut.nome_utente alla funzione per rendere il messaggio del modale dinamico
+                onClick={() => toggleRuoloUtente(ut.id, ut.nome_utente, ut.ruolo)}
+                disabled={ut.id === adminContext?.id} // Pulsante disabilitato se l'utente corrisponde a se stessi
               >
                 {ut.ruolo === 'admin' ? 'Declassa' : 'Promuovi'}
               </button>

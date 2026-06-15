@@ -5,10 +5,16 @@ import { ArrowLeft, Save, FileSpreadsheet, X, Minus, Plus, Check, ExternalLink }
 import { supabase } from '../supabaseClient';
 import './InserisciVoti.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
+import { useNotification } from '../context/NotificationContext';
+
 const InserisciVoti = () => {
   const { giornataId } = useParams();
   const { user } = useUser();
   const navigate = useNavigate();
+
+  // --- INNESTO NOTIFICHE: ESTRAIAMO LE FUNZIONI CHE CI SERVONO ---
+  const { showToast } = useNotification();
 
   // Stati per la gestione dei dati e caricamenti
   const [loading, setLoading] = useState(true);
@@ -41,7 +47,12 @@ const InserisciVoti = () => {
         // Controllo scadenze temporali
         const adesso = new Date();
         if (adesso < new Date(gioData.scadenza_formazione) || adesso >= new Date(gioData.scadenza_voti)) {
-          alert(adesso < new Date(gioData.scadenza_formazione) ? "Il turno non è ancora chiuso." : "I termini sono scaduti.");
+          // --- MODIFICA NOTIFICHE: SOSTITUITO IL VECCHIO ALERT CON UN TOAST DI AVVISO ---
+          if (adesso < new Date(gioData.scadenza_formazione)) {
+            showToast("Il turno non è ancora chiuso.", "warning");
+          } else {
+            showToast("I termini per inserire i voti sono scaduti.", "error");
+          }
           navigate('/dashboard');
           return;
         }
@@ -53,7 +64,8 @@ const InserisciVoti = () => {
         // Controlliamo se esiste una formazione inviata
         const { data: form } = await supabase.from('formazioni').select('id').eq('giornata_id', giornataId).eq('squadra_id', utente.squadra_id).maybeSingle();
         if (!form) {
-          alert("Nessuna formazione schierata.");
+          // --- MODIFICA NOTIFICHE: SOSTITUITO IL VECCHIO ALERT ---
+          showToast("Nessuna formazione schierata per questa giornata.", "warning");
           return navigate('/dashboard');
         }
         setFormazioneId(form.id);
@@ -72,9 +84,9 @@ const InserisciVoti = () => {
           const pesoB = pesiRuolo[b.ruolo] || 5;
           
           if (pesoA !== pesoB) {
-            return pesoA - pesoB; // Ordina prima per ruolo (P, D, C, A)
+            return pesoA - pesoB;
           }
-          return a.posizione - b.posizione; // A parità di ruolo, mantiene l'ordine di posizione (Titolari prima)
+          return a.posizione - b.posizione;
         });
 
         // Mappiamo i dati impostando valori di default adatti a un Junior Dev
@@ -86,7 +98,7 @@ const InserisciVoti = () => {
             posizione: fc.posizione,
             ruolo: fc.ruolo,
             nome: infoC?.nome || 'Calciatore Sconosciuto',
-            voto_base: fc.voto_base != null ? fc.voto_base.toString() : '6', // Default a 6
+            voto_base: fc.voto_base != null ? fc.voto_base.toString() : '6',
             bonus_malus: fc.bonus_malus != null ? fc.bonus_malus.toString() : '0',
             voto_fanta: fc.voto_fanta || 6,
             senzaVoto: fc.voto_base == null
@@ -94,6 +106,7 @@ const InserisciVoti = () => {
         }));
       } catch (err) {
         console.error("Errore nel caricamento dei dati: ", err);
+        showToast("Errore durante il caricamento dei calciatori.", "error");
       } finally {
         setLoading(false);
       }
@@ -106,10 +119,8 @@ const InserisciVoti = () => {
     let sost = 0;
     let totale = 0;
     const conteggiati = [];
-    // Separiamo i panchinari per gestire i subentri
     const panchina = calciatoriList.filter(c => c.posizione > 11).map(p => ({ ...p, utilizzato: false }));
 
-    // Analizziamo gli 11 titolari
     calciatoriList.filter(c => c.posizione <= 11).forEach(t => {
       const baseNum = parseFloat(t.voto_base);
       if (!t.senzaVoto && !isNaN(baseNum)) {
@@ -123,7 +134,6 @@ const InserisciVoti = () => {
         });
         totale += fanta;
       } else {
-        // Logica sostituzione: max 4 cambi, stesso ruolo, deve avere un voto valido
         const sub = sost < 4 && panchina.find(p => p.ruolo === t.ruolo && !p.utilizzato && !p.senzaVoto && !isNaN(parseFloat(p.voto_base)));
         if (sub) {
           sub.utilizzato = true; 
@@ -139,7 +149,6 @@ const InserisciVoti = () => {
           });
           totale += fanta;
         } else {
-          // Se non ci sono panchinari disponibili, il giocatore prende 0 (Malus)
           conteggiati.push({ 
             nome: t.nome, 
             ruolo: t.ruolo, 
@@ -193,10 +202,12 @@ const InserisciVoti = () => {
       await supabase.from('formazioni_calciatori').upsert(updates);
       await supabase.from('formazioni').update({ punteggio_totale: calcoloRisultato.totaleSquadra }).eq('id', formazioneId);
 
-      alert("Voti salvati con successo!"); 
+      // --- MODIFICA NOTIFICHE: SOSTITUITO IL VECCHIO ALERT CON UN TOAST DI SUCCESSO ---
+      showToast("Voti salvati con successo!", "success"); 
       navigate('/dashboard');
     } catch (err) {
-      alert("Errore durante il salvataggio dei voti");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO IL VECCHIO ALERT CON UN TOAST DI ERRORE ---
+      showToast("Errore durante il salvataggio dei voti.", "error");
     } finally {
       setSaving(false);
     }
@@ -217,7 +228,6 @@ const InserisciVoti = () => {
       </div>
 
       <div className="voti-controls-grid">
-        {/* Bottone Senza Voto */}
         <button 
           type="button"
           className={`btn-toggle-sv ${c.senzaVoto ? 'active' : ''}`}
@@ -230,7 +240,6 @@ const InserisciVoti = () => {
           )}
         </button>
 
-        {/* Dropdown Voto Base */}
         <div className="select-container-voto">
           <select
             value={c.senzaVoto ? '' : c.voto_base}
@@ -245,7 +254,6 @@ const InserisciVoti = () => {
           </select>
         </div>
 
-        {/* Stepper Incrementale per Bonus e Malus */}
         <div className="bonus-stepper-control">
           <button 
             type="button"
@@ -276,7 +284,6 @@ const InserisciVoti = () => {
 
   return (
     <div className="voti-page-container">
-      {/* Intestazione Tattica */}
       <div className="voti-header">
         <button className="btn-back-voti" onClick={() => navigate('/dashboard')}>
           <ArrowLeft size={14} style={{ marginRight: '6px' }} /> Indietro
@@ -286,7 +293,6 @@ const InserisciVoti = () => {
         </div>
       </div>
 
-      {/* Banner Collegamento Esterno FantaPazz */}
       <a 
         href="https://nations.fantapazz.com/fantacalcio/voti-ufficiali" 
         target="_blank" 
@@ -300,7 +306,6 @@ const InserisciVoti = () => {
       </a>
 
       <div className="voti-main-layout">
-        {/* Colonna di Input dei Calciatori */}
         <div className="voti-inputs-column">
           <div className="voti-section-box">
             <div className="section-title-bar">TITOLARI SCHIERATI</div>
@@ -317,7 +322,6 @@ const InserisciVoti = () => {
           </div>
         </div>
 
-        {/* Sidebar Riepilogativa (Desktop ed espansione Mobile) */}
         <div className={`voti-summary-column ${isDrawerOpen ? 'drawer-open' : ''}`}>
           <div className="voti-drawer-backdrop" onClick={() => setIsDrawerOpen(false)}></div>
           <div className="summary-sticky-card">
@@ -340,7 +344,6 @@ const InserisciVoti = () => {
               </span>
             </div>
 
-            {/* Listato compatto dei calcoli effettuati */}
             <div className="components-clean-list">
               {calcoloRisultato.giocatoriConteggiati.map((gc, i) => (
                 <div key={i} className={`component-item-row ${gc.isSub ? 'is-substituted' : ''} ${gc.isMalus ? 'is-empty-malus' : ''}`}>
@@ -372,7 +375,6 @@ const InserisciVoti = () => {
         </div>
       </div>
 
-      {/* Control Bar per visualizzazione Mobile */}
       <div className="mobile-action-bar">
         <div className="m-bar-info">
           <span>Punti Live</span>

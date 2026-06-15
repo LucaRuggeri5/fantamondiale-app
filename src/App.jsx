@@ -6,6 +6,11 @@ import { SignedIn, SignedOut, SignIn, useUser, useSignIn } from '@clerk/clerk-re
 // Importiamo il client Supabase configurato per il database
 import { supabase } from './supabaseClient';
 
+// --- INNESTO FASE 3: IMPORTIAMO IL CONTEXT E I COMPONENTI GRAFICI ---
+import { NotificationProvider, useNotification } from './context/NotificationContext';
+import TacticalToast from './components/TacticalToast/TacticalToast';
+import TacticalConfirmModal from './components/TacticalConfirmModal/TacticalConfirmModal';
+
 // Importiamo tutte le pagine dell'applicazione (Onboarding, Dashboard, Area Player e Area Admin)
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
@@ -40,6 +45,9 @@ import './App.css';
 const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggleTheme }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // --- INNESTO FASE 3: AGGANCIAMO LE FUNZIONI DEL CONTEXT ---
+  const { showToast } = useNotification();
 
   // Determina se nascondere la barra di navigazione inferiore in base alla rotta attuale
   const nascondiNavbar =
@@ -51,6 +59,10 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
 
   return (
     <div className="app-container">
+      {/* RENDERIZZAZIONE COMPONENTI GLOBALI DI NOTIFICA */}
+      <TacticalToast />
+      <TacticalConfirmModal />
+
       {/* Elemento overlay isolato che esegue l'animazione ad espansione circolare cambiando sfondo sotto il testo */}
       <div className="theme-ripple-overlay"></div>
 
@@ -109,7 +121,8 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
               navigate('/admin/penalita');
               break;
             default:
-              alert(`Navigazione verso ${targetPage} in attivazione nelle prossime fases!`);
+              // --- MODIFICA FASE 3: SOSTITUITO IL VECCHIO ALERT DI DEFAULT ---
+              showToast(`Navigazione verso ${targetPage} in attivazione!`, 'warning');
           }
         }}
       />
@@ -214,6 +227,9 @@ const CustomLoginScreen = () => {
   const { isLoaded, signIn, setActive } = useSignIn();
   const [loadingDemo, setLoadingDemo] = useState(false);
 
+  // --- INNESTO FASE 3: AGGANCIAMO LE FUNZIONI DEL CONTEXT NELLO SCHERMO DI LOGIN ---
+  const { showToast } = useNotification();
+
   const handleDemoLogin = async () => {
     if (!isLoaded) return;
     setLoadingDemo(true);
@@ -230,7 +246,8 @@ const CustomLoginScreen = () => {
       }
     } catch (err) {
       console.error("Errore durante il login dell'account demo:", err);
-      alert("Impossibile accedere all'account demo al momento.");
+      // --- MODIFICA FASE 3: SOSTITUITO IL VECCHIO ALERT CON IL TOAST ERRORE ---
+      showToast("Impossibile accedere all'account demo al momento.", "error");
     } finally {
       setLoadingDemo(false);
     }
@@ -328,7 +345,7 @@ const CustomLoginScreen = () => {
 };
 
 const App = () => {
-  // Dichiarazione degli stati locali fondamentali
+  //宣Dichiarazione degli stati locali fondamentali
   const [leagueId, setLeagueId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isSyncing, setIsSyncing] = useState(true);
@@ -436,7 +453,8 @@ const App = () => {
   }
 
   return (
-    <>
+    // --- MODIFICA FASE 3: AVVOLGIAMO TUTTO COL PROVIDER GLOBALE ---
+    <NotificationProvider>
       {/* Visualizzato esclusivamente se l'utente non ha effettuato l'accesso */}
       <DeletedSignedOutPlaceholder>
         <CustomLoginScreen />
@@ -458,7 +476,7 @@ const App = () => {
           </Router>
         )}
       </SignedIn>
-    </>
+    </NotificationProvider>
   );
 };
 

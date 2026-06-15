@@ -4,10 +4,16 @@ import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../supabaseClient';
 import './InserisciFormazione.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
+import { useNotification } from '../context/NotificationContext';
+
 const InserisciFormazione = () => {
   const { giornataId } = useParams(); // Prende l'id della giornata corrente dall'URL
   const { user } = useUser(); // Prende l'utente autenticato tramite Clerk
   const navigate = useNavigate(); // Hook per spostarsi tra le pagine
+
+  // --- INNESTO NOTIFICHE: RECUPERIAMO LA FUNZIONE CENTRALIZZATA DEI TOAST ---
+  const { showToast } = useNotification();
 
   // Stati generali dell'applicazione
   const [loading, setLoading] = useState(true); // Stato di caricamento iniziale
@@ -88,6 +94,7 @@ const InserisciFormazione = () => {
         }
       } catch (err) {
         console.error("Errore nel caricamento dei dati:", err);
+        showToast("Errore nel recupero della tua rosa o formazione.", "error");
       } finally {
         setLoading(false); // Disattiva la schermata di caricamento
       }
@@ -107,7 +114,8 @@ const InserisciFormazione = () => {
       const attualiRuolo = titolari.filter(t => t.ruolo === calciatore.ruolo).length;
 
       if (attualiRuolo >= limiteRuolo) {
-        alert(`Massimo ${limiteRuolo} giocatori per il ruolo ${calciatore.ruolo} con questo modulo.`);
+        // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
+        showToast(`Massimo ${limiteRuolo} giocatori per il ruolo ${calciatore.ruolo} con questo modulo.`, "warning");
         return;
       }
 
@@ -125,7 +133,8 @@ const InserisciFormazione = () => {
 
     // Verifica il superamento del limite massimo per ruolo stabilito per le riserve
     if (attualiInPanchina >= limiteConsentito) {
-      alert(`In panchina puoi mettere al massimo ${limiteConsentito} per il ruolo: ${calciatore.ruolo}`);
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
+      showToast(`In panchina puoi mettere al massimo ${limiteConsentito} per il ruolo: ${calciatore.ruolo}`, "warning");
       return;
     }
 
@@ -144,7 +153,8 @@ const InserisciFormazione = () => {
   // Invia e salva permanentemente la formazione sul database Supabase
   const handleSalvaFormazione = async () => {
     if (titolari.length === 0 && panchina.length === 0) {
-      alert("Inserisci almeno un giocatore (titolare o panchina) prima di salvare!");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
+      showToast("Inserisci almeno un giocatore (titolare o panchina) prima di salvare!", "warning");
       return;
     }
 
@@ -185,11 +195,14 @@ const InserisciFormazione = () => {
 
       // Invia massivamente tutti i record strutturati alla tabella di giunzione
       await supabase.from('formazioni_calciatori').insert(recordCalciatori);
-      alert("Formazione salvata correttamente!");
+
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST SUCCESS ---
+      showToast("Formazione salvata correttamente!", "success");
       navigate('/dashboard'); // Ritorna alla schermata principale
     } catch (err) {
       console.error(err);
-      alert("Errore durante il salvataggio.");
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST ERROR ---
+      showToast("Errore durante il salvataggio della formazione.", "error");
     } finally {
       setSaving(false);
     }
@@ -300,7 +313,6 @@ const InserisciFormazione = () => {
                       {riserveRuolo.length} / {limitiPanchina[r]} <b className="plus-indicator-flat">+</b>
                     </span>
                   </div>
-
                   <div className="panchina-items-vertical-stack">
                     {riserveRuolo.length === 0 ? (
                       <span className="empty-pan-text-flat">Nessun giocatore inserito</span>

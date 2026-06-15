@@ -3,6 +3,9 @@ import { supabase } from '../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import './Onboarding.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
+import { useNotification } from '../context/NotificationContext';
+
 /**
  * Gate d'ingresso iniziale alla Tactical Suite.
  * Consente l'aggancio a una chiamata di lega esistente o la fondazione di un nuovo torneo.
@@ -10,10 +13,12 @@ import './Onboarding.css';
 const Onboarding = ({ onJoinLeague }) => {
   const [code, setCode] = useState('');
   const [leagueName, setLeagueName] = useState('');
-  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
   const { user } = useUser();
+
+  // --- INNESTO NOTIFICHE: ESTRAIAMO LA FUNZIONE SHOWTOAST ---
+  const { showToast } = useNotification();
 
   // Esegue l'innesto del giocatore in una lega esistente tramite codice unico
   const handleJoin = async (e) => {
@@ -22,7 +27,6 @@ const Onboarding = ({ onJoinLeague }) => {
 
     try {
       setLoading(true);
-      setError('');
 
       const { data: league, error: leagueError } = await supabase
         .from('leghe')
@@ -31,7 +35,8 @@ const Onboarding = ({ onJoinLeague }) => {
         .maybeSingle();
 
       if (leagueError || !league) {
-        setError('Codice lega errato o inesistente. Verifica le credenziali!');
+        // --- MODIFICA NOTIFICHE: SOSTITUITO VECCHIO STATO D'ERRORE ---
+        showToast("Codice lega errato o inesistente. Verifica le credenziali!", "error");
         setLoading(false);
         return;
       }
@@ -46,11 +51,14 @@ const Onboarding = ({ onJoinLeague }) => {
 
       if (updateError) throw updateError;
 
+      // Notifica di successo prima di reindirizzare l'utente
+      showToast("Accesso alla lega effettuato con successo!", "success");
       onJoinLeague(league.id);
 
     } catch (err) {
       console.error("Errore join league:", err);
-      setError('Innestamento fallito. Riprova la connessione al database.');
+      // --- MODIFICA NOTIFICHE: SOSTITUITO VECCHIO STATO D'ERRORE ---
+      showToast("Innestamento fallito. Riprova la connessione al database.", "error");
     } finally {
       setLoading(false);
     }
@@ -59,13 +67,13 @@ const Onboarding = ({ onJoinLeague }) => {
   // Crea una nuova lega d'autorità sul database assegnando il ruolo di admin
   const handleCreate = async () => {
     if (!leagueName.trim()) {
-      setError('Inserisci una denominazione valida per la tua lega!');
+      // --- MODIFICA NOTIFICHE: SOSTITUITO VECCHIO STATO D'ERRORE CON TOAST WARNING ---
+      showToast("Inserisci una denominazione valida per la tua lega!", "warning");
       return;
     }
 
     try {
       setLoading(true);
-      setError('');
 
       const generatoCodice = Math.random().toString(36).substring(2, 8).toUpperCase();
 
@@ -92,12 +100,14 @@ const Onboarding = ({ onJoinLeague }) => {
 
       if (updateError) throw updateError;
 
-      alert(`Lega "${newLeague.nome}" fondata con successo! Condividi il Codice: ${generatoCodice}`);
+      // --- MODIFICA NOTIFICHE: SOSTITUITO IL VECCHIO ALERT INTERRUTTIVO CON UN TOAST SUCCESS ---
+      showToast(`Lega "${newLeague.nome}" fondata! Codice d'invito: ${generatoCodice}`, "success", 6000);
       onJoinLeague(newLeague.id);
 
     } catch (err) {
       console.error("Errore creazione lega:", err);
-      setError('Fondazione della lega fallita. Riprova l\'operazione.');
+      // --- MODIFICA NOTIFICHE: SOSTITUITO VECCHIO STATO D'ERRORE ---
+      showToast("Fondazione della lega fallita. Riprova l'operazione.", "error");
     } finally {
       setLoading(false);
     }
@@ -113,8 +123,7 @@ const Onboarding = ({ onJoinLeague }) => {
           <p className="tactical-onboarding-subtitle"> Inizializza il tuo profilo inserendoti in un torneo o fondandone uno nuovo.</p>
         </div>
 
-        {/* MESSAGGI DI ERRORE */}
-        {error && <div className="tactical-error-banner">{error}</div>}
+        {/* NOTA DI DESIGN: Rimosso il vecchio div statico {error} perché ora gli errori appaiono come Toast */}
 
         <div className="tactical-onboarding-split-cards">
           

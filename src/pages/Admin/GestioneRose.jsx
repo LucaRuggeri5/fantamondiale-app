@@ -5,6 +5,9 @@ import { useUser } from '@clerk/clerk-react';
 import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale';
 import './GestioneRose.css';
 
+// --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
+import { useNotification } from '../../context/NotificationContext';
+
 // Costante immutabile per il controllo dei vincoli di rosa della federazione interna
 const LIMITI_RUOLI = {
   P: 3,
@@ -42,6 +45,9 @@ const GestioneRose = () => {
   // UX Mobile-First: gestisce la visualizzazione a schede sui display ridotti
   const [activeTabMobile, setActiveTabMobile] = useState('market');
 
+  // --- INNESTO NOTIFICHE: ESTRAIAMO LE FUNZIONI DAL CONTEXT ---
+  const { showToast, showConfirm } = useNotification();
+
   /**
    * Effettua il recupero dei dati dell'utente loggato e mappa i club iscritti alla stessa lega.
    */
@@ -71,6 +77,7 @@ const GestioneRose = () => {
       }
     } catch (err) {
       console.error("Errore nel caricamento del contesto admin:", err);
+      showToast("Errore nel caricamento del profilo amministratore.", "error");
     } finally {
       setLoading(false);
     }
@@ -111,6 +118,7 @@ const GestioneRose = () => {
 
     } catch (err) {
       console.error("Errore nel caricamento dei dati della rosa:", err);
+      showToast("Impossibile aggiornare la rosa della squadra.", "error");
     }
   };
 
@@ -150,6 +158,7 @@ const GestioneRose = () => {
         setListoneCalciatori(listone || []);
       } catch (err) {
         console.error("Errore nel caricamento del listone filtrato:", err);
+        showToast("Errore nel caricamento del listone calciatori.", "error");
       } finally {
         setLoadingListone(false);
       }
@@ -180,7 +189,8 @@ const GestioneRose = () => {
     const limiteMassimo = LIMITI_RUOLI[ruoloPlayer];
 
     if (attualePerRuolo >= limiteMassimo) {
-      alert(`Impossibile aggiungere ${player.nome}. Limite per il ruolo "${ruoloPlayer}" raggiunto (${limiteMassimo}).`);
+      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT CON UN TOAST WARNING ---
+      showToast(`Limite raggiunto per il ruolo "${ruoloPlayer}" (${limiteMassimo} slot).`, "warning");
       return;
     }
 
@@ -195,28 +205,43 @@ const GestioneRose = () => {
           }
         ]);
       if (insErr) throw insErr;
+      
+      // --- MODIFICA NOTIFICHE: TOAST INFORMATIVO DI AVVENUTO INGAGGIO ---
+      showToast(`${player.nome} ingaggiato correttamente!`, "success");
       await loadRosaESvincolati();
     } catch (err) {
       console.error("Errore durante l'inserimento a database:", err);
+      showToast("Impossibile completare l'ingaggio su database.", "error");
     }
   };
 
   /**
    * Elimina la riga di associazione svincolando il calciatore istantaneamente.
    */
-  const handleRimuoviCalciatore = async (calciatoreId) => {
-    try {
-      const { error: delErr } = await supabase
-        .from('rose_squadre')
-        .delete()
-        .eq('squadra_id', selectedSquadraId)
-        .eq('calciatore_id', calciatoreId);
-      
-      if (delErr) throw delErr;
-      await loadRosaESvincolati();
-    } catch (err) {
-      console.error("Errore durante la rimozione da database:", err);
-    }
+  const handleRimuoviCalciatore = (player) => {
+    // --- MODIFICA NOTIFICHE: INNESTO MODALE DI CONFERMA PER EVITARE SVINCOLI CASUALI ---
+    showConfirm(
+      "Svincola Calciatore",
+      `Sei sicuro di voler svincolare "${player.nome}"? L'atleta tornerà disponibile nel listone comune.`,
+      async () => {
+        try {
+          const { error: delErr } = await supabase
+            .from('rose_squadre')
+            .delete()
+            .eq('squadra_id', selectedSquadraId)
+            .eq('calciatore_id', player.id);
+          
+          if (delErr) throw delErr;
+          
+          // --- MODIFICA NOTIFICHE: TOAST SUCCESS AD OPERAZIONE ULTIMATA ---
+          showToast(`Svincolato: ${player.nome}`, "success");
+          await loadRosaESvincolati();
+        } catch (err) {
+          console.error("Errore durante la rimozione da database:", err);
+          showToast("Impossibile rimuovere il calciatore dal database.", "error");
+        }
+      }
+    );
   };
 
   if (loading) {
@@ -318,7 +343,7 @@ const GestioneRose = () => {
                 {loadingListone ? (
                   <p className="tactical-market-async-loader">Interrogazione registro atleti in corso... ⏳</p>
                 ) : listoneCalciatori.length === 0 ? (
-                  <p className="tactical-empty-notice-txt">Nessun atleta corrispondente ai criteri inseriti.</p>
+                  <p className="tactical-empty-notice-txt">Nessun atleta correspondant ai criteri inseriti.</p>
                 ) : (
                   listoneCalciatori.map(player => {
                     const isOccupato = calciatoriOccupatiIds.includes(player.id);
@@ -386,7 +411,8 @@ const GestioneRose = () => {
                       </div>
                       <button
                         className="tactical-action-btn-trigger remove"
-                        onClick={() => handleRimuoviCalciatore(player.id)}
+                        // Modificato per passare l'intero oggetto player anziché solo l'id
+                        onClick={() => handleRimuoviCalciatore(player)}
                       >
                         Svincola 🗑️
                       </button>
