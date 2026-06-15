@@ -303,14 +303,14 @@ const InserisciVoti = () => {
         {/* Colonna di Input dei Calciatori */}
         <div className="voti-inputs-column">
           <div className="voti-section-box">
-            <div className="section-title-bar">TITOLARI SCHIERATI (Ordinati per Ruolo)</div>
+            <div className="section-title-bar">TITOLARI SCHIERATI</div>
             <div className="cards-stack">
               {calciatoriList.filter(c => c.posizione <= 11).map(c => renderRow(c))}
             </div>
           </div>
           
           <div className="voti-section-box">
-            <div className="section-title-bar riserve-bar">LINEA DI PANCHINA (Ordinati per Ruolo)</div>
+            <div className="section-title-bar riserve-bar">PANCHINA</div>
             <div className="cards-stack">
               {calciatoriList.filter(c => c.posizione > 11).map(c => renderRow(c, true))}
             </div>

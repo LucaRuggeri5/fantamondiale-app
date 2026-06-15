@@ -193,6 +193,8 @@
   position: relative;
   z-index: 1; /* Forza i componenti figli a stare sopra la griglia e l'overlay */
   padding-bottom: 80px; /* Spazio di respeito per non sovrapporsi alla BottomNavbar */
+  max-width: 750px;
+  margin: 0 auto;
 }
 
 /* ========================================== */
