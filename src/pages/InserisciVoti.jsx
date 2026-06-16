@@ -230,7 +230,6 @@ const InserisciVoti = () => {
             <strong className="voti-player-name">{c.nome}</strong>
             <BandieraNazionale nazione={c.nazionale} />
           </div>
-          {isRiserva && <span className="panchina-order">PAN # {c.posizione - 11}</span>}
         </div>
         <div className={`tot-display-badge ${c.senzaVoto ? 'sv' : ''} ${c.voto_fanta >= 7 ? 'high-score' : ''}`}>
           {c.senzaVoto ? 'S.V.' : c.voto_fanta.toFixed(1)}

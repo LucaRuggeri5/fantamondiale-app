@@ -37,6 +37,9 @@ const AdminModificaVoti = () => {
   const [calciatoriList, setCalciatoriList] = useState([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  // Mappatura dei pesi per ordinare i ruoli da Portiere ad Attaccante
+  const ordineRuoli = { 'P': 1, 'D': 2, 'C': 3, 'A': 4 };
+
   // Genera le opzioni del voto da 10 a 0 con passi di 0.5
   const opzioniVoto = useMemo(() => {
     const voti = [];
@@ -100,7 +103,7 @@ const AdminModificaVoti = () => {
     }
   }, [user]);
 
-  // EFFETTO 2: Recupero dei calciatori schierati in base al turno e al club selezionato (Incluso campo nazionale)
+  // EFFETTO 2: Recupero dei calciatori schierati in base al turno e al club selezionato
   useEffect(() => {
     if (!giornataId || !squadraId) return;
 
@@ -133,7 +136,7 @@ const AdminModificaVoti = () => {
 
         if (fcErr) throw fcErr;
 
-        setCalciatoriList(fcData.map(fc => {
+        const mappedList = fcData.map(fc => {
           const infoC = Array.isArray(fc.calciatori_reali) ? fc.calciatori_reali[0] : fc.calciatori_reali;
           return {
             id_relazione: fc.id,
@@ -147,7 +150,12 @@ const AdminModificaVoti = () => {
             voto_fanta: fc.voto_fanta || 6,
             senzaVoto: fc.voto_base == null
           };
-        }));
+        });
+
+        // Ordiniamo la lista dei giocatori in base al peso del loro ruolo (P -> D -> C -> A)
+        mappedList.sort((a, b) => (ordineRuoli[a.ruolo] || 0) - (ordineRuoli[b.ruolo] || 0));
+
+        setCalciatoriList(mappedList);
       } catch (err) {
         console.error("Errore caricamento formazione admin:", err);
         showToast("Impossibile recuperare la formazione per i filtri selezionati.", "error");
@@ -165,9 +173,12 @@ const AdminModificaVoti = () => {
     let sost = 0;
     let totale = 0;
     const conteggiati = [];
+    
+    // Per calcolare correttamente la panchina, estraiamo le riserve basandoci sulla colonna 'posizione' originale (> 11)
     const panchina = calciatoriList.filter(c => c.posizione > 11).map(p => ({ ...p, utilizzato: false }));
+    const titolari = calciatoriList.filter(c => c.posizione <= 11);
 
-    calciatoriList.filter(c => c.posizione <= 11).forEach(t => {
+    titolari.forEach(t => {
       const baseNum = parseFloat(t.voto_base);
       if (!t.senzaVoto && !isNaN(baseNum)) {
         const fanta = baseNum + (parseFloat(t.bonus_malus) || 0);
@@ -209,6 +220,9 @@ const AdminModificaVoti = () => {
         }
       }
     });
+
+    // Ordiniamo anche la lista dei conteggiati nel riepilogo a destra per ruolo (P -> D -> C -> A)
+    conteggiati.sort((a, b) => (ordineRuoli[a.ruolo] || 0) - (ordineRuoli[b.ruolo] || 0));
 
     return { totaleSquadra: totale, sostituzioniEffettuate: sost, giocatoriConteggiati: conteggiati };
   }, [calciatoriList]);
@@ -252,11 +266,9 @@ const AdminModificaVoti = () => {
       await supabase.from('formazioni_calciatori').upsert(updates);
       await supabase.from('formazioni').update({ punteggio_totale: calcoloRisultato.totaleSquadra }).eq('id', formazioneId);
 
-      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST SUCCESS ---
       showToast("Voti consolidati d'autorità con successo!", "success");
     } catch (err) {
       console.error(err);
-      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST ERROR ---
       showToast("Errore durante il salvataggio dei voti.", "error");
     } finally {
       setSaving(false);
@@ -277,7 +289,6 @@ const AdminModificaVoti = () => {
             <strong className="tactical-giocatore-nome">{c.nome}</strong>
             <BandieraNazionale nazione={c.nazionale} />
           </div>
-          {isRiserva && <span className="tactical-panchina-order">Pan. #{c.posizione - 11}</span>}
         </div>
         <div className={`tactical-tot-display-badge ${c.senzaVoto ? 'sv' : ''}`}>
           {c.senzaVoto ? 'S.V.' : c.voto_fanta.toFixed(1)}
