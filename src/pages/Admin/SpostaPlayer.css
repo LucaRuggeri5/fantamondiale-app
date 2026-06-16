@@ -26,18 +26,13 @@
 .tactical-sposta-title-wrapper {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
 }
 
 /* Titolo d'Impatto Editoriale */
 .tactical-sposta-title-wrapper .tactical-brand {
   font-family: 'Montserrat', sans-serif;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 800;
-  letter-spacing: 0.5px;
-  margin: 0;
   color: var(--tactical-text-primary);
 }
 

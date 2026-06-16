@@ -11,26 +11,9 @@
 .tactical-voti-main-header {
   display: flex;
   align-items: center;
-  gap: 16px;
   margin-bottom: 20px;
   border-bottom: 1px solid var(--tactical-border-gold);
   padding-bottom: 14px;
-}
-
-.tactical-btn-back {
-  background-color: transparent;
-  color: var(--tactical-text-gold);
-  border: 1px solid var(--tactical-accent-gold);
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
-}
-
-.tactical-btn-back:hover {
-  background-color: rgba(198, 156, 109, 0.1);
 }
 
 /* Pannello Filtraggio Top */

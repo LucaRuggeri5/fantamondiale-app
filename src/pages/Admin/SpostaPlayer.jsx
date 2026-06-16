@@ -4,6 +4,9 @@ import { supabase } from '../../supabaseClient';
 import { useUser } from '@clerk/clerk-react';
 import './SpostaPlayer.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../../components/TacticalBackButton/TacticalBackButton';
+
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
 import { useNotification } from '../../context/NotificationContext';
 
@@ -113,14 +116,9 @@ const SpostaPlayer = () => {
       {/* Intestazione di Sezione */}
       <div className="tactical-sposta-header">
         <div className="tactical-sposta-title-wrapper">
-          <button className="tactical-btn-back" onClick={() => navigate('/dashboard')}>
-            ⬅️ Indietro
-          </button>
-          <h2 className="tactical-brand">Sposta Player di Squadra</h2>
+          <TacticalBackButton />
+          <h2 className="tactical-brand">Sposta Giocatori</h2>
         </div>
-        <p className="tactical-sposta-subtitle">
-          Assegna i fantallenatori della lega al rispettivo club o rimuovili.
-        </p>
       </div>
 
       {/* Lista di Trasferimento Fantallenatori */}

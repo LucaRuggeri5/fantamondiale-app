@@ -4,6 +4,9 @@ import { useUser } from '@clerk/clerk-react'; // <-- IMPORTATO PER CONTROLLO LEG
 import { supabase } from '../../supabaseClient';
 import './AdminModificaVoti.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../../components/TacticalBackButton/TacticalBackButton';
+
 // --- IMPORT COMPONENTE BANDIERA NAZIONALE ---
 import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale';
 
@@ -350,10 +353,8 @@ const AdminModificaVoti = () => {
       
       {/* HEADER DI SUITE */}
       <div className="tactical-voti-main-header">
-        <button className="tactical-btn-back" onClick={() => navigate('/dashboard')}>
-          ← Indietro
-        </button>
-        <h2 className="tactical-brand">Rettifica Voti</h2>
+        <TacticalBackButton />
+        <h2 className="tactical-brand">ADMIN: Rettifica Voti</h2>
       </div>
 
       {/* PANNELLO FILTRI DI CAMPO */}

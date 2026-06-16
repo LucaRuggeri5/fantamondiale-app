@@ -4,6 +4,9 @@ import { supabase } from '../../supabaseClient';
 import '../InserisciFormazione.css';
 import './AdminModificaFormazioni.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../../components/TacticalBackButton/TacticalBackButton';
+
 import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale';
 
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
@@ -309,8 +312,8 @@ const AdminModificaFormazioni = () => {
       {/* Intestazione Amministrativa Forzata */}
       <div className="formazione-header admin-border-header">
         <div className="admin-header-title-container">
-          <button className="btn-back-admin" onClick={() => navigate('/dashboard')}>⬅️</button>
-          <h2>Admin: Modifica Formazioni</h2>
+          <TacticalBackButton />
+          <h2 className='tactical-brand'>ADMIN: MODIFICA FORMAZIONI</h2>
         </div>
       </div>
 

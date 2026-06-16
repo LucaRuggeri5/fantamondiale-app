@@ -18,15 +18,12 @@
 
 /* Header dell'Area */
 .tactical-giornate-header {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .tactical-header-title-container {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
 }
 
 .tactical-brand {
@@ -34,39 +31,6 @@
   color: var(--tactical-text-primary);
   font-size: 24px;
   font-weight: 800;
-  letter-spacing: 1px;
-  margin: 0;
-}
-
-.tactical-subtitle {
-  color: var(--tactical-text-secondary);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  margin: 0;
-}
-
-/* Pulsante Back Premium */
-.tactical-btn-back {
-  background-color: var(--tactical-bg-card);
-  color: var(--tactical-text-gold);
-  border: 1px solid var(--tactical-border-gold);
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-}
-
-.tactical-btn-back:hover {
-  background-color: var(--tactical-accent-gold);
-  color: var(--tactical-text-on-button);
-  transform: translateX(-3px);
 }
 
 /* Area Spazio di Lavoro (Workspace) */

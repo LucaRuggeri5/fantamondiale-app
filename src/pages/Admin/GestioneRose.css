@@ -26,17 +26,16 @@
 .tactical-rose-header {
   display: flex;
   align-items: center;
-  gap: 16px;
   margin-bottom: 20px;
   border-bottom: 1px solid var(--tactical-border-gold);
   padding-bottom: 14px;
 }
 
 .tactical-title-group h2 {
-  margin: 0;
-  font-size: 20px;
-  color: var(--tactical-text-gold);
+  font-size: 24px;
+  color: var(--tactical-text-primary);
   font-weight: 800;
+  text-transform: uppercase;
 }
 
 /* Box Selezione Unità Club */

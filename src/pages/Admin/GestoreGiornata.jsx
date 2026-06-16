@@ -4,6 +4,9 @@ import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../../supabaseClient'; 
 import './GestoreGiornata.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../../components/TacticalBackButton/TacticalBackButton';
+
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
 import { useNotification } from '../../context/NotificationContext';
 
@@ -208,12 +211,9 @@ const GestoreGiornata = () => {
     <div className="tactical-app-container tactical-giornate-page">
       <div className="tactical-giornate-header">
         <div className="tactical-header-title-container">
-          <button className="tactical-btn-back" onClick={() => navigate('/dashboard')}>
-            ⬅️ Indietro
-          </button>
-          <h2 className="tactical-brand">Configurazione Giornate</h2>
+          <TacticalBackButton />
+          <h2 className="tactical-brand">Gestione Giornate</h2>
         </div>
-        <p className="tactical-subtitle">Pannello di controllo del calendario per impostare blocchi formazioni e stati della giornata</p>
       </div>
 
       <div className="tactical-giornate-workspace">

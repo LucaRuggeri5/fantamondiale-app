@@ -11,42 +11,19 @@
   margin-bottom: 20px;
 }
 
-.tactical-listone-back-btn {
-  background-color: var(--tactical-bg-card);
-  color: var(--tactical-text-gold);
-  border: 1px solid var(--tactical-border-gold);
-  padding: 8px 14px;
-  border-radius: 6px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 16px;
+
+/* Flexbox per allineare millimetricamente il TacticalBackButton al Titolo della Pagina */
+.tactical-listone-header {
+  display: flex;
+  align-items: center;
 }
 
-.tactical-listone-back-btn:hover {
-  background-color: var(--tactical-accent-gold);
-  color: var(--tactical-text-on-button);
-  transform: translateX(-3px);
-}
 
 .tactical-listone-header .tactical-brand {
-  margin: 0 0 4px 0;
   font-family: 'Montserrat', sans-serif;
   font-size: 24px;
   font-weight: 800;
   color: var(--tactical-text-primary);
-}
-
-.tactical-listone-subtitle {
-  font-family: 'Inter', sans-serif;
-  color: var(--tactical-text-secondary);
-  font-size: 13px;
-  margin: 0;
-  line-height: 1.5;
 }
 
 /* Sincronizzazione Database Loader */

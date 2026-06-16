@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import './GestioneSquadra.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../../components/TacticalBackButton/TacticalBackButton';
+
 const GestioneSquadra = ({ currentUser }) => {
   const [loading, setLoading] = useState(true);
   const [squadra, setSquadra] = useState(null);
@@ -126,6 +129,7 @@ const GestioneSquadra = ({ currentUser }) => {
   return (
     <div className="tactical-app-container tactical-gestione-page">
       <div className="tactical-gestione-page-header">
+        <TacticalBackButton />
         <h2 className="tactical-brand">Gestione Squadra</h2>
       </div>
 

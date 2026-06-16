@@ -20,14 +20,12 @@
 .tactical-permessi-header {
   margin-bottom: 24px;
   border-bottom: 2px solid var(--tactical-border-gold);
-  padding-bottom: 16px;
+  padding-bottom: 14px;
 }
 
 .tactical-permessi-title-wrapper {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 8px;
   flex-wrap: wrap;
 }
 
@@ -39,39 +37,6 @@
   letter-spacing: 0.5px;
   margin: 0;
   color: var(--tactical-text-primary);
-}
-
-/* Bottone Indietro Integrato */
-.tactical-btn-back {
-  background-color: var(--tactical-bg-card);
-  color: var(--tactical-text-gold);
-  border: 1px solid var(--tactical-border-gold);
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-}
-
-.tactical-btn-back:hover {
-  background-color: var(--tactical-accent-gold);
-  color: var(--tactical-text-on-button);
-  transform: translateX(-3px);
-}
-
-/* Sottotitolo Descrittivo */
-.tactical-permessi-subtitle {
-  font-family: 'Inter', sans-serif;
-  color: var(--tactical-text-secondary);
-  font-size: 13px;
-  margin: 0;
-  line-height: 1.5;
 }
 
 /* Contenitore della Lista */

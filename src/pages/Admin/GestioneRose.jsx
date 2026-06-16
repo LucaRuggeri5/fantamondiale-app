@@ -5,6 +5,9 @@ import { useUser } from '@clerk/clerk-react';
 import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale';
 import './GestioneRose.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../../components/TacticalBackButton/TacticalBackButton';
+
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
 import { useNotification } from '../../context/NotificationContext';
 
@@ -23,11 +26,11 @@ const LIMITI_RUOLI = {
 const GestioneRose = () => {
   const { user } = useUser();
   const navigate = useNavigate();
-  
+
   // Stati di caricamento asincroni distinti per non bloccare l'intera UI
   const [loading, setLoading] = useState(true);
   const [loadingListone, setLoadingListone] = useState(false);
-  
+
   // Contesto amministrativo e selezione del club target
   const [adminUser, setAdminUser] = useState(null);
   const [squadreLega, setSquadreLega] = useState([]);
@@ -37,11 +40,11 @@ const GestioneRose = () => {
   const [rosaAttuale, setRosaAttuale] = useState([]);
   const [listoneCalciatori, setListoneCalciatori] = useState([]);
   const [calciatoriOccupatiIds, setCalciatoriOccupatiIds] = useState([]);
-  
+
   // Filtri attivi sul listone di mercato
   const [filtroRuolo, setFiltroRuolo] = useState('P');
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // UX Mobile-First: gestisce la visualizzazione a schede sui display ridotti
   const [activeTabMobile, setActiveTabMobile] = useState('market');
 
@@ -61,7 +64,7 @@ const GestioneRose = () => {
         .select('*')
         .eq('id', user.id)
         .single();
-      
+
       if (uErr) throw uErr;
       setAdminUser(utente);
 
@@ -71,7 +74,7 @@ const GestioneRose = () => {
           .select('*')
           .eq('lega_id', utente.lega_id)
           .order('nome', { ascending: true });
-        
+
         if (sErr) throw sErr;
         setSquadreLega(squadre || []);
       }
@@ -98,13 +101,13 @@ const GestioneRose = () => {
         .from('rose_squadre')
         .select('calciatore_id, calciatori_reali(*)')
         .eq('squadra_id', selectedSquadraId);
-      
+
       if (rErr) throw rErr;
-      
+
       const rosaOrdinata = (rosa?.map(item => item.calciatori_reali) || [])
         .filter(Boolean)
         .sort((a, b) => a.nome.localeCompare(b.nome));
-      
+
       setRosaAttuale(rosaOrdinata);
 
       // 2. Estrazione degli ID vincolati per l'intera lega per prevenire duplicazioni di mercato
@@ -112,7 +115,7 @@ const GestioneRose = () => {
         .from('rose_squadre')
         .select('calciatore_id')
         .eq('lega_id', adminUser.lega_id);
-      
+
       if (oErr) throw oErr;
       setCalciatoriOccupatiIds(occupati?.map(o => o.calciatore_id) || []);
 
@@ -139,7 +142,7 @@ const GestioneRose = () => {
 
       try {
         setLoadingListone(true);
-        
+
         let query = supabase
           .from('calciatori_reali')
           .select('*')
@@ -205,7 +208,7 @@ const GestioneRose = () => {
           }
         ]);
       if (insErr) throw insErr;
-      
+
       // --- MODIFICA NOTIFICHE: TOAST INFORMATIVO DI AVVENUTO INGAGGIO ---
       showToast(`${player.nome} ingaggiato correttamente!`, "success");
       await loadRosaESvincolati();
@@ -230,9 +233,9 @@ const GestioneRose = () => {
             .delete()
             .eq('squadra_id', selectedSquadraId)
             .eq('calciatore_id', player.id);
-          
+
           if (delErr) throw delErr;
-          
+
           // --- MODIFICA NOTIFICHE: TOAST SUCCESS AD OPERAZIONE ULTIMATA ---
           showToast(`Svincolato: ${player.nome}`, "success");
           await loadRosaESvincolati();
@@ -254,14 +257,12 @@ const GestioneRose = () => {
 
   return (
     <div className="tactical-app-container tactical-rose-container">
-      
+
       {/* INTESTAZIONE DI CONTROLLO */}
       <div className="tactical-rose-header">
-        <button className="tactical-btn-back-suite" onClick={() => navigate('/dashboard')}>
-          ← Dashboard
-        </button>
+        <TacticalBackButton />
         <div className="tactical-title-group">
-          <h2>Gestione Rose & Mercato</h2>
+          <h2>Gestione Rose</h2>
         </div>
       </div>
 
@@ -283,16 +284,16 @@ const GestioneRose = () => {
 
       {selectedSquadraId ? (
         <div className="tactical-workspace-wrapper">
-          
+
           {/* NAVIGAZIONE A TAB SOLO PER DISPOSITIVI MOBILE */}
           <div className="tactical-mobile-tabs-nav">
-            <button 
+            <button
               className={`tactical-tab-btn ${activeTabMobile === 'market' ? 'active' : ''}`}
               onClick={() => setActiveTabMobile('market')}
             >
               Acquista Svincolati
             </button>
-            <button 
+            <button
               className={`tactical-tab-btn ${activeTabMobile === 'rosa' ? 'active' : ''}`}
               onClick={() => setActiveTabMobile('rosa')}
             >
@@ -301,7 +302,7 @@ const GestioneRose = () => {
           </div>
 
           <div className="tactical-workspace-grid">
-            
+
             {/* SEZIONE MERCATO: LISTONE ACQUISTI */}
             <div className={`tactical-column-card ${activeTabMobile === 'market' ? 'show-mobile' : 'hide-mobile'}`}>
               <div className="tactical-column-card-header">
@@ -322,7 +323,7 @@ const GestioneRose = () => {
                     <button className="tactical-clear-search" onClick={() => setSearchQuery('')}>×</button>
                   )}
                 </div>
-                
+
                 {/* GRUPPO FILTRI RUOLO CON DIGITAZIONE FRAZIONARIA */}
                 <div className="tactical-role-grid-selector">
                   {['P', 'D', 'C', 'A'].map(r => (
@@ -348,7 +349,7 @@ const GestioneRose = () => {
                   listoneCalciatori.map(player => {
                     const isOccupato = calciatoriOccupatiIds.includes(player.id);
                     const limiteRaggiunto = conteggioRuoli[player.ruolo] >= LIMITI_RUOLI[player.ruolo];
-                    
+
                     return (
                       <div key={player.id} className={`tactical-market-row-item ${isOccupato ? 'item-locked' : ''}`}>
                         <div className="tactical-player-core-side">
@@ -358,7 +359,7 @@ const GestioneRose = () => {
                             <span className="tactical-player-fullname">{player.nome}</span>
                           </div>
                         </div>
-                        
+
                         {isOccupato ? (
                           <span className="tactical-status-tag locked">🔒 Riservato</span>
                         ) : limiteRaggiunto ? (
@@ -396,7 +397,7 @@ const GestioneRose = () => {
 
               {rosaAttuale.length === 0 ? (
                 <div className="tactical-empty-placeholder-box">
-                  <p>L'organico del club selezionato è attualmente vuoto.<br/>Utilizza lo specchietto di sinistra per completare gli ingaggi.</p>
+                  <p>L'organico del club selezionato è attualmente vuoto.<br />Utilizza lo specchietto di sinistra per completare gli ingaggi.</p>
                 </div>
               ) : (
                 <div className="tactical-scrollable-pool">

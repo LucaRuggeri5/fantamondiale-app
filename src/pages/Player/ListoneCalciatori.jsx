@@ -4,6 +4,9 @@ import { supabase } from '../../supabaseClient';
 import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale'; 
 import './ListoneCalciatori.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../../components/TacticalBackButton/TacticalBackButton';
+
 const ListoneCalciatori = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -129,12 +132,9 @@ const ListoneCalciatori = () => {
     <div className="tactical-app-container tactical-listone-page">
       {/* Intestazione e Pulsante di Ritorno */}
       <div className="tactical-listone-header-section">
-        <button className="tactical-listone-back-btn" onClick={() => navigate('/dashboard')}>
-          ⬅️ indietro
-        </button>
         <div className="tactical-listone-header">
+          <TacticalBackButton />
           <h2 className="tactical-brand">Listone Calciatori</h2>
-          <p className="tactical-listone-subtitle">Esplora i convocati di ciascuna Nazionale o filtra i profili per ruolo e nome.</p>
         </div>
       </div>
 

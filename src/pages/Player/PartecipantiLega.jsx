@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../../supabaseClient';
 import './PartecipantiLega.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../../components/TacticalBackButton/TacticalBackButton';
+
 const PartecipantiLega = ({ currentUser }) => {
   const [loading, setLoading] = useState(true);
   const [partecipanti, setPartecipanti] = useState([]);
@@ -59,10 +62,12 @@ const PartecipantiLega = ({ currentUser }) => {
 
   return (
     <div className="tactical-app-container tactical-partecipanti-page">
-      {/* Intestazione */}
+      {/* Intestazione con integrazione del tasto indietro */}
       <div className="tactical-partecipanti-page-header">
-        <h2 className="tactical-brand">Partecipanti Lega</h2>
-        <p className="tactical-partecipanti-page-subtitle">Lista ufficiale di tutti gli allenatori iscritti.</p>
+        <div className="tactical-header-with-back">
+          <TacticalBackButton />
+          <h2 className="tactical-brand">Partecipanti Lega</h2>
+        </div>
       </div>
 
       {/* Box Condizionale Invito / Condivisione Codice Accesso */}

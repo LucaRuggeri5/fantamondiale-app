@@ -10,7 +10,6 @@
 .tactical-penalita-header {
   display: flex;
   align-items: center;
-  gap: 16px;
   margin-bottom: 20px;
   border-bottom: 2px solid var(--tactical-border-gold);
   padding-bottom: 16px;
@@ -19,36 +18,13 @@
 
 .tactical-penalita-header .tactical-brand {
   font-family: 'Montserrat', sans-serif;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 800;
   letter-spacing: 0.5px;
   margin: 0;
   color: var(--tactical-text-primary);
 }
 
-/* Pulsante Indietro Ripreso dai Token Globali */
-.tactical-btn-back {
-  background-color: var(--tactical-bg-card);
-  color: var(--tactical-text-gold);
-  border: 1px solid var(--tactical-border-gold);
-  padding: 8px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-size: 0.82rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-}
-
-.tactical-btn-back:hover {
-  background-color: var(--tactical-accent-gold);
-  color: var(--tactical-text-on-button);
-  transform: translateX(-3px);
-}
 
 /* Box Informativo / Nota Editoriale */
 .tactical-penalita-info-card {

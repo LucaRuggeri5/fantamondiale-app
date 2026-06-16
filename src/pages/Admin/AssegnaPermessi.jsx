@@ -4,6 +4,9 @@ import { supabase } from '../../supabaseClient'; // Connessione diretta a Supaba
 import { useUser } from '@clerk/clerk-react'; // Hook per recuperare l'utente attivo da Clerk
 import './AssegnaPermessi.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../../components/TacticalBackButton/TacticalBackButton';
+
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
 import { useNotification } from '../../context/NotificationContext';
 
@@ -110,14 +113,9 @@ const AssegnaPermessi = () => {
       {/* Blocco Intestazione */}
       <div className="tactical-permessi-header">
         <div className="tactical-permessi-title-wrapper">
-          <button className="tactical-btn-back" onClick={() => navigate('/dashboard')}>
-            ⬅️ Indietro
-          </button>
+          <TacticalBackButton />
           <h2 className="tactical-brand">Assegna Permessi Admin</h2>
         </div>
-        <p className="tactical-permessi-subtitle">
-          Promuovi i partecipanti ad Amministratori della lega o revoca i loro accessi di controllo.
-        </p>
       </div>
 
       {/* Lista Utenti */}

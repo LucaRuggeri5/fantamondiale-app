@@ -23,12 +23,16 @@
   padding-bottom: 16px;
 }
 
+/* Flexbox per allineare millimetricamente il TacticalBackButton al Titolo della Pagina */
+.tactical-gestione-page-header {
+  display: flex;
+  align-items: center;
+}
+
 .tactical-gestione-page-header .tactical-brand {
-  margin: 0 0 6px 0;
   font-family: 'Montserrat', sans-serif;
   font-size: 24px;
   font-weight: 800;
-  letter-spacing: 0.5px;
   color: var(--tactical-text-primary);
 }
 
