@@ -299,7 +299,7 @@ const AdminModificaFormazioni = () => {
       {/* Pannello Superiore di Selezione Filtri */}
       <div className="admin-filter-bar">
         <div className="filter-group">
-          <label>Seleziona Turno/Giornata:</label>
+          <label>Seleziona Giornata:</label>
           <select value={giornataId} onChange={(e) => setGiornataId(e.target.value)}>
             {giornate.map(g => (
               <option key={g.id} value={g.id}>Giornata {g.numero_giornata}</option>
