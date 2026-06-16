@@ -63,8 +63,8 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
       <TacticalToast />
       <TacticalConfirmModal />
 
-      {/* Elemento overlay isolato che esegue l'animazione ad espansione circolare cambiando sfondo sotto il testo */}
-      <div className="theme-ripple-overlay"></div>
+      {/* Sottile overlay per la transizione di dissolvenza fluida tra i temi */}
+      <div className="theme-transition-overlay"></div>
 
       {/* Menu laterale (Sidebar) configurato con i permessi e dati dell'utente corrente */}
       <Sidebar
@@ -146,7 +146,7 @@ const AppContent = ({ currentUser, isSidebarOpen, setIsSidebarOpen, theme, toggl
         </div>
 
         {/* Pulsante di commutazione tema Notte/Giorno con icone SVG dinamiche */}
-        <button className="btn-theme-toggle" onClick={(e) => toggleTheme(e)} aria-label="Cambia tema">
+        <button className="btn-theme-toggle" onClick={toggleTheme} aria-label="Cambia tema">
           {theme === 'light' ? (
             <svg className="icon-theme moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
@@ -345,7 +345,7 @@ const CustomLoginScreen = () => {
 };
 
 const App = () => {
-  //宣Dichiarazione degli stati locali fondamentali
+  // Dichiarazione degli stati locali fondamentali
   const [leagueId, setLeagueId] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isSyncing, setIsSyncing] = useState(true);
@@ -365,23 +365,14 @@ const App = () => {
     document.body.setAttribute('data-theme', theme);
   }, [theme]);
 
-  // Funzione deputata alla gestione del cambio tema con calcolo della posizione del click
-  const toggleTheme = (e) => {
-    if (e && e.clientX && e.clientY) {
-      document.documentElement.style.setProperty('--ripple-x', `${e.clientX}px`);
-      document.documentElement.style.setProperty('--ripple-y', `${e.clientY}px`);
-    } else {
-      document.documentElement.style.setProperty('--ripple-x', '90%');
-      document.documentElement.style.setProperty('--ripple-y', '27px');
-    }
-
-    // Reset della classe CSS per innescare correttamente l'animazione di espansione
+  // Gestione ultra-fluida del cambio tema (ottimizzata per mobile tramite hardware opacity transition)
+  const toggleTheme = () => {
     document.body.classList.remove('theme-changing');
-    void document.body.offsetWidth; // Forza il ricalcolo del layout nel browser
-    document.body.classList.add('theme-changing');
-
-    // Cambia lo stato invertendo il valore attuale
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+    // Piccolo timeout per svincolare l'esecuzione grafica e innescare la transizione CSS pulita
+    setTimeout(() => {
+      document.body.classList.add('theme-changing');
+      setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+    }, 10);
   };
 
   // Effetto di allineamento e sincronizzazione dei dati utente tra Clerk e Supabase

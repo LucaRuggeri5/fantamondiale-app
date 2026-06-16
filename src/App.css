@@ -23,7 +23,7 @@
   color: var(--tactical-text-primary);
   padding-top: 55px; /* Spazio di sicurezza per non finire sotto l'header fisso */
   box-sizing: border-box;
-  transition: background-color 0.4s ease, color 0.4s ease;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Aggiunta di una texture filigranata di fondo che evoca una mappa o griglia tattica */
@@ -44,33 +44,36 @@
 }
 
 /* ========================================== */
-/* OVERLAY AD ESPANSIONE CIRCOLARE (RIPPLE)   */
+/* OVERLAY DISSOLVENZA ULTRA-FLUIDA (FADE)    */
 /* ========================================== */
-.theme-ripple-overlay {
+.theme-transition-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: var(--tactical-bg-main);
-  /* Posizionato sopra lo sfondo con texture, ma rigorosamente sotto i testi e i pulsanti */
   z-index: 0; 
   pointer-events: none; 
-  clip-path: circle(150% at var(--ripple-x) var(--ripple-y));
+  opacity: 0;
+  transform: translateZ(0); /* Accelerazione GPU attiva */
+  transition: opacity 0.25s ease-in-out;
 }
 
-.theme-changing .theme-ripple-overlay {
-  animation: rippleEffect 0.9s cubic-bezier(0.25, 1, 0.5, 1) both;
-  will-change: clip-path;
-  transform: translateZ(0); /* Ottimizzazione hardware per smartphone fluidi */
+.theme-changing .theme-transition-overlay {
+  animation: themeFadeEffect 0.25s ease-in-out;
+  will-change: opacity;
 }
 
-@keyframes rippleEffect {
-  from {
-    clip-path: circle(0% at var(--ripple-x) var(--ripple-y));
+@keyframes themeFadeEffect {
+  0% {
+    opacity: 0.5;
   }
-  to {
-    clip-path: circle(150% at var(--ripple-x) var(--ripple-y));
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
 
@@ -92,7 +95,7 @@
   border-bottom: 1px solid var(--tactical-border-gold);
   z-index: 999; /* Garantisce l'immutabilità visiva sopra i cambi dell'overlay */
   box-sizing: border-box;
-  transition: background-color 0.4s ease, border-color 0.4s ease;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
 }
 
 .header-left {
@@ -121,7 +124,7 @@
   text-transform: uppercase;
   cursor: pointer;
   user-select: none;
-  transition: opacity 0.2s ease, color 0.4s ease;
+  transition: opacity 0.2s ease, color 0.25s ease;
 }
 
 .app-title:hover {
@@ -141,7 +144,7 @@
 }
 
 /* ========================================== */
-/* BOTTONE CAMBIO TEMA (TOGGLE SWITCH)        */
+/* BOTTONE CAMBIO TEMA E ANIMAZIONE ICONE     */
 /* ========================================== */
 .btn-theme-toggle {
   background: none;
@@ -172,16 +175,36 @@
   height: 20px;
   color: var(--toggle-icon-color);
   stroke-width: 2.3;
-  animation: iconSpin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: translateZ(0);
 }
 
-@keyframes iconSpin {
-  from {
-    transform: rotate(-90deg);
+/* Nuove animazioni specifiche per Sole e Luna molto leggere e fluide */
+.moon-icon {
+  animation: moonSpring 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.sun-icon {
+  animation: sunSpin 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes moonSpring {
+  0% {
+    transform: scale(0.6) rotate(-45deg);
     opacity: 0;
   }
-  to {
-    transform: rotate(0deg);
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes sunSpin {
+  0% {
+    transform: scale(0.6) rotate(90deg);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
     opacity: 1;
   }
 }
@@ -192,7 +215,7 @@
 .main-content {
   position: relative;
   z-index: 1; /* Forza i componenti figli a stare sopra la griglia e l'overlay */
-  padding-bottom: 80px; /* Spazio di respeito per non sovrapporsi alla BottomNavbar */
+  padding-bottom: 80px; /* Spazio di rispetto per non sovrapporsi alla BottomNavbar */
   max-width: 750px;
   margin: 0 auto;
 }
