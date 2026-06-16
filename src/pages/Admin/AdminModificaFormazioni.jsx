@@ -61,8 +61,18 @@ const AdminModificaFormazioni = () => {
         setSquadre(sData || []);
 
         // Pre-seleziona automaticamente i primi elementi estratti per evitare stati indefiniti
-        if (gData?.length > 0) setGiornataId(gData[0].id);
-        if (sData?.length > 0) setSquadraId(sData[0].id);
+        if (gData?.length > 0) {
+          const primaGiornata = gData[0];
+          setGiornataId(primaGiornata.id);
+          
+          // Filtriamo subito le squadre in base alla lega della prima giornata per la pre-selezione
+          const squadreLegaCorrente = (sData || []).filter(s => s.lega_id === primaGiornata.lega_id);
+          if (squadreLegaCorrente.length > 0) {
+            setSquadraId(squadreLegaCorrente[0].id);
+          } else if (sData?.length > 0) {
+            setSquadraId(sData[0].id);
+          }
+        }
       } catch (err) {
         console.error("Errore setup admin:", err);
         showToast("Errore durante l'inizializzazione dei dati admin.", "error");
@@ -72,6 +82,19 @@ const AdminModificaFormazioni = () => {
     };
     fetchSetupAdmin();
   }, []);
+
+  // Determina la giornata corrente selezionata e filtra le squadre di conseguenza
+  const giornataSelezionata = giornate.find(g => g.id === giornataId);
+  const squadreFiltrate = giornataSelezionata
+    ? squadre.filter(s => s.lega_id === giornataSelezionata.lega_id)
+    : squadre;
+
+  // Effetto per correggere la squadraId se quella attualmente selezionata non appartiene alla nuova giornata/lega scelta
+  useEffect(() => {
+    if (squadreFiltrate.length > 0 && !squadreFiltrate.some(s => s.id === squadraId)) {
+      setSquadraId(squadreFiltrate[0].id);
+    }
+  }, [giornataId, squadreFiltrate, squadraId]);
 
   // 2. Effetto reattivo: ricarica l'intera griglia quando cambiano i filtri in alto
   useEffect(() => {
@@ -156,7 +179,6 @@ const AdminModificaFormazioni = () => {
       const attualiRuolo = titolari.filter(t => t.ruolo === calciatore.ruolo).length;
 
       if (attualiRuolo >= limiteRuolo) {
-        // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
         showToast(`Massimo ${limiteRuolo} giocatori per il ruolo ${calciatore.ruolo} con questo modulo.`, "warning");
         return;
       }
@@ -172,7 +194,6 @@ const AdminModificaFormazioni = () => {
     const limiteConsentito = limitsPanchina[calciatore.ruolo];
 
     if (attualiInPanchina >= limiteConsentito) {
-      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
       showToast(`In panchina puoi mettere al massimo ${limiteConsentito} per il ruolo: ${calciatore.ruolo}`, "warning");
       return;
     }
@@ -190,7 +211,6 @@ const AdminModificaFormazioni = () => {
   // Sovrascrittura e salvataggio forzoso sul database Supabase
   const handleSalvaFormazioneCoattiva = async () => {
     if (titolari.length === 0 && panchina.length === 0) {
-      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST WARNING ---
       showToast("Inserisci almeno un giocatore prima di salvare!", "warning");
       return;
     }
@@ -234,11 +254,9 @@ const AdminModificaFormazioni = () => {
       // Inserimento batch dei record nella tabella accoppiamenti
       await supabase.from('formazioni_calciatori').insert(recordCalciatori);
 
-      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST SUCCESS ---
       showToast("Formazione salvata d'autorità con successo!", "success");
     } catch (err) {
       console.error(err);
-      // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST ERROR ---
       showToast("Errore durante il salvataggio admin.", "error");
     } finally {
       setSaving(false);
@@ -309,7 +327,7 @@ const AdminModificaFormazioni = () => {
         <div className="filter-group">
           <label>Seleziona Squadra:</label>
           <select value={squadraId} onChange={(e) => setSquadraId(e.target.value)}>
-            {squadre.map(s => (
+            {squadreFiltrate.map(s => (
               <option key={s.id} value={s.id}>{s.nome}</option>
             ))}
           </select>

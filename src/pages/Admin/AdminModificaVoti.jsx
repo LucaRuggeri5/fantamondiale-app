@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react'; // <-- IMPORTATO PER CONTROLLO LEGA ADMIN
 import { supabase } from '../../supabaseClient';
 import './AdminModificaVoti.css';
 
@@ -15,6 +16,7 @@ import { useNotification } from '../../context/NotificationContext';
  */
 const AdminModificaVoti = () => {
   const navigate = useNavigate();
+  const { user } = useUser(); // <-- ESTRAIAMO L'UTENTE CLERK CORRENTE
   
   // --- INNESTO NOTIFICHE: RECUPERIAMO LA FUNZIONE CENTRALIZZATA DEI TOAST ---
   const { showToast } = useNotification();
@@ -44,13 +46,41 @@ const AdminModificaVoti = () => {
     return voti;
   }, []);
 
-  // EFFETTO 1: Caricamento iniziale dei filtri Admin (Giornate e Club)
+  // EFFETTO 1: Caricamento iniziale dei filtri Admin (Giornate e Club FILTRATI PER LEGA)
   useEffect(() => {
     const fetchSetupVotiAdmin = async () => {
       try {
         setLoadingSetup(true);
-        const { data: gData } = await supabase.from('giornate').select('*').order('numero_giornata', { ascending: true });
-        const { data: sData } = await supabase.from('squadre').select('*').order('nome', { ascending: true });
+        if (!user) return;
+
+        // 1. Recuperiamo prima la lega di appartenenza dell'amministratore corrente
+        const { data: userData, error: userErr } = await supabase
+          .from('utenti')
+          .select('lega_id')
+          .eq('id', user.id)
+          .single();
+
+        if (userErr) throw userErr;
+        if (!userData?.lega_id) {
+          showToast("Impossibile identificare la lega di questo account amministratore.", "error");
+          return;
+        }
+
+        // 2. Recuperiamo le giornate e le squadre filtrandole ESCLUSIVAMENTE per la lega ottenuta
+        const { data: gData, error: gErr } = await supabase
+          .from('giornate')
+          .select('*')
+          .eq('lega_id', userData.lega_id)
+          .order('numero_giornata', { ascending: true });
+
+        const { data: sData, error: sErr } = await supabase
+          .from('squadre')
+          .select('*')
+          .eq('lega_id', userData.lega_id)
+          .order('nome', { ascending: true });
+
+        if (gErr) throw gErr;
+        if (sErr) throw sErr;
 
         setGiornate(gData || []);
         setSquadre(sData || []);
@@ -64,8 +94,11 @@ const AdminModificaVoti = () => {
         setLoadingSetup(false);
       }
     };
-    fetchSetupVotiAdmin();
-  }, []);
+    
+    if (user) {
+      fetchSetupVotiAdmin();
+    }
+  }, [user]);
 
   // EFFETTO 2: Recupero dei calciatori schierati in base al turno e al club selezionato (Incluso campo nazionale)
   useEffect(() => {
