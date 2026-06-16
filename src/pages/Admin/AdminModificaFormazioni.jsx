@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
-import '../InserisciFormazione.css'; 
+import '../InserisciFormazione.css';
 import './AdminModificaFormazioni.css';
+
+import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale';
 
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
 import { useNotification } from '../../context/NotificationContext';
 
 const AdminModificaFormazioni = () => {
   const navigate = useNavigate();
-  
+
   // --- INNESTO NOTIFICHE: RECUPERIAMO LA FUNZIONE CENTRALIZZATA DEI TOAST ---
   const { showToast } = useNotification();
-  
+
   // Stati di caricamento asincrono e blocco interazioni
   const [loadingSetup, setLoadingSetup] = useState(true);
   const [loadingDati, setLoadingDati] = useState(false);
@@ -92,7 +94,7 @@ const AdminModificaFormazioni = () => {
 
         if (rErr) throw rErr;
 
-        const listaCalciatori = rosaData.map(r => 
+        const listaCalciatori = rosaData.map(r =>
           Array.isArray(r.calciatori_reali) ? r.calciatori_reali[0] : r.calciatori_reali
         ).filter(Boolean);
 
@@ -195,7 +197,7 @@ const AdminModificaFormazioni = () => {
 
     try {
       setSaving(true);
-      
+
       // Esegue l'upsert sulla tabella master bypassando i controlli temporali standard
       const { data: formSalvata, error: fErr } = await supabase
         .from('formazioni')
@@ -208,7 +210,7 @@ const AdminModificaFormazioni = () => {
       await supabase.from('formazioni_calciatori').delete().eq('formazione_id', formSalvata.id);
 
       const recordCalciatori = [];
-      
+
       // Generazione array per inserimento multiplo titolari (1-11)
       titolari.forEach((giocatore, index) => {
         recordCalciatori.push({
@@ -231,7 +233,7 @@ const AdminModificaFormazioni = () => {
 
       // Inserimento batch dei record nella tabella accoppiamenti
       await supabase.from('formazioni_calciatori').insert(recordCalciatori);
-      
+
       // --- MODIFICA NOTIFICHE: SOSTITUITO ALERT NATIVO CON TOAST SUCCESS ---
       showToast("Formazione salvata d'autorità con successo!", "success");
     } catch (err) {
@@ -256,6 +258,9 @@ const AdminModificaFormazioni = () => {
           <div key={`tit-${ruoloKey}-${i}`} className={`campo-player-card occupato border-${ruoloKey}`} onClick={() => gestisciTitolare(giocatore)} title={giocatore.nome}>
             <span className={`badge-ruolo-mini ${giocatore.ruolo}`}>{giocatore.ruolo}</span>
             <span className="campo-player-name">{giocatore.nome}</span>
+            <div style={{ marginTop: '2px', display: 'flex', justifyContent: 'center' }}>
+              <BandieraNazionale nazione={giocatore.nazionale} />
+            </div>
             <span className="remove-icon">✕</span>
           </div>
         );
@@ -365,14 +370,17 @@ const AdminModificaFormazioni = () => {
                           {riserveRuolo.length} / {limitsPanchina[r]} <b className="plus-indicator-flat">+</b>
                         </span>
                       </div>
-                      
+
                       <div className="panchina-items-vertical-stack">
                         {riserveRuolo.length === 0 ? (
                           <span className="empty-pan-text-flat">Nessun giocatore inserito</span>
                         ) : (
                           riserveRuolo.map(p => (
                             <div key={p.id} className={`panchinaro-item-flat flat-border-${r}`} onClick={() => setPanchina(prev => prev.filter(item => item.id !== p.id))}>
-                              <span className="panchinaro-name-flat">{p.nome}</span>
+                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                                <span className="panchinaro-name-flat">{p.nome}</span>
+                                <BandieraNazionale nazione={p.nazionale} />
+                              </div>
                               <span className="remove-icon-flat">✕</span>
                             </div>
                           ))
@@ -397,7 +405,10 @@ const AdminModificaFormazioni = () => {
                   {giocatoriSelezionabili.length === 0 ? <p className="no-players-overlay">Nessun giocatore disponibile.</p> : (
                     giocatoriSelezionabili.map(g => (
                       <div key={g.id} className="giocatore-overlay-row" onClick={() => overlay.tipo === 'titolare' ? gestisciTitolare(g) : gestisciPanchina(g)}>
-                        <span className="giocatore-overlay-name">{g.nome} ({g.nazionale})</span>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                          <span className="giocatore-overlay-name">{g.nome}</span>
+                          <BandieraNazionale nazione={g.nazionale} />
+                        </div>
                         <button className="btn-select-giocatore">Scegli</button>
                       </div>
                     ))

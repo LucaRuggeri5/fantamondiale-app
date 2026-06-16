@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../supabaseClient';
 import './AdminModificaVoti.css';
 
+// --- IMPORT COMPONENTE BANDIERA NAZIONALE ---
+import BandieraNazionale from '../../components/BandieraNazionale/BandieraNazionale';
+
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
 import { useNotification } from '../../context/NotificationContext';
 
@@ -64,7 +67,7 @@ const AdminModificaVoti = () => {
     fetchSetupVotiAdmin();
   }, []);
 
-  // EFFETTO 2: Recupero dei calciatori schierati in base al turno e al club selezionato
+  // EFFETTO 2: Recupero dei calciatori schierati in base al turno e al club selezionato (Incluso campo nazionale)
   useEffect(() => {
     if (!giornataId || !squadraId) return;
 
@@ -90,7 +93,7 @@ const AdminModificaVoti = () => {
           .from('formazioni_calciatori')
           .select(`
             id, posizione, ruolo, calciatore_id, voto_base, bonus_malus, voto_fanta, 
-            calciatori_reali!calciatore_id (id, nome)
+            calciatori_reali!calciatore_id (id, nome, nazionale)
           `)
           .eq('formazione_id', formData.id)
           .order('posizione', { ascending: true });
@@ -105,6 +108,7 @@ const AdminModificaVoti = () => {
             posizione: fc.posizione,
             ruolo: fc.ruolo,
             nome: infoC?.nome || 'Calciatore Sconosciuto',
+            nazionale: infoC?.nazionale || '',
             voto_base: fc.voto_base != null ? fc.voto_base.toString() : '6', 
             bonus_malus: fc.bonus_malus != null ? fc.bonus_malus.toString() : '0',
             voto_fanta: fc.voto_fanta || 6,
@@ -136,6 +140,7 @@ const AdminModificaVoti = () => {
         const fanta = baseNum + (parseFloat(t.bonus_malus) || 0);
         conteggiati.push({ 
           nome: t.nome, 
+          nazionale: t.nazionale,
           ruolo: t.ruolo, 
           tipo: 'Titolare', 
           voto_fanta: fanta,
@@ -150,6 +155,7 @@ const AdminModificaVoti = () => {
           const fanta = parseFloat(sub.voto_base) + (parseFloat(sub.bonus_malus) || 0);
           conteggiati.push({ 
             nome: sub.nome, 
+            nazionale: sub.nazionale,
             ruolo: sub.ruolo, 
             tipo: `Subentra per ${t.nome}`, 
             voto_fanta: fanta, 
@@ -160,6 +166,7 @@ const AdminModificaVoti = () => {
         } else {
           conteggiati.push({ 
             nome: t.nome, 
+            nazionale: t.nazionale,
             ruolo: t.ruolo, 
             tipo: 'Non Sostituito', 
             voto_fanta: 0,
@@ -233,7 +240,10 @@ const AdminModificaVoti = () => {
       <div className="tactical-player-main-info">
         <div className="tactical-player-meta-side">
           <span className={`tactical-role-indicator ${c.ruolo}`}>{c.ruolo}</span>
-          <strong className="tactical-giocatore-nome">{c.nome}</strong>
+          <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <strong className="tactical-giocatore-nome">{c.nome}</strong>
+            <BandieraNazionale nazione={c.nazionale} />
+          </div>
           {isRiserva && <span className="tactical-panchina-order">Pan. #{c.posizione - 11}</span>}
         </div>
         <div className={`tactical-tot-display-badge ${c.senzaVoto ? 'sv' : ''}`}>
@@ -374,7 +384,10 @@ const AdminModificaVoti = () => {
                     <div className="tactical-comp-left-info">
                       <span className={`tactical-mini-role ${gc.ruolo}`}>{gc.ruolo}</span>
                       <div className="tactical-comp-name-details">
-                        <span className="tactical-comp-player-name">{gc.nome}</span>
+                        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                          <span className="tactical-comp-player-name">{gc.nome}</span>
+                          <BandieraNazionale nazione={gc.nazionale} />
+                        </div>
                         <small className="tactical-comp-type-label">{gc.tipo}</small>
                       </div>
                     </div>

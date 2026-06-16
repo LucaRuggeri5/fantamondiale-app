@@ -4,6 +4,9 @@ import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../supabaseClient';
 import './InserisciFormazione.css';
 
+// --- IMPORT COMPONENTE BANDIERA NAZIONALE ---
+import BandieraNazionale from '../components/BandieraNazionale/BandieraNazionale';
+
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO DAL CONTEXT ---
 import { useNotification } from '../context/NotificationContext';
 
@@ -65,7 +68,7 @@ const InserisciFormazione = () => {
         const listaCalciatori = rosaData.map(r => Array.isArray(r.calciatori_reali) ? r.calciatori_reali[0] : r.calciatori_reali).filter(Boolean);
         setRosa(listaCalciatori);
 
-        // 4. Verifica se l'utente ha già salvato una formazione per questa giornata specifica
+        // 4. Verifica si l'utente ha già salvato una formazione per questa giornata specifica
         const { data: formEsistente } = await supabase.from('formazioni').select('*').eq('squadra_id', uData.squadra_id).eq('giornata_id', giornataId).maybeSingle();
 
         if (formEsistente) {
@@ -218,11 +221,14 @@ const InserisciFormazione = () => {
     for (let i = 0; i < postiMassimi; i++) {
       const giocatore = schieratiQuestoRuolo[i];
       if (giocatore) {
-        // Renderizza la card con il nome del calciatore schierato
+        // Renderizza la card con il nome del calciatore schierato (Bandiera posizionata SOTTO al nome)
         nodi.push(
           <div key={`tit-${ruoloKey}-${i}`} className={`campo-player-card occupato border-${ruoloKey}`} onClick={() => gestisciTitolare(giocatore)}>
             <span className={`badge-ruolo-mini ${giocatore.ruolo}`}>{giocatore.ruolo}</span>
             <span className="campo-player-name">{giocatore.nome}</span>
+            <div style={{ marginTop: '2px', display: 'flex', justifyContent: 'center' }}>
+              <BandieraNazionale nazione={giocatore.nazionale} />
+            </div>
             <span className="remove-icon">✕</span>
           </div>
         );
@@ -319,7 +325,10 @@ const InserisciFormazione = () => {
                     ) : (
                       riserveRuolo.map(p => (
                         <div key={p.id} className={`panchinaro-item-flat flat-border-${r}`} onClick={() => setPanchina(prev => prev.filter(item => item.id !== p.id))}>
-                          <span className="panchinaro-name-flat">{p.nome}</span>
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                            <span className="panchinaro-name-flat">{p.nome}</span>
+                            <BandieraNazionale nazione={p.nazionale} />
+                          </div>
                           <span className="remove-icon-flat">✕</span>
                         </div>
                       ))
@@ -344,7 +353,10 @@ const InserisciFormazione = () => {
               {giocatoriSelezionabili.length === 0 ? <p className="no-players-overlay">Nessun giocatore disponibile in rosa.</p> : (
                 giocatoriSelezionabili.map(g => (
                   <div key={g.id} className="giocatore-overlay-row" onClick={() => overlay.tipo === 'titolare' ? gestisciTitolare(g) : gestisciPanchina(g)}>
-                    <span className="giocatore-overlay-name">{g.nome}</span>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
+                      <span className="giocatore-overlay-name">{g.nome}</span>
+                      <BandieraNazionale nazione={g.nazionale} />
+                    </div>
                     <button className="btn-select-giocatore">Schiera</button>
                   </div>
                 ))

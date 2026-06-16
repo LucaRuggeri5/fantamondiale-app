@@ -5,6 +5,9 @@ import { ArrowLeft, Save, FileSpreadsheet, X, Minus, Plus, Check, ExternalLink }
 import { supabase } from '../supabaseClient';
 import './InserisciVoti.css';
 
+// --- IMPORT COMPONENTE BANDIERA NAZIONALE ---
+import BandieraNazionale from '../components/BandieraNazionale/BandieraNazionale';
+
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
 import { useNotification } from '../context/NotificationContext';
 
@@ -70,9 +73,9 @@ const InserisciVoti = () => {
         }
         setFormazioneId(form.id);
 
-        // Scarichiamo la lista dei calciatori in formazione
+        // Scarichiamo la lista dei calciatori in formazione (Incluso il campo nazionale)
         const { data: fcData } = await supabase.from('formazioni_calciatori').select(`
-          id, posizione, ruolo, calciatore_id, voto_base, bonus_malus, voto_fanta, calciatori_reali!calciatore_id (id, nome)
+          id, posizione, ruolo, calciatore_id, voto_base, bonus_malus, voto_fanta, calciatori_reali!calciatore_id (id, nome, nazionale)
         `).eq('formazione_id', form.id);
 
         // Dizionario di pesi per forzare l'ordinamento classico di ruolo: P -> D -> C -> A
@@ -98,6 +101,7 @@ const InserisciVoti = () => {
             posizione: fc.posizione,
             ruolo: fc.ruolo,
             nome: infoC?.nome || 'Calciatore Sconosciuto',
+            nazionale: infoC?.nazionale || '',
             voto_base: fc.voto_base != null ? fc.voto_base.toString() : '6',
             bonus_malus: fc.bonus_malus != null ? fc.bonus_malus.toString() : '0',
             voto_fanta: fc.voto_fanta || 6,
@@ -127,6 +131,7 @@ const InserisciVoti = () => {
         const fanta = baseNum + (parseFloat(t.bonus_malus) || 0);
         conteggiati.push({ 
           nome: t.nome, 
+          nazionale: t.nazionale,
           ruolo: t.ruolo, 
           tipo: 'Titolare', 
           voto_fanta: fanta, 
@@ -141,6 +146,7 @@ const InserisciVoti = () => {
           const fanta = parseFloat(sub.voto_base) + (parseFloat(sub.bonus_malus) || 0);
           conteggiati.push({ 
             nome: sub.nome, 
+            nazionale: sub.nazionale,
             ruolo: sub.ruolo, 
             tipo: `Subentra per ${t.nome}`, 
             voto_fanta: fanta, 
@@ -151,6 +157,7 @@ const InserisciVoti = () => {
         } else {
           conteggiati.push({ 
             nome: t.nome, 
+            nazionale: t.nazionale,
             ruolo: t.ruolo, 
             tipo: 'Non Sostituito', 
             voto_fanta: 0, 
@@ -219,7 +226,10 @@ const InserisciVoti = () => {
       <div className="player-main-info">
         <div className="player-meta-side">
           <span className={`role-indicator-voti role-${c.ruolo}`}>{c.ruolo}</span>
-          <strong className="voti-player-name">{c.nome}</strong>
+          <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <strong className="voti-player-name">{c.nome}</strong>
+            <BandieraNazionale nazione={c.nazionale} />
+          </div>
           {isRiserva && <span className="panchina-order">PAN # {c.posizione - 11}</span>}
         </div>
         <div className={`tot-display-badge ${c.senzaVoto ? 'sv' : ''} ${c.voto_fanta >= 7 ? 'high-score' : ''}`}>
@@ -350,7 +360,10 @@ const InserisciVoti = () => {
                   <div className="comp-left-info">
                     <span className={`mini-role role-${gc.ruolo}`}>{gc.ruolo}</span>
                     <div className="comp-name-details">
-                      <span className="comp-player-name">{gc.nome}</span>
+                      <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+                        <span className="comp-player-name">{gc.nome}</span>
+                        <BandieraNazionale nazione={gc.nazionale} />
+                      </div>
                       <small className="comp-type-label">{gc.tipo}</small>
                     </div>
                   </div>

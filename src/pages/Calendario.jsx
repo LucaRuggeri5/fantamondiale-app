@@ -3,6 +3,9 @@ import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../supabaseClient';
 import './Calendario.css';
 
+// --- IMPORT COMPONENTE BANDIERA NAZIONALE ---
+import BandieraNazionale from '../components/BandieraNazionale/BandieraNazionale';
+
 // --- INNESTO NOTIFICHE: IMPORTIAMO L'HOOK PERSONALIZZATO ---
 import { useNotification } from '../context/NotificationContext';
 
@@ -109,9 +112,10 @@ const Calendario = () => {
     setSquadraSelezionata(formazione);
     try {
       setLoadingDettaglio(true);
+      // Estraiamo anche il campo 'nazionale' per poter renderizzare la bandiera
       const { data, error } = await supabase
         .from('formazioni_calciatori')
-        .select(`posizione, ruolo, voto_fanta, calciatori_reali!calciatore_id (id, nome)`)
+        .select(`posizione, ruolo, voto_fanta, calciatori_reali!calciatore_id (id, nome, nazionale)`)
         .eq('formazione_id', formazione.id)
         .order('posizione', { ascending: true });
 
@@ -247,8 +251,9 @@ const Calendario = () => {
                                           {dettaglioFormazione.titolari.map(t => (
                                             <div key={t.id} className={`riga-giocatore-campo cal-border-${t.ruolo} ${t.isSostituito ? 'giocatore-sostituito' : ''}`}>
                                               <span className={`mini-ruolo-indicator ${t.ruolo}`}>{t.ruolo}</span>
-                                              <span className="nome-giocatore-campo">
+                                              <span className="nome-giocatore-campo" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                                                 {t.nome} 
+                                                <BandieraNazionale nazione={t.nazionale} />
                                                 {t.isSostituito && <span className="badge-cambio uscito">🔄 Uscito</span>}
                                               </span>
                                               <span className="voto-giocatore-campo-live">
@@ -259,15 +264,16 @@ const Calendario = () => {
                                         </div>
 
                                         <h5 className="margin-top-panchina">Panchina</h5>
-                                        <div className="lista-calciatori-campo riserve">
+                                        <div className="lista-calciatori-campo riserves">
                                           {dettaglioFormazione.panchina.length === 0 ? (
                                             <p className="no-panchina-text">Nessuna riserva inserita</p>
                                           ) : (
                                             dettaglioFormazione.panchina.map(p => (
                                               <div key={p.id} className={`riga-giocatore-campo cal-border-${p.ruolo} ${p.isSubentrato ? 'giocatore-subentrato' : ''}`}>
                                                 <span className={`mini-ruolo-indicator ${p.ruolo}`}>{p.ruolo}</span>
-                                                <span className="nome-giocatore-campo">
+                                                <span className="nome-giocatore-campo" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                                                   {p.nome}
+                                                  <BandieraNazionale nazione={p.nazionale} />
                                                   {p.isSubentrato && <span className="badge-cambio entrato">🟢 Entrato</span>}
                                                 </span>
                                                 <span className="voto-giocatore-campo-live">

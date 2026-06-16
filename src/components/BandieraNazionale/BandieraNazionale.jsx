@@ -67,7 +67,7 @@ const BandieraNazionale = ({ nazione, className = "" }) => {
     <span 
       className={`emoji-flag ${className}`} 
       title={nazione}
-      style={{ marginRight: '6px', fontStyle: 'normal' }}
+      style={{ marginRight: '6px', marginLeft: '6px', fontStyle: 'normal' }}
     >
       {emoji}
     </span>
