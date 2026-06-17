@@ -89,14 +89,13 @@ const DettaglioSquadra = () => {
               <div key={ruolo} className="ruolo-block-box tactical-card">
                 <h4 className={`title-ruolo ${ruolo}`}>
                   {ruolo === 'P' ? 'Portieri' : ruolo === 'D' ? 'Difensori' : ruolo === 'C' ? 'Centrocampisti' : 'Attaccanti'} 
-                  ({rosaOrdinata[ruolo].length})
                 </h4>
                 <div className="players-subgrid">
                   {rosaOrdinata[ruolo].map(p => (
                     <div key={p.id} className="player-detail-card">
                       <div className="player-detail-left">
-                        <BandieraNazionale nazione={p.nazionale} />
                         <strong>{p.nome}</strong>
+                        <BandieraNazionale nazione={p.nazionale} />
                       </div>
                       <span className="player-nation">{p.nazionale || 'N/D'}</span>
                     </div>

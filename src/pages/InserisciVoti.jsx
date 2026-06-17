@@ -5,6 +5,9 @@ import { ArrowLeft, Save, FileSpreadsheet, X, Minus, Plus, Check, ExternalLink }
 import { supabase } from '../supabaseClient';
 import './InserisciVoti.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../components/TacticalBackButton/TacticalBackButton';
+
 // --- IMPORT COMPONENTE BANDIERA NAZIONALE ---
 import BandieraNazionale from '../components/BandieraNazionale/BandieraNazionale';
 
@@ -294,9 +297,7 @@ const InserisciVoti = () => {
   return (
     <div className="voti-page-container">
       <div className="voti-header">
-        <button className="btn-back-voti" onClick={() => navigate('/dashboard')}>
-          <ArrowLeft size={14} style={{ marginRight: '6px' }} /> Indietro
-        </button>
+<TacticalBackButton />
         <div className="voti-title-group">
           <h2>VOTI GIORNATA {giornataInfo?.numero_giornata}</h2>
         </div>

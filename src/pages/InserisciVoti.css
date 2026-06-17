@@ -10,36 +10,15 @@
 .voti-header {
   display: flex;
   align-items: center;
-  gap: 16px;
   margin-bottom: 20px;
   border-bottom: 1px solid var(--tactical-border-gold);
   padding-bottom: 14px;
 }
 
-.btn-back-voti {
-  background-color: var(--tactical-bg-card);
-  color: var(--tactical-text-secondary);
-  border: 1px solid var(--tactical-border-gold);
-  padding: 10px 16px;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-  display: flex;
-  align-items: center;
-}
-
-.btn-back-voti:hover {
-  border-color: var(--tactical-accent-gold);
-  color: var(--tactical-text-gold);
-}
-
 .voti-title-group h2 {
   margin: 0;
   font-size: 24px;
-  color: var(--tactical-text-gold);
-  letter-spacing: 0.5px;
+  color: var(--tactical-text-primary);
 }
 
 /* Banner FantaPazz */
