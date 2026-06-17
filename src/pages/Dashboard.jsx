@@ -233,7 +233,10 @@ const Dashboard = () => {
           <h1 className="tactical-brand">{leagueData?.nome || "La tua Lega"}</h1>
           {myTeamData && (
             <div className="hero-team-wrapper">
-              <LogoSquadra url={myTeamData.url_logo} nomeSquadra={myTeamData.nome} dimensione="medium" />
+              {/* Box protettivo aggiunto per bloccare rigidamente la dimensione del Logo ed evitarne lo schiacciamento */}
+              <div className="hero-logo-shrink-preventer">
+                <LogoSquadra url={myTeamData.url_logo} nomeSquadra={myTeamData.nome} dimensione="medium" />
+              </div>
               <h2 className="hero-team-title">{myTeamData.nome}</h2>
             </div>
           )}
@@ -283,7 +286,7 @@ const Dashboard = () => {
           <div className="operative-cards-grid">
             <div className={`action-status-card formation ${!targetDates.giornataFormazioneId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
-                <h3>{targetDates.giornataFormazioneId ? `Giornata ${targetDates.numeroGiornataFormazione} ` : "Schieramento Formazione"}</h3>
+                <h3>{targetDates.giornataFormazioneId ? `Formazione Giornata ${targetDates.numeroGiornataFormazione} ` : "Formazione"}</h3>
                 <span className="time-countdown tactical-timer-badge">⏳ {formationCountdown}</span>
               </div>
               <button className="tactical-btn tactical-btn-primary" disabled={!targetDates.giornataFormazioneId} onClick={() => navigate(`/formazione/inserisci/${targetDates.giornataFormazioneId}`)}>Inserisci Formazione</button>
@@ -291,7 +294,7 @@ const Dashboard = () => {
 
             <div className={`action-status-card votes ${!targetDates.giornataVotiId ? 'inactive-panel' : ''}`}>
               <div className="action-card-header">
-                <h3>{targetDates.giornataVotiId ? `Calcolo Giornata ${targetDates.numeroGiornataVoti} ` : "Inserimento Voti"}</h3>
+                <h3>{targetDates.giornataVotiId ? `Voti Giornata ${targetDates.numeroGiornataVoti} ` : "Voti"}</h3>
                 <span className="time-countdown tactical-timer-badge client-timer">⏳ {votesCountdown}</span>
               </div>
               <button className="tactical-btn tactical-btn-secondary" disabled={!targetDates.giornataVotiId} onClick={() => navigate(`/voti/inserisci/${targetDates.giornataVotiId}`)}>Inserisci Voti</button>

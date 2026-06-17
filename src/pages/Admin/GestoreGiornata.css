@@ -243,12 +243,11 @@
   background-color: var(--tactical-bg-timer);
   color: var(--tactical-text-primary);
   border: 1px solid var(--tactical-border-gold);
-  padding: 4px 10px;
+  padding: 5px 5px;
   border-radius: 4px;
+  font-weight: 600;
   font-family: 'Inter', sans-serif;
   font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 

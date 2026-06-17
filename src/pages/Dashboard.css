@@ -54,17 +54,46 @@
   margin: 0;
 }
 
+/* ========================================== */
+/* SEZIONE FLUIDA COMPONENTE LOGO E NOME      */
+/* ========================================== */
+.hero-team-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 10px;
+  width: 100%; /* Copre l'intera larghezza disponibile */
+}
+
+/* Impedisce al logo di subire compressioni o deformazioni asimmetriche */
+.hero-logo-shrink-preventer {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Gestione fluida e scalabile del titolo della squadra */
 .hero-team-title {
-  margin: 6px 0 0 0;
-  font-size: 30px;
+  margin: 0 !important;
+  /* Font dinamico: si adatta allo schermo partendo da 20px fino ad un massimo di 30px */
+  font-size: clamp(30px, 4.5vw, 30px);
   color: var(--tactical-text-gold);
   font-family: 'Inter', sans-serif;
   font-weight: 600;
   letter-spacing: 0.2px;
+  line-height: 1.2;
+  word-break: break-word; /* Va a capo se il nome è troppo lungo senza distruggere i margini */
+  overflow-wrap: break-word;
+}
+
+/* Assicurati che il logo abbia uno stile coerente nell'header */
+.hero-team-wrapper .logo-container.medium {
+  border: 2px solid var(--tactical-border-gold);
 }
 
 /* ========================================== */
-/* RECAP CARD STATISTICHE A COLONNE           */
+/* RECAP CARD STATISTICHE A COLONNE            */
 /* ========================================== */
 .tactical-stats-container {
   background-color: var(--tactical-bg-card);
@@ -167,7 +196,7 @@
   background-color: var(--tactical-bg-timer);
   color: var(--tactical-text-primary);
   border: 1px solid var(--tactical-border-gold);
-  padding: 5px 10px;
+  padding: 5px 5px;
   border-radius: 5px;
   font-size: 11px;
   font-weight: 600;
@@ -293,18 +322,12 @@
   margin-bottom: 12px;
 }
 
-.hero-team-wrapper {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 8px;
-}
-
-.hero-team-title {
-  margin: 0 !important;
-}
-
-/* Assicurati che il logo abbia uno stile coerente nell'header */
-.hero-team-wrapper .logo-container.medium {
-  border: 2px solid var(--tactical-border-gold);
+/* Media Query di sicurezza extra per schermi piccolissimi (sotto i 360px di larghezza) */
+@media (max-width: 360px) {
+  .hero-team-title {
+    font-size: 25px;
+  }
+  .hero-team-wrapper {
+    gap: 8px;
+  }
 }
