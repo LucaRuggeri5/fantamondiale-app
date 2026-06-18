@@ -20,7 +20,6 @@
 .formazione-header {
   display: flex;
   align-items: center;
-  gap: 12px;
   margin-bottom: 14px;
 }
 
@@ -30,21 +29,6 @@
   font-size: 24px;
   font-weight: 800;
   color: var(--tactical-text-primary);
-}
-
-.btn-back-formazione {
-  background-color: var(--tactical-bg-card);
-  color: var(--tactical-text-primary);
-  border: 1px solid var(--tactical-border-gold);
-  padding: 6px 12px;
-  font-weight: bold;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-back-formazione:hover {
-  background-color: var(--tactical-bg-timer);
 }
 
 /* ==========================================

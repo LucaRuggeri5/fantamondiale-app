@@ -4,6 +4,9 @@ import { useUser } from '@clerk/clerk-react';
 import { supabase } from '../supabaseClient';
 import './InserisciFormazione.css';
 
+// --- IMPORT COMPONENTE BACK BUTTON TATTICO ---
+import TacticalBackButton from '../components/TacticalBackButton/TacticalBackButton';
+
 // --- IMPORT COMPONENTE BANDIERA NAZIONALE ---
 import BandieraNazionale from '../components/BandieraNazionale/BandieraNazionale';
 
@@ -259,7 +262,7 @@ const InserisciFormazione = () => {
   return (
     <div className="inserisci-formazione-page tactical-dashboard-gap">
       <div className="formazione-header">
-        <button className="btn-back-formazione" onClick={() => navigate('/dashboard')}>⬅️</button>
+        <TacticalBackButton />
         <h2>Schiera Giornata {giornata?.numero_giornata}</h2>
       </div>
 
