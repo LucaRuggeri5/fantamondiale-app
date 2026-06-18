@@ -1,4 +1,4 @@
-/* Layout Contenitore Principale */
+/* Layout Contenitore Principale della pagina */
 .tactical-regolamento-page {
   display: flex;
   align-items: flex-start;
@@ -8,7 +8,7 @@
   box-sizing: border-box;
 }
 
-/* Allargata la card per ospitare l'intero testo in modo leggibile ed elegante */
+/* Card centrale contenitiva dei testi */
 .tactical-regolamento-card {
   position: relative;
   background-color: var(--tactical-bg-card);
@@ -21,7 +21,7 @@
   animation: tacticalCardFadeIn 0.5s ease-out;
 }
 
-/* Pulsante Indietro */
+/* Pulsante Posizionato in alto a sinistra per tornare indietro */
 .tactical-back-btn {
   position: absolute;
   top: 20px;
@@ -45,6 +45,7 @@
   transform: translateX(-3px);
 }
 
+/* Sezione Intestazione con titolo principale */
 .tactical-regolamento-header-section {
   text-align: center;
   margin-top: 15px;
@@ -75,13 +76,14 @@
   margin: 0;
 }
 
+/* Linea di divisione con gradiente sfumato sui lati */
 .tactical-regolamento-divider {
   height: 1px;
   background: linear-gradient(90deg, transparent, var(--tactical-border-gold), transparent);
   margin: 32px 0;
 }
 
-/* Struttura del testo degli articoli */
+/* Corpo dei contenuti */
 .tactical-regolamento-body-content {
   text-align: left;
   display: flex;
@@ -95,6 +97,7 @@
   gap: 18px;
 }
 
+/* Intestazione degli Articoli */
 .tactical-section-header {
   font-family: 'Montserrat', sans-serif;
   font-size: 18px;
@@ -105,6 +108,7 @@
   margin: 0;
 }
 
+/* Singoli blocchi paragrafo (es. 1.1, 1.2, etc.) */
 .tactical-rule-block {
   display: flex;
   flex-direction: column;
@@ -127,6 +131,7 @@
   margin: 0;
 }
 
+/* Liste puntate interne */
 .tactical-rule-list {
   margin: 4px 0 8px 0;
   padding-left: 20px;
@@ -145,7 +150,7 @@
   color: var(--tactical-text-primary);
 }
 
-/* Wrapper per le tabelle affiancate */
+/* Struttura a griglia per affiancare Bonus e Malus */
 .tactical-tables-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -153,6 +158,7 @@
   margin-top: 8px;
 }
 
+/* Su smartphone le tabelle si spostano una sotto l'altra */
 @media (max-width: 680px) {
   .tactical-tables-wrapper {
     grid-template-columns: 1fr;
@@ -178,14 +184,16 @@
 }
 
 .text-bonus {
-  color: #2e7d32; /* Verde scuro editoriale per bonus */
+  color: #2e7d32;
+  /* Verde scuro editoriale */
 }
 
 .text-malus {
-  color: #c62828; /* Rosso scuro editoriale per malus */
+  color: #c62828;
+  /* Rosso scuro editoriale */
 }
 
-/* Struttura della tabella formale */
+/* Stile tabelle formali di punteggio */
 .tactical-score-table {
   width: 100%;
   border-collapse: collapse;
@@ -219,7 +227,7 @@
   font-weight: 700;
 }
 
-/* Colori per i punteggi numerici delle tabelle */
+/* Colori dei modificatori numerici */
 .score-positive {
   color: #4caf50;
 }
@@ -228,13 +236,83 @@
   color: #ef5350;
 }
 
-/* Animazioni */
+/* Animazioni grafiche fluide di entrata */
 @keyframes tacticalCardFadeIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes tacticalPulseIcon {
-  0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.03); opacity: 1; }
+
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scale(1.03);
+    opacity: 1;
+  }
+}
+
+/* ========================================== */
+/* TABELLA DECIMALI ULTRACOMPATTA (ART. 2.3)  */
+/* ========================================== */
+.tactical-mini-table {
+  width: 100%;
+  max-width: 280px;
+  /* Impedisce alla tabella di allargarsi troppo, mantenendola compatta */
+  border-collapse: collapse;
+  margin-top: 8px;
+  background-color: var(--tactical-bg-main);
+  border: 1px solid rgba(198, 156, 109, 0.15);
+  border-radius: 6px;
+  overflow: hidden;
+  /* Forza il raggio di curvatura sui bordi della tabella */
+}
+
+.tactical-mini-table th {
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--tactical-text-secondary);
+  background-color: rgba(198, 156, 109, 0.05);
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--tactical-border-gold);
+  text-align: center;
+}
+
+.tactical-mini-table td {
+  font-family: 'Inter', sans-serif;
+  font-size: 12.5px;
+  padding: 6px 10px;
+  border-bottom: 1px solid rgba(198, 156, 109, 0.08);
+  text-align: center;
+  color: var(--tactical-text-primary);
+}
+
+.tactical-mini-table tr:last-child td {
+  border-bottom: none;
+  /* Rimuove la linea sotto l'ultima riga */
+}
+
+/* Evidenziazione del voto finale convertito d'ufficio */
+.score-converted {
+  color: var(--tactical-text-gold);
+  font-weight: 700;
+}
+
+/* Colore neutro per i voti già conformi (.00 e .50) */
+.score-neutral {
+  color: var(--tactical-text-secondary);
+  font-weight: 500;
 }
